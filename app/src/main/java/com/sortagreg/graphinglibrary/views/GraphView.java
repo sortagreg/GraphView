@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class GraphView extends View {
+    private Paint backgroundPaint = new Paint();
     private Paint axisPaint = new Paint();
     private Paint markerPaint = new Paint();
 
@@ -51,9 +52,9 @@ public class GraphView extends View {
 
     private void setPaintLines() {
         axisPaint.setColor(0xff000000);
-        axisPaint.setStrokeWidth(15.0f);
+        axisPaint.setStrokeWidth(8.0f);
         markerPaint.setColor(0xffd3d3d3);
-        markerPaint.setStrokeWidth(5.0f);
+        markerPaint.setStrokeWidth(3.0f);
     }
 
     private void drawAxes(Canvas canvas) {

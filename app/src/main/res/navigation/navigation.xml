@@ -3,11 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/graphingFragment">
+    app:startDestination="@id/graphViewFragment">
 
     <fragment
-        android:id="@+id/graphingFragment"
+        android:id="@+id/boxDrawingFragment"
         android:name="com.sortagreg.graphinglibrary.fragments.BoxDrawingFragment"
         android:label="Graph View"
         tools:layout="@layout/fragment_box_drawing" />
+    <fragment
+        android:id="@+id/graphViewFragment"
+        android:name="com.sortagreg.graphinglibrary.fragments.GraphViewFragment"
+        android:label="Graphing"
+        tools:layout="@layout/fragment_graph_view" />
 </navigation>

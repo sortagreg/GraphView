@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/graphingFragment"
-        android:name="com.sortagreg.graphinglibrary.fragments.GraphingFragment"
+        android:name="com.sortagreg.graphinglibrary.fragments.BoxDrawingFragment"
         android:label="Graph View"
-        tools:layout="@layout/fragment_graphing" />
+        tools:layout="@layout/fragment_box_drawing" />
 </navigation>

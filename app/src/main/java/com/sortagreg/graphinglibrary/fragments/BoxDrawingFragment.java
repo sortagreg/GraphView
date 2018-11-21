@@ -6,19 +6,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.sortagreg.graphinglibrary.R;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class GraphingFragment extends Fragment {
+public class BoxDrawingFragment extends Fragment {
 
-    public GraphingFragment() {
+    public BoxDrawingFragment() {
         // Required empty public constructor
     }
 
@@ -32,7 +30,7 @@ public class GraphingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_graphing, container, false);
+        View view = inflater.inflate(R.layout.fragment_box_drawing, container, false);
         ButterKnife.bind(this, view);
         return view;
     }

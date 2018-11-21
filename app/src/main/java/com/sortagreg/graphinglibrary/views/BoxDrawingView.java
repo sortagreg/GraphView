@@ -1,6 +1,8 @@
 package com.sortagreg.graphinglibrary.views;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -15,13 +17,40 @@ public class BoxDrawingView extends View {
 
     private Box currentBox;
     private List<Box> boxen = new ArrayList<>();
+    private Paint boxPaint;
+    private Paint backgroundPaint;
 
     public BoxDrawingView(Context context) {
         super(context);
+        setPaints();
     }
 
     public BoxDrawingView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setPaints();
+    }
+
+    private void setPaints() {
+        boxPaint = new Paint();
+        boxPaint.setColor(0x22ff0000);
+        backgroundPaint = new Paint();
+        backgroundPaint.setColor(0xfff8efe0);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        canvas.drawPaint(backgroundPaint);
+        drawBoxes(canvas);
+    }
+
+    private void drawBoxes(Canvas canvas) {
+        for (Box box : boxen) {
+            float left = Math.min(box.getOrigin().x, box.getCurrent().x);
+            float right = Math.max(box.getOrigin().x, box.getCurrent().x);
+            float top = Math.min(box.getOrigin().y, box.getCurrent().y);
+            float bottom = Math.max(box.getOrigin().y, box.getCurrent().y);
+            canvas.drawRect(left, top, right, bottom, boxPaint);
+        }
     }
 
     @Override

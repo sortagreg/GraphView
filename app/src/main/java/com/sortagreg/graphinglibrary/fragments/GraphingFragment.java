@@ -18,9 +18,6 @@ import butterknife.ButterKnife;
  */
 public class GraphingFragment extends Fragment {
 
-    @BindView(R.id.textView)
-    TextView textView;
-
     public GraphingFragment() {
         // Required empty public constructor
     }
@@ -37,7 +34,6 @@ public class GraphingFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graphing, container, false);
         ButterKnife.bind(this, view);
-        textView.setText("Butterknife worked.");
         return view;
     }
 

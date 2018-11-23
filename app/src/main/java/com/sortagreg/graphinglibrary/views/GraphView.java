@@ -16,7 +16,7 @@ public class GraphView extends View {
     private int leftAxisMargin = 200;
     private int rightAxisMargin = 100;
 
-    private int numberOfVerticalMarkers = 3;
+    private int numberOfVerticalMarkers = 5;
 
     public GraphView(Context context) {
         super(context);
@@ -26,6 +26,11 @@ public class GraphView extends View {
     public GraphView(Context context, AttributeSet attrs) {
         super(context, attrs);
         setPaintLines();
+    }
+
+    public void setNumberOfVerticalMarkers(int newNumber) {
+        numberOfVerticalMarkers = newNumber;
+        invalidate();
     }
 
     @Override

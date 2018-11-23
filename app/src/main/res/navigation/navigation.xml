@@ -13,6 +13,6 @@
     <fragment
         android:id="@+id/graphViewFragment"
         android:name="com.sortagreg.graphinglibrary.fragments.GraphViewFragment"
-        android:label="Graphing"
+        android:label="Graph View Demo"
         tools:layout="@layout/fragment_graph_view" />
 </navigation>

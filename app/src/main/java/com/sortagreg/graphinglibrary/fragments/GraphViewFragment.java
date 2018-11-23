@@ -6,14 +6,27 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.sortagreg.graphinglibrary.R;
+import com.sortagreg.graphinglibrary.views.GraphView;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class GraphViewFragment extends Fragment {
 
+    @BindView(R.id.graphView)
+    GraphView graphView;
+    @BindView(R.id.verticalMarkerInput)
+    EditText verticalMarkerInput;
+    @BindView(R.id.verticalMarkerButton)
+    Button verticalMarkerButton;
 
     public GraphViewFragment() {
         // Required empty public constructor
@@ -23,8 +36,14 @@ public class GraphViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_graph_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_graph_view, container, false);
+        ButterKnife.bind(this, view);
+        return view;
+    }
+
+    @OnClick(R.id.verticalMarkerButton)
+    public void verticalMarkerButtonOnClick() {
+        graphView.setNumberOfVerticalMarkers(Integer.valueOf(verticalMarkerInput.getText().toString()));
     }
 
 }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.sortagreg.graphinglibrary.R;
 import com.sortagreg.graphinglibrary.views.GraphView;
@@ -43,7 +44,9 @@ public class GraphViewFragment extends Fragment {
 
     @OnClick(R.id.verticalMarkerButton)
     public void verticalMarkerButtonOnClick() {
-        graphView.setNumberOfVerticalMarkers(Integer.valueOf(verticalMarkerInput.getText().toString()));
+        if (!verticalMarkerInput.getText().toString().equals("")) {
+            graphView.setNumberOfVerticalMarkers(Integer.valueOf(verticalMarkerInput.getText().toString()));
+        } else Toast.makeText(getContext(), "Must input a value.", Toast.LENGTH_LONG).show();
     }
 
 }

@@ -1,4 +1,4 @@
-package com.sortagreg.graphinglibrary.views;
+package com.sortagreg.graphview;
 
 import android.content.Context;
 import android.graphics.Canvas;

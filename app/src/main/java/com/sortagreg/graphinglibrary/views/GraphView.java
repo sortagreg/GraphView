@@ -1,12 +1,17 @@
 package com.sortagreg.graphinglibrary.views;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.sortagreg.graphinglibrary.R;
+
 public class GraphView extends View {
+    private Context context;
     private Paint backgroundPaint = new Paint();
     private Paint axisPaint = new Paint();
     private Paint markerPaint = new Paint();
@@ -21,12 +26,24 @@ public class GraphView extends View {
 
     public GraphView(Context context) {
         super(context);
+        this.context = context;
         setPaintLines();
     }
 
     public GraphView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
         setPaintLines();
+        init(attrs);
+    }
+
+    // initialize variables set in the XML
+    private void init(@Nullable AttributeSet attrs) {
+        if (attrs == null) return;
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.GraphView);
+        numberOfHorizontalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalMarkers, 10);
+        numberOfVerticalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfVerticalMarkers, 5);
+        typedArray.recycle();
     }
 
     public void setNumberOfVerticalMarkers(int newNumber) {

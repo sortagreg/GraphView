@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -69,6 +72,10 @@ public class GraphView extends View {
      * @param attrs values from the XML set.
      */
     private void init(@Nullable AttributeSet attrs) {
+        // Enables custom attributes to be saved across app states
+        setSaveEnabled(true);
+
+        // Init custom attributes from XML here
         if (attrs == null) return;
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.GraphView);
         numberOfHorizontalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalMarkers, 10);
@@ -174,5 +181,91 @@ public class GraphView extends View {
         axisPaint.setStrokeWidth(8.0f);
         markerPaint.setColor(0xffd3d3d3);
         markerPaint.setStrokeWidth(3.0f);
+    }
+
+    /**
+     * Overridden method to save custom attributes across states.
+     *
+     * Saves all the custom attributes that can be set to a custom
+     * SavedState Class.
+     *
+     * @return Parcelable GraphViewSavedState
+     */
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        GraphViewSavedState savedState = new GraphViewSavedState(superState);
+        savedState.numberOfVerticalMarkers = numberOfVerticalMarkers;
+        savedState.numberOfHorizontalMarkers = numberOfHorizontalMarkers;
+        return savedState;
+    }
+
+    /**
+     * Overridden method to restore custom attributes across states.
+     *
+     * Restores all the custom attributes that can be set from a custom
+     * SavedState Class.
+     *
+     * @return void
+     */
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        GraphViewSavedState savedState = (GraphViewSavedState) state;
+        super.onRestoreInstanceState(savedState.getSuperState());
+        setNumberOfVerticalMarkers(savedState.numberOfVerticalMarkers);
+        setNumberOfHorizontalMarkers(savedState.numberOfHorizontalMarkers);
+    }
+
+    /**
+     * Inner class extends BaseSavedState to save and restore GraphView configurations.
+     */
+    static class GraphViewSavedState extends BaseSavedState {
+        private static final String NUMBEROFVERTICALMARKERS = "# of vertical markers";
+        private static final String NUMBEROFHORIZONTALMARKERS = "# of horizontal markers";
+        Bundle bundle;
+        int numberOfVerticalMarkers;
+        int numberOfHorizontalMarkers;
+
+        public GraphViewSavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        /**
+         * Reads from the Bundle Object to restore the View.
+         *
+         * @param in
+         */
+        private GraphViewSavedState(Parcel in) {
+            super(in);
+            bundle = in.readBundle();
+            numberOfVerticalMarkers = bundle.getInt(NUMBEROFVERTICALMARKERS, 5);
+            numberOfHorizontalMarkers = bundle.getInt(NUMBEROFHORIZONTALMARKERS, 10);
+        }
+
+        /**
+         * Writes values to be saved to a Bundle and attaches it to a Parcel.
+         *
+         * @param out
+         * @param flags
+         */
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            Bundle outBundle = new Bundle();
+            outBundle.putInt(NUMBEROFHORIZONTALMARKERS, numberOfHorizontalMarkers);
+            outBundle.putInt(NUMBEROFVERTICALMARKERS, numberOfVerticalMarkers);
+            out.writeBundle(outBundle);
+        }
+
+        public static final Parcelable.Creator<GraphViewSavedState> CREATOR
+                = new Parcelable.Creator<GraphViewSavedState>() {
+            public GraphViewSavedState createFromParcel(Parcel in) {
+                return new GraphViewSavedState(in);
+            }
+
+            public GraphViewSavedState[] newArray(int size) {
+                return new GraphViewSavedState[size];
+            }
+        };
     }
 }

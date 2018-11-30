@@ -80,7 +80,25 @@ public class GraphView extends View {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.GraphView);
         numberOfHorizontalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalMarkers, 10);
         numberOfVerticalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfVerticalMarkers, 5);
+        topAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginTop, 100);
+        bottomAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginBottom, 200);
+        rightAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginRight, 100);
+        leftAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginLeft, 200);
         typedArray.recycle();
+    }
+
+    /**
+     * Overridden method that is called by the system.  This draws your View.
+     *
+     * Can be invoked by calling invalidate(), but this can be an expensive operation.
+     *
+     * @param canvas Canvas Object to be drawn to.
+     */
+    @Override
+    protected void onDraw(Canvas canvas) {
+        drawAxes(canvas);
+        drawVerticalMarkers(canvas);
+        drawHorizontalMarkers(canvas);
     }
 
     /**
@@ -101,21 +119,6 @@ public class GraphView extends View {
     public void setNumberOfHorizontalMarkers(int numberOfHorizontalMarkers) {
         this.numberOfHorizontalMarkers = numberOfHorizontalMarkers;
         invalidate();
-    }
-
-    /**
-     * Overridden method that is called by the system.  This draws your View.
-     *
-     * Can be invoked by calling invalidate(), but this can be an expensive operation.
-     *
-     * @param canvas Canvas Object to be drawn to.
-     */
-    @Override
-    protected void onDraw(Canvas canvas) {
-//        super.onDraw(canvas);
-        drawAxes(canvas);
-        drawVerticalMarkers(canvas);
-        drawHorizontalMarkers(canvas);
     }
 
     /**
@@ -220,11 +223,19 @@ public class GraphView extends View {
      * Inner class extends BaseSavedState to save and restore GraphView configurations.
      */
     static class GraphViewSavedState extends BaseSavedState {
-        private static final String NUMBEROFVERTICALMARKERS = "# of vertical markers";
-        private static final String NUMBEROFHORIZONTALMARKERS = "# of horizontal markers";
+        private static final String NUMBER_OF_VERTICAL_MARKERS = "# of vertical markers";
+        private static final String NUMBER_OF_HORIZONTAL_MARKERS = "# of horizontal markers";
+        private static final String TOP_AXIS_MARGIN = "top axis margin";
+        private static final String BOTTOM_AXIS_MARGIN = "bottom axis margin";
+        private static final String LEFT_AXIS_MARGIN = "left axis margin";
+        private static final String RIGHT_AXIS_MARGIN = "right axis margin";
         Bundle bundle;
         int numberOfVerticalMarkers;
         int numberOfHorizontalMarkers;
+        int topAxisMargin;
+        int bottomAxisMargin;
+        int leftAxisMargin;
+        int rightAxisMargin;
 
         public GraphViewSavedState(Parcelable superState) {
             super(superState);
@@ -238,8 +249,12 @@ public class GraphView extends View {
         private GraphViewSavedState(Parcel in) {
             super(in);
             bundle = in.readBundle();
-            numberOfVerticalMarkers = bundle.getInt(NUMBEROFVERTICALMARKERS, 5);
-            numberOfHorizontalMarkers = bundle.getInt(NUMBEROFHORIZONTALMARKERS, 10);
+            numberOfVerticalMarkers = bundle.getInt(NUMBER_OF_VERTICAL_MARKERS, 5);
+            numberOfHorizontalMarkers = bundle.getInt(NUMBER_OF_HORIZONTAL_MARKERS, 10);
+            topAxisMargin = bundle.getInt(TOP_AXIS_MARGIN, 100);
+            bottomAxisMargin = bundle.getInt(BOTTOM_AXIS_MARGIN, 200);
+            leftAxisMargin = bundle.getInt(LEFT_AXIS_MARGIN, 200);
+            rightAxisMargin = bundle.getInt(RIGHT_AXIS_MARGIN, 100);
         }
 
         /**
@@ -252,8 +267,12 @@ public class GraphView extends View {
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
             Bundle outBundle = new Bundle();
-            outBundle.putInt(NUMBEROFHORIZONTALMARKERS, numberOfHorizontalMarkers);
-            outBundle.putInt(NUMBEROFVERTICALMARKERS, numberOfVerticalMarkers);
+            outBundle.putInt(NUMBER_OF_HORIZONTAL_MARKERS, numberOfHorizontalMarkers);
+            outBundle.putInt(NUMBER_OF_VERTICAL_MARKERS, numberOfVerticalMarkers);
+            outBundle.putInt(TOP_AXIS_MARGIN, topAxisMargin);
+            outBundle.putInt(BOTTOM_AXIS_MARGIN, bottomAxisMargin);
+            outBundle.putInt(RIGHT_AXIS_MARGIN, rightAxisMargin);
+            outBundle.putInt(LEFT_AXIS_MARGIN, leftAxisMargin);
             out.writeBundle(outBundle);
         }
 

@@ -3,8 +3,11 @@ package com.sortagreg.graphview;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.View;
+
+import java.util.List;
 
 public class GraphView extends View {
     private Paint backgroundPaint = new Paint();
@@ -18,6 +21,8 @@ public class GraphView extends View {
 
     private int numberOfVerticalMarkers = 5;
     private int numberOfHorizontalMarkers = 10;
+
+    private List<PointF[]> graphLineList;
 
     public GraphView(Context context) {
         super(context);

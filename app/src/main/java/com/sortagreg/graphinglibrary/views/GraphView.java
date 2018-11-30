@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -13,6 +14,9 @@ import android.view.View;
 
 import com.sortagreg.graphinglibrary.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * GraphView - Custom Graph View Class
  *
@@ -20,9 +24,11 @@ import com.sortagreg.graphinglibrary.R;
  */
 public class GraphView extends View {
     private Context context;
+
     private Paint backgroundPaint = new Paint();
     private Paint axisPaint = new Paint();
     private Paint markerPaint = new Paint();
+    private Paint dataSetPaint = new Paint();
 
     private int topAxisMargin = 100;
     private int bottomAxisMargin = 200;
@@ -31,6 +37,12 @@ public class GraphView extends View {
 
     private int numberOfVerticalMarkers = 5;
     private int numberOfHorizontalMarkers = 10;
+
+    private List<PointF[]> dataSetList;
+    private float dataSetMinX = Float.MAX_VALUE;
+    private float dataSetMaxX = Float.MIN_VALUE;
+    private float dataSetMinY = Float.MAX_VALUE;
+    private float dataSetMaxY = Float.MIN_VALUE;
 
     /**
      * Constructor for a GraphView in code.
@@ -42,7 +54,6 @@ public class GraphView extends View {
     public GraphView(Context context) {
         super(context);
         this.context = context;
-        setPaintLines();
         init(null);
     }
 
@@ -59,7 +70,6 @@ public class GraphView extends View {
     public GraphView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        setPaintLines();
         init(attrs);
     }
 
@@ -85,6 +95,9 @@ public class GraphView extends View {
         rightAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginRight, 100);
         leftAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginLeft, 200);
         typedArray.recycle();
+
+        setPaintLines();
+        dataSetList = new ArrayList<>();
     }
 
     /**
@@ -99,6 +112,7 @@ public class GraphView extends View {
         drawAxes(canvas);
         drawVerticalMarkers(canvas);
         drawHorizontalMarkers(canvas);
+        drawDataSets(canvas);
     }
 
     /**
@@ -118,6 +132,36 @@ public class GraphView extends View {
      */
     public void setNumberOfHorizontalMarkers(int numberOfHorizontalMarkers) {
         this.numberOfHorizontalMarkers = numberOfHorizontalMarkers;
+        invalidate();
+    }
+
+    public void setTopAxisMargin(int topAxisMargin) {
+        this.topAxisMargin = topAxisMargin;
+        invalidate();
+    }
+
+    public void setBottomAxisMargin(int bottomAxisMargin) {
+        this.bottomAxisMargin = bottomAxisMargin;
+        invalidate();
+    }
+
+    public void setLeftAxisMargin(int leftAxisMargin) {
+        this.leftAxisMargin = leftAxisMargin;
+        invalidate();
+    }
+
+    public void setRightAxisMargin(int rightAxisMargin) {
+        this.rightAxisMargin = rightAxisMargin;
+        invalidate();
+    }
+
+    public void addToDataSetList(PointF[] dataSet) {
+        this.dataSetList.add(dataSet);
+        invalidate();
+    }
+
+    public void addToDataSetListBulk(List<PointF[]> dataSetList) {
+        this.dataSetList.addAll(dataSetList);
         invalidate();
     }
 
@@ -176,6 +220,73 @@ public class GraphView extends View {
         canvas.drawLine(leftAxisMargin, canvas.getHeight() - bottomAxisMargin, canvas.getWidth() - rightAxisMargin, canvas.getHeight() - bottomAxisMargin, axisPaint);
     }
 
+    private void drawDataSets(Canvas canvas) {
+        getMinMaxOfDataSets();
+        float rangeOfXValues = dataSetMaxX - dataSetMinX;
+        float rangeOfYValues = dataSetMaxY - dataSetMinY;
+        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (rangeOfXValues);
+        float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
+
+        drawTestPoints(canvas, pixelsPerX, pixelsPerY);
+        for (PointF[] dataSet : dataSetList) {
+            for (int i = 0; i < dataSet.length - 1; i++){
+                PointF startPoint = convertXYtoPx(dataSet[i], canvas, pixelsPerX, pixelsPerY);
+                PointF endPoint = convertXYtoPx(dataSet[i + 1], canvas, pixelsPerX, pixelsPerY);
+                canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataSetPaint);
+            }
+        }
+    }
+
+    private void drawTestPoints(Canvas canvas, float pixelsPerX, float pixelsPerY) {
+        Paint testPaint = new Paint();
+        // KNOWN (0,0)
+        testPaint.setColor(0xAA0000AA);//Blue
+        canvas.drawCircle((float) leftAxisMargin, (float) canvas.getHeight() - (float) bottomAxisMargin, 40.0f, testPaint);
+        // KNOWN (MAX X, MAX Y)
+        testPaint.setColor(0xAAAA0000);//Red
+        canvas.drawCircle((float) canvas.getWidth() - (float) rightAxisMargin, (float) topAxisMargin, 30f, testPaint);
+        // CALCULATED (MAX X, MAX Y)
+        testPaint.setColor(0xAA00AA00);//Green
+        canvas.drawCircle((float) leftAxisMargin + (dataSetMaxX * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (dataSetMaxY * pixelsPerY), 50f, testPaint);
+        // TEST conversion method (2,2)
+        testPaint.setColor(0xAAACAC00);
+        PointF dataPoint = new PointF(2f, 2f);
+        PointF convertedDP = convertXYtoPx(dataPoint, canvas, pixelsPerX, pixelsPerY);
+        canvas.drawCircle(convertedDP.x, convertedDP.y, 15f, testPaint);
+
+        testPaint.setColor(0xAA0000AA);
+//        // TEST (1,1)
+//        canvas.drawCircle((float) leftAxisMargin + (1.0f * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (1.0f * pixelsPerY), 20.0f, testPaint);
+//        // TEST (2,2)
+//        canvas.drawCircle((float) leftAxisMargin + (2.0f * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (2.0f * pixelsPerY), 20.0f, testPaint);
+//        // TEST (3,3)
+//        canvas.drawCircle((float) leftAxisMargin + (3.0f * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (3.0f * pixelsPerY), 20.0f, testPaint);
+//        // TEST (4,4)
+//        canvas.drawCircle((float) leftAxisMargin + (4.0f * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (4.0f * pixelsPerY), 20.0f, testPaint);
+//        // TEST (2,4)
+//        canvas.drawCircle((float) leftAxisMargin + (2.0f * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (4.0f * pixelsPerY), 20.0f, testPaint);
+//        // TEST (1,3)
+//        canvas.drawCircle((float) leftAxisMargin + (1.0f * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (3.0f * pixelsPerY), 20.0f, testPaint);
+
+    }
+
+    private PointF convertXYtoPx(PointF rawDataPoint, Canvas canvas, float pixelsPerX, float pixelsPerY) {
+        float newX = (float) leftAxisMargin + ((float) rawDataPoint.x * pixelsPerX);
+        float newY = (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) rawDataPoint.y * pixelsPerY);
+        return new PointF(newX, newY);
+    }
+
+    private void getMinMaxOfDataSets() {
+        for (PointF[] dataSet : dataSetList) {
+            for (PointF dataPoint : dataSet) {
+                dataSetMaxX = Math.max(dataSetMaxX, dataPoint.x);
+                dataSetMinX = Math.min(dataSetMinX, dataPoint.x);
+                dataSetMaxY = Math.max(dataSetMaxY, dataPoint.y);
+                dataSetMinY = Math.min(dataSetMinY, dataPoint.y);
+            }
+        }
+    }
+
     /**
      * Initialize the Paint Objects.
      */
@@ -184,6 +295,8 @@ public class GraphView extends View {
         axisPaint.setStrokeWidth(8.0f);
         markerPaint.setColor(0xffd3d3d3);
         markerPaint.setStrokeWidth(3.0f);
+        dataSetPaint.setColor(0x9900FFFF);
+        dataSetPaint.setStrokeWidth(5.0f);
     }
 
     /**

@@ -21,12 +21,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/verticalMarkerInput"
-        app:numberOfHorizontalMarkers="3"
-        app:numberOfVerticalMarkers="3"
-        app:axisMarginBottom="0"
-        app:axisMarginLeft="0"
-        app:axisMarginRight="0"
-        app:axisMarginTop="0"/>
+        app:numberOfHorizontalMarkers="4"
+        app:numberOfVerticalMarkers="4"
+        app:axisMarginBottom="200"
+        app:axisMarginLeft="200"
+        app:axisMarginRight="100"
+        app:axisMarginTop="100"/>
 
 
     <EditText

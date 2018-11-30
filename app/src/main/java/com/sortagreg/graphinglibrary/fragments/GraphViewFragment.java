@@ -1,6 +1,7 @@
 package com.sortagreg.graphinglibrary.fragments;
 
 
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -39,6 +40,9 @@ public class GraphViewFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph_view, container, false);
         ButterKnife.bind(this, view);
+        PointF[] dataSet = {new PointF(0.0f,0.0f), new PointF(4f, 4f)};
+//        PointF[] dataSet = {new PointF(0.0f,0.0f), new PointF(1.0f,1.0f), new PointF(2f, 2f), new PointF(3f, 3f), new PointF(4f, 4f), new PointF(2f, 4f), new PointF(1f, 3f)};
+        graphView.addToDataSetList(dataSet);
         return view;
     }
 

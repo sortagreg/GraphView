@@ -22,7 +22,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/verticalMarkerInput"
         app:numberOfHorizontalMarkers="3"
-        app:numberOfVerticalMarkers="3" />
+        app:numberOfVerticalMarkers="3"
+        app:axisMarginBottom="0"
+        app:axisMarginLeft="0"
+        app:axisMarginRight="0"
+        app:axisMarginTop="0"/>
+
 
     <EditText
         android:id="@+id/verticalMarkerInput"

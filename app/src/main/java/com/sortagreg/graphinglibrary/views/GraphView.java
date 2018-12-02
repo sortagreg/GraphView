@@ -96,6 +96,7 @@ public class GraphView extends View {
         leftAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginLeft, 200);
         typedArray.recycle();
 
+        // Init other values here
         setPaintLines();
         dataSetList = new ArrayList<>();
     }
@@ -109,9 +110,9 @@ public class GraphView extends View {
      */
     @Override
     protected void onDraw(Canvas canvas) {
-        drawAxes(canvas);
         drawVerticalMarkers(canvas);
         drawHorizontalMarkers(canvas);
+        drawAxes(canvas);
         drawDataSets(canvas);
     }
 
@@ -222,8 +223,8 @@ public class GraphView extends View {
 
     private void drawDataSets(Canvas canvas) {
         getMinMaxOfDataSets();
-        float rangeOfXValues = dataSetMaxX - dataSetMinX;
-        float rangeOfYValues = dataSetMaxY - dataSetMinY;
+        float rangeOfXValues = dataSetMaxX - dataSetMinX;// + ((dataSetMaxX - dataSetMinX) * 0.05f);
+        float rangeOfYValues = dataSetMaxY - dataSetMinY;// + ((dataSetMaxY - dataSetMinY) * 0.05f);
         float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (rangeOfXValues);
         float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
 
@@ -238,9 +239,20 @@ public class GraphView extends View {
         }
     }
 
+    /**
+     * Draws 3 red test points on the graph in fixed locations, bottom left, center, top right.
+     *
+     * Method used to help debug issues and test algorithms.  These three dots will always be drawn
+     * at their respective places as they are determined from the canvas size, and not by any
+     * derived calculation.
+     *
+     * @param canvas
+     * @param pixelsPerX
+     * @param pixelsPerY
+     */
     private void drawTestPoints(Canvas canvas, float pixelsPerX, float pixelsPerY) {
         Paint testPaint = new Paint();
-        // KNOWN (0,0)
+        // KNOWN ORIGIN
         testPaint.setColor(0xAAAA0000);//Red
         canvas.drawCircle((float) leftAxisMargin, (float) canvas.getHeight() - (float) bottomAxisMargin, 30f, testPaint);
         // KNOWN (MAX X, MAX Y)
@@ -252,29 +264,26 @@ public class GraphView extends View {
         PointF dataPoint = new PointF(2f, 2f);
         PointF convertedDP = convertXYtoPx(dataPoint, canvas, pixelsPerX, pixelsPerY);
         canvas.drawCircle(convertedDP.x, convertedDP.y, 15f, testPaint);
-
-//        testPaint.setColor(0xAA0000AA);
-//        // TEST (1,1)
-//        canvas.drawCircle((float) leftAxisMargin + (1.0f * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (1.0f * pixelsPerY), 20.0f, testPaint);
-//        // TEST (2,2)
-//        canvas.drawCircle((float) leftAxisMargin + (2.0f * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (2.0f * pixelsPerY), 20.0f, testPaint);
-//        // TEST (3,3)
-//        canvas.drawCircle((float) leftAxisMargin + (3.0f * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (3.0f * pixelsPerY), 20.0f, testPaint);
-//        // TEST (4,4)
-//        canvas.drawCircle((float) leftAxisMargin + (4.0f * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (4.0f * pixelsPerY), 20.0f, testPaint);
-//        // TEST (2,4)
-//        canvas.drawCircle((float) leftAxisMargin + (2.0f * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (4.0f * pixelsPerY), 20.0f, testPaint);
-//        // TEST (1,3)
-//        canvas.drawCircle((float) leftAxisMargin + (1.0f * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (3.0f * pixelsPerY), 20.0f, testPaint);
-
     }
 
+    /**
+     * Method converts an (X,Y) pair to its appropriate pixel location values.
+     *
+     * @param rawDataPoint PointF data point to be converted.
+     * @param canvas Canvas Object to be drawn to.
+     * @param pixelsPerX float Calculated pixel per X value from all data sets.
+     * @param pixelsPerY float Calculated pixel per Y value from all data sets.
+     * @return PointF with the literal pixel coordinates of the inputs (X,Y) values.
+     */
     private PointF convertXYtoPx(PointF rawDataPoint, Canvas canvas, float pixelsPerX, float pixelsPerY) {
         float newX = (float) leftAxisMargin + ((float) rawDataPoint.x * pixelsPerX) - (dataSetMinX * pixelsPerX);
         float newY = (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) rawDataPoint.y * pixelsPerY) + (dataSetMinY * pixelsPerY);
         return new PointF(newX, newY);
     }
 
+    /**
+     * Find and set the largest and smallest values to be found in all the data sets.
+     */
     private void getMinMaxOfDataSets() {
         for (PointF[] dataSet : dataSetList) {
             for (PointF dataPoint : dataSet) {
@@ -291,9 +300,9 @@ public class GraphView extends View {
      */
     private void setPaintLines() {
         axisPaint.setColor(0xff000000);
-        axisPaint.setStrokeWidth(8.0f);
-        markerPaint.setColor(0xffd3d3d3);
-        markerPaint.setStrokeWidth(3.0f);
+        axisPaint.setStrokeWidth(5.0f);
+        markerPaint.setColor(0xAAd3d3d3);
+        markerPaint.setStrokeWidth(2.0f);
         dataSetPaint.setColor(0xFF00A9FF);
         dataSetPaint.setStrokeWidth(5.0f);
     }

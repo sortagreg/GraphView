@@ -14,6 +14,9 @@ import android.widget.Toast;
 import com.sortagreg.graphinglibrary.R;
 import com.sortagreg.graphinglibrary.views.GraphView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -40,9 +43,15 @@ public class GraphViewFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph_view, container, false);
         ButterKnife.bind(this, view);
-        PointF[] dataSet = {new PointF(0.0f,0.0f), new PointF(4f, 4f)};
-//        PointF[] dataSet = {new PointF(0.0f,0.0f), new PointF(1.0f,1.0f), new PointF(2f, 2f), new PointF(3f, 3f), new PointF(4f, 4f), new PointF(2f, 4f), new PointF(1f, 3f)};
-        graphView.addToDataSetList(dataSet);
+        List<PointF[]> dataSetList = new ArrayList<>();
+//        PointF[] dataSet = {new PointF(0.0f,0.0f), new PointF(4f, 4f)};
+//        dataSetList.add(dataSet);
+        PointF[] dataSet2 = {new PointF(1.0f,0.0f), new PointF(4f, 3f)};
+        dataSetList.add(dataSet2);
+        PointF[] dataSet3 = {new PointF(0.0f,-1.0f), new PointF(1.0f,1.0f), new PointF(2f, 2f), new PointF(3f, 3f), new PointF(4f, 4f), new PointF(2f, 4f), new PointF(1f, 3f)};
+        dataSetList.add(dataSet3);
+        graphView.addToDataSetListBulk(dataSetList);
+//        graphView.addToDataSetList(dataSet);
         return view;
     }
 

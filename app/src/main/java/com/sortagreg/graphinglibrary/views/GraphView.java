@@ -228,6 +228,7 @@ public class GraphView extends View {
         float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
 
         drawTestPoints(canvas, pixelsPerX, pixelsPerY);
+
         for (PointF[] dataSet : dataSetList) {
             for (int i = 0; i < dataSet.length - 1; i++){
                 PointF startPoint = convertXYtoPx(dataSet[i], canvas, pixelsPerX, pixelsPerY);
@@ -240,21 +241,23 @@ public class GraphView extends View {
     private void drawTestPoints(Canvas canvas, float pixelsPerX, float pixelsPerY) {
         Paint testPaint = new Paint();
         // KNOWN (0,0)
-        testPaint.setColor(0xAA0000AA);//Blue
-        canvas.drawCircle((float) leftAxisMargin, (float) canvas.getHeight() - (float) bottomAxisMargin, 40.0f, testPaint);
-        // KNOWN (MAX X, MAX Y)
         testPaint.setColor(0xAAAA0000);//Red
+        canvas.drawCircle((float) leftAxisMargin, (float) canvas.getHeight() - (float) bottomAxisMargin, 30f, testPaint);
+        // KNOWN (MAX X, MAX Y)
         canvas.drawCircle((float) canvas.getWidth() - (float) rightAxisMargin, (float) topAxisMargin, 30f, testPaint);
-        // CALCULATED (MAX X, MAX Y)
+        // KNOWN (MID, MID)
+        canvas.drawCircle(leftAxisMargin + ((float) (canvas.getWidth() - leftAxisMargin - rightAxisMargin) / 2f), canvas.getHeight() - bottomAxisMargin - ((float) (canvas.getHeight() - bottomAxisMargin -topAxisMargin) / 2f), 30f, testPaint);
+        // CALCULATED (MAX X, MAX Y) & (MIN X, MIN Y)
         testPaint.setColor(0xAA00AA00);//Green
         canvas.drawCircle((float) leftAxisMargin + (dataSetMaxX * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (dataSetMaxY * pixelsPerY), 50f, testPaint);
+        canvas.drawCircle((float) leftAxisMargin + (dataSetMinX * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (dataSetMinY * pixelsPerY), 50f, testPaint);
         // TEST conversion method (2,2)
-        testPaint.setColor(0xAAACAC00);
+        testPaint.setColor(0xAA0000AA);
         PointF dataPoint = new PointF(2f, 2f);
         PointF convertedDP = convertXYtoPx(dataPoint, canvas, pixelsPerX, pixelsPerY);
         canvas.drawCircle(convertedDP.x, convertedDP.y, 15f, testPaint);
 
-        testPaint.setColor(0xAA0000AA);
+//        testPaint.setColor(0xAA0000AA);
 //        // TEST (1,1)
 //        canvas.drawCircle((float) leftAxisMargin + (1.0f * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (1.0f * pixelsPerY), 20.0f, testPaint);
 //        // TEST (2,2)
@@ -271,8 +274,8 @@ public class GraphView extends View {
     }
 
     private PointF convertXYtoPx(PointF rawDataPoint, Canvas canvas, float pixelsPerX, float pixelsPerY) {
-        float newX = (float) leftAxisMargin + ((float) rawDataPoint.x * pixelsPerX);
-        float newY = (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) rawDataPoint.y * pixelsPerY);
+        float newX = (float) leftAxisMargin + ((float) rawDataPoint.x * pixelsPerX) - (dataSetMinX * pixelsPerX);
+        float newY = (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) rawDataPoint.y * pixelsPerY) + (dataSetMinY * pixelsPerY);
         return new PointF(newX, newY);
     }
 
@@ -313,6 +316,10 @@ public class GraphView extends View {
         GraphViewSavedState savedState = new GraphViewSavedState(superState);
         savedState.numberOfVerticalMarkers = numberOfVerticalMarkers;
         savedState.numberOfHorizontalMarkers = numberOfHorizontalMarkers;
+        savedState.topAxisMargin = topAxisMargin;
+        savedState.bottomAxisMargin = bottomAxisMargin;
+        savedState.leftAxisMargin = leftAxisMargin;
+        savedState.rightAxisMargin = rightAxisMargin;
         return savedState;
     }
 
@@ -330,6 +337,10 @@ public class GraphView extends View {
         super.onRestoreInstanceState(savedState.getSuperState());
         setNumberOfVerticalMarkers(savedState.numberOfVerticalMarkers);
         setNumberOfHorizontalMarkers(savedState.numberOfHorizontalMarkers);
+        setTopAxisMargin(savedState.topAxisMargin);
+        setBottomAxisMargin(savedState.bottomAxisMargin);
+        setLeftAxisMargin(savedState.leftAxisMargin);
+        setRightAxisMargin(savedState.rightAxisMargin);
     }
 
     /**
@@ -342,6 +353,7 @@ public class GraphView extends View {
         private static final String BOTTOM_AXIS_MARGIN = "bottom axis margin";
         private static final String LEFT_AXIS_MARGIN = "left axis margin";
         private static final String RIGHT_AXIS_MARGIN = "right axis margin";
+        private static final String DATA_SET_LIST = "data set list";
         Bundle bundle;
         int numberOfVerticalMarkers;
         int numberOfHorizontalMarkers;
@@ -349,6 +361,7 @@ public class GraphView extends View {
         int bottomAxisMargin;
         int leftAxisMargin;
         int rightAxisMargin;
+        List<PointF[]> dataSetList;
 
         public GraphViewSavedState(Parcelable superState) {
             super(superState);
@@ -386,6 +399,7 @@ public class GraphView extends View {
             outBundle.putInt(BOTTOM_AXIS_MARGIN, bottomAxisMargin);
             outBundle.putInt(RIGHT_AXIS_MARGIN, rightAxisMargin);
             outBundle.putInt(LEFT_AXIS_MARGIN, leftAxisMargin);
+//            outBundle.putParcelableArrayList(DATA_SET_LIST, dataSetList);
             out.writeBundle(outBundle);
         }
 

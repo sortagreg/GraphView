@@ -180,9 +180,9 @@ public class GraphView extends View {
         // print vertical markers
         for (int i = 1; i <= numberOfVerticalMarkers; i++) {
             int startX = leftAxisMargin + (i * markerSpacing);
-            int startY = topAxisMargin + 50; // add 50 to give some distance between axis and markers
+            int startY = topAxisMargin;// + 50; // add 50 to give some distance between axis and markers
             int endX = startX;
-            int endY = canvas.getHeight() - bottomAxisMargin - 50; // sub 50 for same reason add 100 earlier
+            int endY = canvas.getHeight() - bottomAxisMargin;// - 50; // sub 50 for same reason add 100 earlier
             canvas.drawLine(startX, startY, endX, endY, markerPaint);
         }
     }
@@ -199,7 +199,7 @@ public class GraphView extends View {
         int markerSpacing = graphHeight / (numberOfHorizontalMarkers + 1);
         for (int i = numberOfHorizontalMarkers; i > 0; i--) {
             int startY = topAxisMargin + (i * markerSpacing);
-            int startX = leftAxisMargin + 50;
+            int startX = leftAxisMargin;// + 50;
             int endY = startY;
             int endX = canvas.getWidth() - rightAxisMargin;
             canvas.drawLine(startX, startY, endX, endY, markerPaint);
@@ -227,7 +227,7 @@ public class GraphView extends View {
         float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (rangeOfXValues);
         float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
 
-        drawTestPoints(canvas, pixelsPerX, pixelsPerY);
+//        drawTestPoints(canvas, pixelsPerX, pixelsPerY);
 
         for (PointF[] dataSet : dataSetList) {
             for (int i = 0; i < dataSet.length - 1; i++){
@@ -247,10 +247,6 @@ public class GraphView extends View {
         canvas.drawCircle((float) canvas.getWidth() - (float) rightAxisMargin, (float) topAxisMargin, 30f, testPaint);
         // KNOWN (MID, MID)
         canvas.drawCircle(leftAxisMargin + ((float) (canvas.getWidth() - leftAxisMargin - rightAxisMargin) / 2f), canvas.getHeight() - bottomAxisMargin - ((float) (canvas.getHeight() - bottomAxisMargin -topAxisMargin) / 2f), 30f, testPaint);
-        // CALCULATED (MAX X, MAX Y) & (MIN X, MIN Y)
-        testPaint.setColor(0xAA00AA00);//Green
-        canvas.drawCircle((float) leftAxisMargin + (dataSetMaxX * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (dataSetMaxY * pixelsPerY), 50f, testPaint);
-        canvas.drawCircle((float) leftAxisMargin + (dataSetMinX * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - (dataSetMinY * pixelsPerY), 50f, testPaint);
         // TEST conversion method (2,2)
         testPaint.setColor(0xAA0000AA);
         PointF dataPoint = new PointF(2f, 2f);
@@ -298,7 +294,7 @@ public class GraphView extends View {
         axisPaint.setStrokeWidth(8.0f);
         markerPaint.setColor(0xffd3d3d3);
         markerPaint.setStrokeWidth(3.0f);
-        dataSetPaint.setColor(0x9900FFFF);
+        dataSetPaint.setColor(0xFF00A9FF);
         dataSetPaint.setStrokeWidth(5.0f);
     }
 

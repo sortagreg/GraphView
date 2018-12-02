@@ -11,22 +11,22 @@
     <com.sortagreg.graphinglibrary.views.GraphView
         android:id="@+id/graphView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="300dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
         android:background="@android:color/background_light"
+        app:axisMarginBottom="200"
+        app:axisMarginLeft="200"
+        app:axisMarginRight="100"
+        app:axisMarginTop="100"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/verticalMarkerInput"
-        app:numberOfHorizontalMarkers="4"
-        app:numberOfVerticalMarkers="4"
-        app:axisMarginBottom="200"
-        app:axisMarginLeft="200"
-        app:axisMarginRight="100"
-        app:axisMarginTop="100"/>
+        app:numberOfHorizontalMarkers="15"
+        app:numberOfVerticalMarkers="15" />
 
 
     <EditText

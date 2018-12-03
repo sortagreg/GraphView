@@ -30,13 +30,21 @@ public class GraphView extends View {
     private Paint markerPaint = new Paint();
     private Paint dataSetPaint = new Paint();
 
-    private int topAxisMargin = 100;
-    private int bottomAxisMargin = 200;
-    private int leftAxisMargin = 200;
-    private int rightAxisMargin = 100;
+    public static final int DEFAULT_TOP_MARGIN = 75;
+    public static final int DEFAULT_BOTTOM_MARGIN = 150;
+    public static final int DEFAULT_LEFT_MARGIN = 150;
+    public static final int DEFAULT_RIGHT_MARGIN = 75;
+    private int topAxisMargin;
+    private int bottomAxisMargin;
+    private int leftAxisMargin;
+    private int rightAxisMargin;
 
-    private int numberOfVerticalMarkers = 5;
-    private int numberOfHorizontalMarkers = 10;
+    public static final int DEFAULT_NUMBER_VERT_MARKERS = 15;
+    public static final int DEFAULT_NUMBER_HORI_MARKERS = 15;
+    private int numberOfVerticalMarkers;
+    private int numberOfHorizontalMarkers;
+
+    private boolean shouldDrawBox;
 
     private List<PointF[]> dataSetList;
     private float dataSetMinX = Float.MAX_VALUE;
@@ -88,12 +96,13 @@ public class GraphView extends View {
         // Init custom attributes from XML here
         if (attrs == null) return;
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.GraphView);
-        numberOfHorizontalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalMarkers, 10);
-        numberOfVerticalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfVerticalMarkers, 5);
-        topAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginTop, 100);
-        bottomAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginBottom, 200);
-        rightAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginRight, 100);
-        leftAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginLeft, 200);
+        numberOfHorizontalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalMarkers, DEFAULT_NUMBER_HORI_MARKERS);
+        numberOfVerticalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfVerticalMarkers, DEFAULT_NUMBER_VERT_MARKERS);
+        topAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginTop, DEFAULT_TOP_MARGIN);
+        bottomAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginBottom, DEFAULT_BOTTOM_MARGIN);
+        rightAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginRight, DEFAULT_RIGHT_MARGIN);
+        leftAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginLeft, DEFAULT_LEFT_MARGIN);
+        shouldDrawBox = typedArray.getBoolean(R.styleable.GraphView_shouldDrawBox, false);
         typedArray.recycle();
 
         // Init other values here
@@ -133,6 +142,11 @@ public class GraphView extends View {
      */
     public void setNumberOfHorizontalMarkers(int numberOfHorizontalMarkers) {
         this.numberOfHorizontalMarkers = numberOfHorizontalMarkers;
+        invalidate();
+    }
+
+    public void setShouldDrawBox(boolean shouldDrawBox) {
+        this.shouldDrawBox = shouldDrawBox;
         invalidate();
     }
 
@@ -219,17 +233,24 @@ public class GraphView extends View {
         canvas.drawLine(leftAxisMargin, topAxisMargin, leftAxisMargin, canvas.getHeight() - bottomAxisMargin, axisPaint);
         // horizontal axis L->R
         canvas.drawLine(leftAxisMargin, canvas.getHeight() - bottomAxisMargin, canvas.getWidth() - rightAxisMargin, canvas.getHeight() - bottomAxisMargin, axisPaint);
+        if (shouldDrawBox) {
+            canvas.drawLine(leftAxisMargin, topAxisMargin, canvas.getWidth() - rightAxisMargin, topAxisMargin, axisPaint);
+            canvas.drawLine(canvas.getWidth() - rightAxisMargin, topAxisMargin, canvas.getWidth() - rightAxisMargin, canvas.getHeight() - bottomAxisMargin, axisPaint);
+        }
     }
 
+    /**
+     * Draws the various data sets to the Canvas Object
+     *
+     * @param canvas Canvas Object to be drawn to
+     */
     private void drawDataSets(Canvas canvas) {
         getMinMaxOfDataSets();
         float rangeOfXValues = dataSetMaxX - dataSetMinX;// + ((dataSetMaxX - dataSetMinX) * 0.05f);
         float rangeOfYValues = dataSetMaxY - dataSetMinY;// + ((dataSetMaxY - dataSetMinY) * 0.05f);
         float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (rangeOfXValues);
         float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
-
 //        drawTestPoints(canvas, pixelsPerX, pixelsPerY);
-
         for (PointF[] dataSet : dataSetList) {
             for (int i = 0; i < dataSet.length - 1; i++){
                 PointF startPoint = convertXYtoPx(dataSet[i], canvas, pixelsPerX, pixelsPerY);
@@ -325,6 +346,7 @@ public class GraphView extends View {
         savedState.bottomAxisMargin = bottomAxisMargin;
         savedState.leftAxisMargin = leftAxisMargin;
         savedState.rightAxisMargin = rightAxisMargin;
+        savedState.shouldDrawBox = shouldDrawBox;
         return savedState;
     }
 
@@ -346,6 +368,7 @@ public class GraphView extends View {
         setBottomAxisMargin(savedState.bottomAxisMargin);
         setLeftAxisMargin(savedState.leftAxisMargin);
         setRightAxisMargin(savedState.rightAxisMargin);
+        setShouldDrawBox(savedState.shouldDrawBox);
     }
 
     /**
@@ -358,6 +381,7 @@ public class GraphView extends View {
         private static final String BOTTOM_AXIS_MARGIN = "bottom axis margin";
         private static final String LEFT_AXIS_MARGIN = "left axis margin";
         private static final String RIGHT_AXIS_MARGIN = "right axis margin";
+        private static final String SHOULD_DRAW_BOX = "right axis margin";
         private static final String DATA_SET_LIST = "data set list";
         Bundle bundle;
         int numberOfVerticalMarkers;
@@ -366,6 +390,7 @@ public class GraphView extends View {
         int bottomAxisMargin;
         int leftAxisMargin;
         int rightAxisMargin;
+        boolean shouldDrawBox;
         List<PointF[]> dataSetList;
 
         public GraphViewSavedState(Parcelable superState) {
@@ -380,12 +405,13 @@ public class GraphView extends View {
         private GraphViewSavedState(Parcel in) {
             super(in);
             bundle = in.readBundle();
-            numberOfVerticalMarkers = bundle.getInt(NUMBER_OF_VERTICAL_MARKERS, 5);
-            numberOfHorizontalMarkers = bundle.getInt(NUMBER_OF_HORIZONTAL_MARKERS, 10);
-            topAxisMargin = bundle.getInt(TOP_AXIS_MARGIN, 100);
-            bottomAxisMargin = bundle.getInt(BOTTOM_AXIS_MARGIN, 200);
-            leftAxisMargin = bundle.getInt(LEFT_AXIS_MARGIN, 200);
-            rightAxisMargin = bundle.getInt(RIGHT_AXIS_MARGIN, 100);
+            numberOfVerticalMarkers = bundle.getInt(NUMBER_OF_VERTICAL_MARKERS, DEFAULT_NUMBER_VERT_MARKERS);
+            numberOfHorizontalMarkers = bundle.getInt(NUMBER_OF_HORIZONTAL_MARKERS, DEFAULT_NUMBER_HORI_MARKERS);
+            topAxisMargin = bundle.getInt(TOP_AXIS_MARGIN, DEFAULT_TOP_MARGIN);
+            bottomAxisMargin = bundle.getInt(BOTTOM_AXIS_MARGIN, DEFAULT_BOTTOM_MARGIN);
+            leftAxisMargin = bundle.getInt(LEFT_AXIS_MARGIN, DEFAULT_LEFT_MARGIN);
+            rightAxisMargin = bundle.getInt(RIGHT_AXIS_MARGIN, DEFAULT_RIGHT_MARGIN);
+            shouldDrawBox = bundle.getBoolean(SHOULD_DRAW_BOX);
         }
 
         /**
@@ -404,7 +430,7 @@ public class GraphView extends View {
             outBundle.putInt(BOTTOM_AXIS_MARGIN, bottomAxisMargin);
             outBundle.putInt(RIGHT_AXIS_MARGIN, rightAxisMargin);
             outBundle.putInt(LEFT_AXIS_MARGIN, leftAxisMargin);
-//            outBundle.putParcelableArrayList(DATA_SET_LIST, dataSetList);
+            outBundle.putBoolean(SHOULD_DRAW_BOX, shouldDrawBox);
             out.writeBundle(outBundle);
         }
 

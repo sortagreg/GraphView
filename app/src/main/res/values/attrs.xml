@@ -7,5 +7,6 @@
         <attr name="axisMarginBottom" format="integer" />
         <attr name="axisMarginLeft" format="integer" />
         <attr name="axisMarginRight" format="integer" />
+        <attr name="shouldDrawBox" format="boolean" />
     </declare-styleable>
 </resources>

@@ -17,16 +17,11 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
         android:background="@android:color/background_light"
-        app:axisMarginBottom="200"
-        app:axisMarginLeft="200"
-        app:axisMarginRight="100"
-        app:axisMarginTop="100"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/verticalMarkerInput"
-        app:numberOfHorizontalMarkers="15"
-        app:numberOfVerticalMarkers="15" />
+        app:shouldDrawBox="true"/>
 
 
     <EditText

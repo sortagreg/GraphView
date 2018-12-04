@@ -3,6 +3,8 @@
     <declare-styleable name="GraphView">
         <attr name="numberOfVerticalMarkers" format="integer"/>
         <attr name="numberOfHorizontalMarkers" format="integer"/>
+        <attr name="numberOfVerticalLabels" format="integer"/>
+        <attr name="numberOfHorizontalLabels" format="integer"/>
         <attr name="axisMarginTop" format="integer" />
         <attr name="axisMarginBottom" format="integer" />
         <attr name="axisMarginLeft" format="integer" />

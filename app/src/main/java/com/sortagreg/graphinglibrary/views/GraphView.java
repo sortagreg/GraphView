@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.sortagreg.graphinglibrary.R;
+import com.sortagreg.graphinglibrary.models.GraphViewDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,7 @@ public class GraphView extends View {
 
     private List<PointF[]> standardDataSetList;
     private List<PointF> constantLineDataSetList;
+    private List<GraphViewDataModel> dataSetList;
     private float dataSetMinX = Float.MAX_VALUE;
     private float dataSetMaxX = Float.MIN_VALUE;
     private float dataSetMinY = Float.MAX_VALUE;
@@ -126,6 +128,7 @@ public class GraphView extends View {
         // Init other values here
         setPaintLines();
         standardDataSetList = new ArrayList<>();
+        dataSetList = new ArrayList<>();
     }
 
     /**

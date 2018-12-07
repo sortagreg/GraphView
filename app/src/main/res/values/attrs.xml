@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="GraphView">
-        <attr name="graphType" format="integer" />
         <attr name="numberOfVerticalMarkers" format="integer"/>
         <attr name="numberOfHorizontalMarkers" format="integer"/>
         <attr name="numberOfVerticalLabels" format="integer"/>
@@ -11,5 +10,16 @@
         <attr name="axisMarginLeft" format="integer" />
         <attr name="axisMarginRight" format="integer" />
         <attr name="shouldDrawBox" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="GraphViewSingleVariable">
+        <attr name="numberOfVerticalMarkersSV" format="integer"/>
+        <attr name="numberOfHorizontalMarkersSV" format="integer"/>
+        <attr name="numberOfVerticalLabelsSV" format="integer"/>
+        <attr name="numberOfHorizontalLabelsSV" format="integer"/>
+        <attr name="axisMarginTopSV" format="integer" />
+        <attr name="axisMarginBottomSV" format="integer" />
+        <attr name="axisMarginLeftSV" format="integer" />
+        <attr name="axisMarginRightSV" format="integer" />
+        <attr name="shouldDrawBoxSV" format="boolean" />
     </declare-styleable>
 </resources>

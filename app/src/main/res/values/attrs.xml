@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="GraphView">
+        <attr name="graphType" format="integer" />
         <attr name="numberOfVerticalMarkers" format="integer"/>
         <attr name="numberOfHorizontalMarkers" format="integer"/>
         <attr name="numberOfVerticalLabels" format="integer"/>

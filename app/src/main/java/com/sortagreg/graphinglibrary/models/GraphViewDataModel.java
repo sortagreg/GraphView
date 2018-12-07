@@ -8,11 +8,6 @@ import java.util.Objects;
 
 public class GraphViewDataModel {
 
-    public static final Integer STANDARD_GRAPH = 1;
-    public static final Integer UNFOLDED_GRAPH = 2;
-    public static final Integer CONSTANT_GRAPH = 3;
-    public static final Integer STATE_GRAPH = 4;
-
     private PointF[] dataSet;
     private Paint paint;
     private Integer graphType;

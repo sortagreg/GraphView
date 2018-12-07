@@ -7,6 +7,10 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class GraphViewDataModel {
+    public static final int STANDARD_LINE = 1;
+    public static final int UNFOLDED_LINE = 2;
+    public static final int CONSTANT_LINE = 3;
+    public static final int STATE_LINE = 4;
 
     private PointF[] dataSet;
     private Paint paint;

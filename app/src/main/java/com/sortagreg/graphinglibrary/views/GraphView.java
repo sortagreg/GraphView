@@ -21,7 +21,6 @@ import java.util.List;
 import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.CONSTANT_LINE;
 import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.STANDARD_LINE;
 import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.STATE_LINE;
-import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.UNFOLDED_LINE;
 
 /**
  * GraphView - Custom Graph View Class
@@ -30,9 +29,6 @@ import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.UNFOLDED_L
  */
 public class GraphView extends View {
     private Context context;
-
-    public static final int STANDARD_GRAPH = 1;
-    public static final int UNFOLDED_GRAPH = 2;
 
     private String graphTitle = "Test Graph Title";
 
@@ -298,14 +294,6 @@ public class GraphView extends View {
                         canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
                     }
                     break;
-                case UNFOLDED_LINE:
-                    float unfoldedPixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (float) (dataModel.getDataSet().length);
-                    for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
-                        PointF startPoint = convertXYtoPx(dataModel.getDataSet()[i], canvas, unfoldedPixelsPerX, pixelsPerY);
-                        PointF endPoint = convertXYtoPx(dataModel.getDataSet()[i + 1], canvas, unfoldedPixelsPerX, pixelsPerY);
-                        canvas.drawLine(((float) i * unfoldedPixelsPerX) + (float) leftAxisMargin, startPoint.y, ((float) (i + 1) * unfoldedPixelsPerX) + (float) leftAxisMargin, endPoint.y, dataModel.getPaint());
-                    }
-                    break;
                 case CONSTANT_LINE:
                     PointF startPoint = convertXYtoPx(new PointF((float) dataSetMinX , dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
                     PointF endPoint = convertXYtoPx(new PointF((float) dataSetMaxX , dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
@@ -398,7 +386,7 @@ public class GraphView extends View {
     private void getMinMaxOfDataSets() {
         for (GraphViewDataModel dataSet : dataSetList) {
             for (PointF dataPoint : dataSet.getDataSet()) {
-                if (dataSet.getGraphType() == GraphView.STANDARD_GRAPH) {
+                if (dataSet.getGraphType() == GraphViewDataModel.STANDARD_LINE) {
                     dataSetMaxX = Math.max(dataSetMaxX, dataPoint.x);
                     dataSetMinX = Math.min(dataSetMinX, dataPoint.x);
                 }

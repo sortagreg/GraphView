@@ -317,11 +317,23 @@ public class GraphViewSingleVariable extends View {
         textPaint.setFakeBoldText(true);
         // Y-Axis labels
         if (numberOfVerticalLabels > 0) {
-
+            float pixelsPerLabel = (canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (float) numberOfVerticalLabels;
+            float valuePerStep = rangeOfYValues / numberOfVerticalLabels;
+            for (int i = 0; i < numberOfVerticalLabels; i++) {
+                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - (float) bottomAxisMargin) - ((float) i * pixelsPerLabel), textPaint);
+            }
         }
         // X-Axis labels
         if (numberOfHorizontalLabels > 0) {
-
+            float pixelsPerLabel = (canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (float) numberOfHorizontalLabels;
+            float valuePerStep = largestDataSetLength / numberOfHorizontalLabels;
+            for (int i = 0; i < numberOfHorizontalLabels; i++) {
+                int labelValue = (int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep].x;
+                canvas.rotate(270, (float) leftAxisMargin + 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
+                canvas.drawText(String.valueOf(labelValue), (float) leftAxisMargin + 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f, textPaint);
+                canvas.rotate(-270, (float) leftAxisMargin + 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
+            }
         }
         // Title label
         textPaint.setTextAlign(Paint.Align.CENTER);

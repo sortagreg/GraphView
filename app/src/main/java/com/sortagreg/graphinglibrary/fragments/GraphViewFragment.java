@@ -25,8 +25,10 @@ import butterknife.ButterKnife;
  */
 public class GraphViewFragment extends Fragment {
 
+    @BindView(R.id.graphViewSingleVar)
+    GraphViewSingleVariable graphViewSingleVar;
     @BindView(R.id.graphView)
-    GraphViewSingleVariable graphView;
+    GraphView graphView;
     public GraphViewFragment() {
         // Required empty public constructor
     }
@@ -38,6 +40,7 @@ public class GraphViewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_graph_view, container, false);
         ButterKnife.bind(this, view);
         List<GraphViewDataModel> dataSetList = new ArrayList<>();
+        List<GraphViewDataModel> dataSetList2 = new ArrayList<>();
 //        PointF[] dataSet = {new PointF(0.0f,0.0f), new PointF(4f, 4f)};
 //        dataSetList.add(dataSet);
 //        PointF[] dataSet2 = {new PointF(1.0f,0.0f), new PointF(4f, 3f)};
@@ -48,7 +51,7 @@ public class GraphViewFragment extends Fragment {
         paint2.setStrokeWidth(5f);
 //        PointF[] dataSet3 = {new PointF(0.0f,0.0f), new PointF(1.0f,1.0f), new PointF(2f, 2f), new PointF(3f, 3f), new PointF(4f, 4f), new PointF(2f, 4f), new PointF(1f, 3f)};
 //        GraphViewDataModel smallGraphViewDataModel = new GraphViewDataModel(dataSet3, paint2, GraphViewDataModel.UNFOLDED_LINE);
-//        graphView.addToDataSetList(smallGraphViewDataModel);
+//        graphViewSingleVar.addToDataSetList(smallGraphViewDataModel);
 //        dataSetList.add(dataSet3);
 
         // Draw two cyclic data sets
@@ -62,10 +65,10 @@ public class GraphViewFragment extends Fragment {
         Paint paint = new Paint();
         paint.setColor(0xFF0000FF);
         paint.setStrokeWidth(5f);
-//        GraphViewDataModel graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.STANDARD_GRAPH);
-//        dataSetList.add(graphViewDataModel);
+        GraphViewDataModel graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.STANDARD_GRAPH);
+        dataSetList2.add(graphViewDataModel);
         // Unfolded
-        GraphViewDataModel graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.UNFOLDED_GRAPH);
+        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.UNFOLDED_GRAPH);
         dataSetList.add(graphViewDataModel);
 
 
@@ -79,32 +82,35 @@ public class GraphViewFragment extends Fragment {
         paint = new Paint();
         paint.setColor(0xFFFF0000);
         paint.setStrokeWidth(5f);
-//        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.STANDARD_GRAPH);
-//        dataSetList.add(graphViewDataModel);
+        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.STANDARD_GRAPH);
+        dataSetList2.add(graphViewDataModel);
         // Unfolded
         graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.UNFOLDED_GRAPH);
         dataSetList.add(graphViewDataModel);
 
         // Draw two constant lines
-//        PointF constantLine = new PointF(0f, 10876f);
-//        bigDataSet = new PointF[1];
-//        bigDataSet[0] = constantLine;
-//        paint = new Paint();
-//        paint.setColor(0xFF00FF00);
-//        paint.setStrokeWidth(5f);
-//        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
-//        dataSetList.add(graphViewDataModel);
-//
-//        constantLine = new PointF(0f, 4140f);
-//        bigDataSet = new PointF[1];
-//        bigDataSet[0] = constantLine;
-//        paint = new Paint();
-//        paint.setColor(0xFF00FFFF);
-//        paint.setStrokeWidth(5f);
-//        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
-//        dataSetList.add(graphViewDataModel);
+        PointF constantLine = new PointF(0f, 10876f);
+        bigDataSet = new PointF[1];
+        bigDataSet[0] = constantLine;
+        paint = new Paint();
+        paint.setColor(0xFF00FF00);
+        paint.setStrokeWidth(5f);
+        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
+        dataSetList.add(graphViewDataModel);
+        dataSetList2.add(graphViewDataModel);
 
-        graphView.addToDataSetListBulk(dataSetList);
+        constantLine = new PointF(0f, 4140f);
+        bigDataSet = new PointF[1];
+        bigDataSet[0] = constantLine;
+        paint = new Paint();
+        paint.setColor(0xFF00FFFF);
+        paint.setStrokeWidth(5f);
+        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
+        dataSetList.add(graphViewDataModel);
+        dataSetList2.add(graphViewDataModel);
+
+        graphViewSingleVar.addToDataSetListBulk(dataSetList);
+        graphView.addToDataSetListBulk(dataSetList2);
 
         return view;
     }

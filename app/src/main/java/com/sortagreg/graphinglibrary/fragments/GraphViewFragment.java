@@ -42,7 +42,13 @@ public class GraphViewFragment extends Fragment {
 //        dataSetList.add(dataSet);
 //        PointF[] dataSet2 = {new PointF(1.0f,0.0f), new PointF(4f, 3f)};
 //        dataSetList.add(dataSet2);
-//        PointF[] dataSet3 = {new PointF(0.0f,-1.0f), new PointF(1.0f,1.0f), new PointF(2f, 2f), new PointF(3f, 3f), new PointF(4f, 4f), new PointF(2f, 4f), new PointF(1f, 3f)};
+
+        Paint paint2 = new Paint();
+        paint2.setColor(0xFF0000FF);
+        paint2.setStrokeWidth(5f);
+//        PointF[] dataSet3 = {new PointF(0.0f,0.0f), new PointF(1.0f,1.0f), new PointF(2f, 2f), new PointF(3f, 3f), new PointF(4f, 4f), new PointF(2f, 4f), new PointF(1f, 3f)};
+//        GraphViewDataModel smallGraphViewDataModel = new GraphViewDataModel(dataSet3, paint2, GraphViewDataModel.UNFOLDED_LINE);
+//        graphView.addToDataSetList(smallGraphViewDataModel);
 //        dataSetList.add(dataSet3);
 
         // Draw two cyclic data sets
@@ -80,23 +86,23 @@ public class GraphViewFragment extends Fragment {
         dataSetList.add(graphViewDataModel);
 
         // Draw two constant lines
-        PointF constantLine = new PointF(0f, 10876f);
-        bigDataSet = new PointF[1];
-        bigDataSet[0] = constantLine;
-        paint = new Paint();
-        paint.setColor(0xFF00FF00);
-        paint.setStrokeWidth(5f);
-        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
-        dataSetList.add(graphViewDataModel);
-
-        constantLine = new PointF(0f, 4140f);
-        bigDataSet = new PointF[1];
-        bigDataSet[0] = constantLine;
-        paint = new Paint();
-        paint.setColor(0xFF00FFFF);
-        paint.setStrokeWidth(5f);
-        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
-        dataSetList.add(graphViewDataModel);
+//        PointF constantLine = new PointF(0f, 10876f);
+//        bigDataSet = new PointF[1];
+//        bigDataSet[0] = constantLine;
+//        paint = new Paint();
+//        paint.setColor(0xFF00FF00);
+//        paint.setStrokeWidth(5f);
+//        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
+//        dataSetList.add(graphViewDataModel);
+//
+//        constantLine = new PointF(0f, 4140f);
+//        bigDataSet = new PointF[1];
+//        bigDataSet[0] = constantLine;
+//        paint = new Paint();
+//        paint.setColor(0xFF00FFFF);
+//        paint.setStrokeWidth(5f);
+//        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
+//        dataSetList.add(graphViewDataModel);
 
         graphView.addToDataSetListBulk(dataSetList);
 

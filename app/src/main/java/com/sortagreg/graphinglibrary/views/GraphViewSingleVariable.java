@@ -25,9 +25,6 @@ import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.UNFOLDED_L
 public class GraphViewSingleVariable extends View {
     private Context context;
 
-    public static final int STANDARD_GRAPH = 1;
-    public static final int UNFOLDED_GRAPH = 2;
-
     private String graphTitle = "Test Graph Title";
 
     private Paint backgroundPaint = new Paint();
@@ -62,7 +59,7 @@ public class GraphViewSingleVariable extends View {
     private float rangeOfYValues;
     private float pixelsPerX;
     private float pixelsPerY;
-    private float largestSetLength;
+    private float largestDataSetLength;
 
     /**
      * Constructor for a GraphView in code.
@@ -121,7 +118,7 @@ public class GraphViewSingleVariable extends View {
 
         // Init other values here
         setPaintLines();
-//        standardDataSetList = new ArrayList<>();
+
         dataSetList = new ArrayList<>();
     }
 
@@ -149,8 +146,8 @@ public class GraphViewSingleVariable extends View {
         drawVerticalMarkers(canvas);
         drawHorizontalMarkers(canvas);
         drawAxes(canvas);
-        drawStandardDataSets(canvas);
-        drawStandardTextLabels(canvas);
+        drawDataSets(canvas);
+        drawTextLabels(canvas);
     }
 
     /**
@@ -280,20 +277,21 @@ public class GraphViewSingleVariable extends View {
      *
      * @param canvas Canvas Object to be drawn to
      */
-    private void drawStandardDataSets(Canvas canvas) {
+    private void drawDataSets(Canvas canvas) {
         getMinMaxOfDataSets();
         rangeOfYValues = dataSetMaxY - dataSetMinY;
-        pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (largestSetLength);
+        pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (largestDataSetLength);
         pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
 
         for (GraphViewDataModel dataModel : dataSetList) {
             switch (dataModel.getGraphType()) {
                 case UNFOLDED_LINE:
-                    float unfoldedPixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (float) (dataModel.getDataSet().length);
                     for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
-                        PointF startPoint = convertXYtoPx(dataModel.getDataSet()[i], canvas, unfoldedPixelsPerX, pixelsPerY);
-                        PointF endPoint = convertXYtoPx(dataModel.getDataSet()[i + 1], canvas, unfoldedPixelsPerX, pixelsPerY);
-                        canvas.drawLine(((float) i * unfoldedPixelsPerX) + (float) leftAxisMargin, startPoint.y, ((float) (i + 1) * unfoldedPixelsPerX) + (float) leftAxisMargin, endPoint.y, dataModel.getPaint());
+//                        PointF startPoint = convertXYtoPx(dataModel.getDataSet()[i], canvas, pixelsPerX, pixelsPerY);
+//                        PointF endPoint = convertXYtoPx(dataModel.getDataSet()[i + 1], canvas, pixelsPerX, pixelsPerY);
+                        PointF startPoint = dataModel.getDataSet()[i];
+                        PointF endPoint = dataModel.getDataSet()[i + 1];
+                        canvas.drawLine((float) leftAxisMargin + ((float) i * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin + (dataSetMinY * pixelsPerY) - ((float) startPoint.y * pixelsPerY), (float) leftAxisMargin + (((float) i + 1f)  * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) endPoint.y * pixelsPerY) + (dataSetMinY * pixelsPerY), dataModel.getPaint());
                     }
                     break;
                 case CONSTANT_LINE:
@@ -309,7 +307,7 @@ public class GraphViewSingleVariable extends View {
         }
     }
 
-    private void drawStandardTextLabels(Canvas canvas) {
+    private void drawTextLabels(Canvas canvas) {
         Paint textPaint = new Paint();
         textPaint.setColor(0xFF000000);
         textPaint.setTextSize(30f);
@@ -329,33 +327,6 @@ public class GraphViewSingleVariable extends View {
     }
 
     /**
-     * Draws 3 red test points on the graph in fixed locations, bottom left, center, top right.
-     * <p>
-     * Method used to help debug issues and test algorithms.  These three dots will always be drawn
-     * at their respective places as they are determined from the canvas size, and not by any
-     * derived calculation.
-     *
-     * @param canvas
-     * @param pixelsPerX
-     * @param pixelsPerY
-     */
-    private void drawTestPoints(Canvas canvas, float pixelsPerX, float pixelsPerY) {
-        Paint testPaint = new Paint();
-        // KNOWN ORIGIN
-        testPaint.setColor(0xAAAA0000);//Red
-        canvas.drawCircle((float) leftAxisMargin, (float) canvas.getHeight() - (float) bottomAxisMargin, 30f, testPaint);
-        // KNOWN (MAX X, MAX Y)
-        canvas.drawCircle((float) canvas.getWidth() - (float) rightAxisMargin, (float) topAxisMargin, 30f, testPaint);
-        // KNOWN (MID, MID)
-        canvas.drawCircle(leftAxisMargin + ((float) (canvas.getWidth() - leftAxisMargin - rightAxisMargin) / 2f), canvas.getHeight() - bottomAxisMargin - ((float) (canvas.getHeight() - bottomAxisMargin - topAxisMargin) / 2f), 30f, testPaint);
-        // TEST conversion method (2,2)
-        testPaint.setColor(0xAA0000AA);
-        PointF dataPoint = new PointF(2f, 2f);
-        PointF convertedDP = convertXYtoPx(dataPoint, canvas, pixelsPerX, pixelsPerY);
-        canvas.drawCircle(convertedDP.x, convertedDP.y, 15f, testPaint);
-    }
-
-    /**
      * Method converts an (X,Y) pair to its appropriate pixel location values.
      *
      * @param rawDataPoint PointF data point to be converted.
@@ -367,7 +338,7 @@ public class GraphViewSingleVariable extends View {
     public PointF convertXYtoPx(PointF rawDataPoint, Canvas canvas, float pixelsPerX, float pixelsPerY) {
 //        float newX = (float) leftAxisMargin + ((float) rawDataPoint.x * pixelsPerX) - (adjustedDataSetMinX * pixelsPerX) + ((adjustedDataSetMaxX - dataSetMaxX) * pixelsPerX / 2);
 //        float newY = (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) rawDataPoint.y * pixelsPerY) + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2);
-        return new PointF(0, 0);//(newX, newY);
+        return new PointF(0, 0);
     }
 
     /**
@@ -375,7 +346,7 @@ public class GraphViewSingleVariable extends View {
      */
     private void getMinMaxOfDataSets() {
         for (GraphViewDataModel dataSet : dataSetList) {
-            largestSetLength = Math.max(largestSetLength, dataSet.getDataSet().length);
+            largestDataSetLength = Math.max(largestDataSetLength, dataSet.getDataSet().length);
             for (PointF dataPoint : dataSet.getDataSet()) {
                 dataSetMaxY = Math.max(dataSetMaxY, dataPoint.y);
                 dataSetMinY = Math.min(dataSetMinY, dataPoint.y);

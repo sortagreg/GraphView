@@ -59,6 +59,8 @@ public class GraphViewSingleVariable extends View {
     private float rangeOfYValues;
     private float pixelsPerX;
     private float pixelsPerY;
+    private float adjustedDataSetMinY;
+    private float adjustedDataSetMaxY;
     private float largestDataSetLength;
 
     /**
@@ -279,7 +281,7 @@ public class GraphViewSingleVariable extends View {
      */
     private void drawDataSets(Canvas canvas) {
         getMinMaxOfDataSets();
-        rangeOfYValues = dataSetMaxY - dataSetMinY;
+        rangeOfYValues = adjustedDataSetMaxY - adjustedDataSetMinY;
         pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (largestDataSetLength);
         pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
 
@@ -291,7 +293,7 @@ public class GraphViewSingleVariable extends View {
 //                        PointF endPoint = convertXYtoPx(dataModel.getDataSet()[i + 1], canvas, pixelsPerX, pixelsPerY);
                         PointF startPoint = dataModel.getDataSet()[i];
                         PointF endPoint = dataModel.getDataSet()[i + 1];
-                        canvas.drawLine((float) leftAxisMargin + ((float) i * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin + (dataSetMinY * pixelsPerY) - ((float) startPoint.y * pixelsPerY), (float) leftAxisMargin + (((float) i + 1f)  * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) endPoint.y * pixelsPerY) + (dataSetMinY * pixelsPerY), dataModel.getPaint());
+                        canvas.drawLine((float) leftAxisMargin + ((float) i * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2) - ((float) startPoint.y * pixelsPerY), (float) leftAxisMargin + (((float) i + 1f)  * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) endPoint.y * pixelsPerY) + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2), dataModel.getPaint());
                     }
                     break;
                 case CONSTANT_LINE:
@@ -352,6 +354,8 @@ public class GraphViewSingleVariable extends View {
                 dataSetMinY = Math.min(dataSetMinY, dataPoint.y);
             }
         }
+        adjustedDataSetMinY = dataSetMinY - (dataSetMinY * .1f);
+        adjustedDataSetMaxY = dataSetMaxY + (dataSetMaxY * .1f);
     }
 
 

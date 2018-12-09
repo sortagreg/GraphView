@@ -27,7 +27,7 @@ import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.STATE_LINE
  *
  * @author Marshall Ladd
  */
-public class GraphView extends View {
+public class GraphViewDualVariable extends View {
     private Context context;
 
     private String graphTitle = "Test Graph Title";
@@ -81,7 +81,7 @@ public class GraphView extends View {
      *
      * @param context
      */
-    public GraphView(Context context) {
+    public GraphViewDualVariable(Context context) {
         super(context);
         this.context = context;
         init(null);
@@ -97,7 +97,7 @@ public class GraphView extends View {
      * @param context
      * @param attrs values from the XML set.
      */
-    public GraphView(Context context, AttributeSet attrs) {
+    public GraphViewDualVariable(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         init(attrs);
@@ -117,16 +117,16 @@ public class GraphView extends View {
 
         // Init custom attributes from XML here
         if (attrs == null) return;
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.GraphView);
-        numberOfHorizontalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalMarkers, DEFAULT_NUMBER_HORI_MARKERS);
-        numberOfVerticalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfVerticalMarkers, DEFAULT_NUMBER_VERT_MARKERS);
-        numberOfHorizontalLabels = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalLabels, DEFAULT_NUMBER_HORI_LABELS);
-        numberOfVerticalLabels = typedArray.getInteger(R.styleable.GraphView_numberOfVerticalLabels, DEFAULT_NUMBER_VERT_LABELS);
-        topAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginTop, DEFAULT_TOP_MARGIN);
-        bottomAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginBottom, DEFAULT_BOTTOM_MARGIN);
-        rightAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginRight, DEFAULT_RIGHT_MARGIN);
-        leftAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginLeft, DEFAULT_LEFT_MARGIN);
-        shouldDrawBox = typedArray.getBoolean(R.styleable.GraphView_shouldDrawBox, false);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.GraphViewDualVariable);
+        numberOfHorizontalMarkers = typedArray.getInteger(R.styleable.GraphViewDualVariable_numberOfHorizontalMarkers, DEFAULT_NUMBER_HORI_MARKERS);
+        numberOfVerticalMarkers = typedArray.getInteger(R.styleable.GraphViewDualVariable_numberOfVerticalMarkers, DEFAULT_NUMBER_VERT_MARKERS);
+        numberOfHorizontalLabels = typedArray.getInteger(R.styleable.GraphViewDualVariable_numberOfHorizontalLabels, DEFAULT_NUMBER_HORI_LABELS);
+        numberOfVerticalLabels = typedArray.getInteger(R.styleable.GraphViewDualVariable_numberOfVerticalLabels, DEFAULT_NUMBER_VERT_LABELS);
+        topAxisMargin = typedArray.getInteger(R.styleable.GraphViewDualVariable_axisMarginTop, DEFAULT_TOP_MARGIN);
+        bottomAxisMargin = typedArray.getInteger(R.styleable.GraphViewDualVariable_axisMarginBottom, DEFAULT_BOTTOM_MARGIN);
+        rightAxisMargin = typedArray.getInteger(R.styleable.GraphViewDualVariable_axisMarginRight, DEFAULT_RIGHT_MARGIN);
+        leftAxisMargin = typedArray.getInteger(R.styleable.GraphViewDualVariable_axisMarginLeft, DEFAULT_LEFT_MARGIN);
+        shouldDrawBox = typedArray.getBoolean(R.styleable.GraphViewDualVariable_shouldDrawBox, false);
         typedArray.recycle();
 
         // Init other values here

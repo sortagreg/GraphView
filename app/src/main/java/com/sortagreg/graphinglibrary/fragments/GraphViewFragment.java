@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.sortagreg.graphinglibrary.R;
 import com.sortagreg.graphinglibrary.models.GraphViewDataModel;
-import com.sortagreg.graphinglibrary.views.GraphView;
+import com.sortagreg.graphinglibrary.views.GraphViewDualVariable;
 import com.sortagreg.graphinglibrary.views.GraphViewSingleVariable;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class GraphViewFragment extends Fragment {
     @BindView(R.id.graphViewSingleVar)
     GraphViewSingleVariable graphViewSingleVar;
     @BindView(R.id.graphView)
-    GraphView graphView;
+    GraphViewDualVariable graphViewDualVariable;
     public GraphViewFragment() {
         // Required empty public constructor
     }
@@ -41,18 +41,9 @@ public class GraphViewFragment extends Fragment {
         ButterKnife.bind(this, view);
         List<GraphViewDataModel> dataSetList = new ArrayList<>();
         List<GraphViewDataModel> dataSetList2 = new ArrayList<>();
-//        PointF[] dataSet = {new PointF(0.0f,0.0f), new PointF(4f, 4f)};
-//        dataSetList.add(dataSet);
-//        PointF[] dataSet2 = {new PointF(1.0f,0.0f), new PointF(4f, 3f)};
-//        dataSetList.add(dataSet2);
-
         Paint paint2 = new Paint();
         paint2.setColor(0xFF0000FF);
         paint2.setStrokeWidth(5f);
-//        PointF[] dataSet3 = {new PointF(0.0f,0.0f), new PointF(1.0f,1.0f), new PointF(2f, 2f), new PointF(3f, 3f), new PointF(4f, 4f), new PointF(2f, 4f), new PointF(1f, 3f)};
-//        GraphViewDataModel smallGraphViewDataModel = new GraphViewDataModel(dataSet3, paint2, GraphViewDataModel.UNFOLDED_LINE);
-//        graphViewSingleVar.addToDataSetList(smallGraphViewDataModel);
-//        dataSetList.add(dataSet3);
 
         // Draw two cyclic data sets
         int[] asp1000 = {4500,4300,3700,3000,2400,1800,1300,900,600,400,200,100,100,200,400,600,1000,1400,1900,2500,3100,3800,4700,5500,6500,7500,8700,9800,11100,12600,14000,15500,17000,18500,20100,21800,23500,25200,27000,28800,30700,32600,34500,36400,38400,40400,42400,44400,46400,48400,50500,52500,54600,56600,58700,60800,62800,64800,66900,68900,70900,72900,74900,76900,78800,80800,82700,84600,86500,88400,90200,92000,93800,95600,97400,99100,100800,102500,104200,105900,107500,109100,110600,112200,113700,115200,116600,118100,119500,120900,122200,123500,124800,126100,127300,128500,129700,130800,131900,132900,133900,134900,135800,136700,137600,138400,139100,139800,140500,141100,141600,142100,142500,142900,143200,143400,143600,143700,143700,143700,143600,143300,143000,142700,142200,141600,141000,140200,139400,138500,137500,136500,135300,134100,132700,131300,129800,128300,126600,124900,123200,121400,119500,117500,115600,113500,111500,109300,107200,105000,102800,100500,98300,96000,93700,91400,89000,86700,84400,82000,79600,77300,74900,72500,70200,67800,65500,63200,60800,58500,56300,54000,51800,49600,47400,45200,43100,41000,39000,36900,34900,32900,31000,29100,27300,25500,23800,22100,20400,18800,17300,15800,14400,13000,11700,10400,9200,8100,7100,5400};
@@ -66,10 +57,10 @@ public class GraphViewFragment extends Fragment {
         paint.setColor(0xFF0000FF);
         paint.setStrokeWidth(5f);
 
-        GraphViewDataModel graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.STANDARD_GRAPH);
+        GraphViewDataModel graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.STANDARD_LINE);
         dataSetList2.add(graphViewDataModel);
         // Unfolded
-        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.UNFOLDED_GRAPH);
+        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.UNFOLDED_LINE);
         dataSetList.add(graphViewDataModel);
 
 
@@ -83,10 +74,10 @@ public class GraphViewFragment extends Fragment {
         paint = new Paint();
         paint.setColor(0xFFFF0000);
         paint.setStrokeWidth(5f);
-        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.STANDARD_GRAPH);
+        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.STANDARD_LINE);
         dataSetList2.add(graphViewDataModel);
         // Unfolded
-        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.UNFOLDED_GRAPH);
+        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.UNFOLDED_LINE);
         dataSetList.add(graphViewDataModel);
 
         // Draw two constant lines
@@ -111,7 +102,7 @@ public class GraphViewFragment extends Fragment {
         dataSetList2.add(graphViewDataModel);
 
         graphViewSingleVar.addToDataSetListBulk(dataSetList);
-        graphView.addToDataSetListBulk(dataSetList2);
+        graphViewDualVariable.addToDataSetListBulk(dataSetList2);
 
         return view;
     }

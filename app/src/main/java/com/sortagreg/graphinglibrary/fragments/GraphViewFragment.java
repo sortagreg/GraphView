@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sortagreg.graphinglibrary.R;
-import com.sortagreg.graphinglibrary.models.GraphViewDataModel;
-import com.sortagreg.graphinglibrary.views.GraphView;
+import com.sortagreg.graphview.GraphView;
+import com.sortagreg.graphview.GraphViewDataModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -21,6 +21,7 @@ import java.util.List;
 import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.CONSTANT_LINE;
 import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.STANDARD_LINE;
 import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.STATE_LINE;
+import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.UNFOLDED_LINE;
 
 /**
  * GraphView - Custom Graph View Class
@@ -71,8 +72,7 @@ public class GraphViewDualVariable extends View {
     private float adjustedDataSetMaxY;
     private float rangeOfXValues;
     private float rangeOfYValues;
-    private float pixelsPerX;
-    private float pixelsPerY;
+    private int largestDataSetLength;
 
     /**
      * Constructor for a GraphView in code.
@@ -282,19 +282,29 @@ public class GraphViewDualVariable extends View {
         getMinMaxOfDataSets();
         rangeOfXValues = adjustedDataSetMaxX - adjustedDataSetMinX;
         rangeOfYValues = adjustedDataSetMaxY - adjustedDataSetMinY;
-        pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (rangeOfXValues);
-        pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
-
         for (GraphViewDataModel dataModel : dataSetList) {
             switch (dataModel.getGraphType()) {
                 case STANDARD_LINE:
                     for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
+                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (rangeOfXValues);
+                        float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
                         PointF startPoint = convertXYtoPx(dataModel.getDataSet()[i], canvas, pixelsPerX, pixelsPerY);
                         PointF endPoint = convertXYtoPx(dataModel.getDataSet()[i + 1], canvas, pixelsPerX, pixelsPerY);
                         canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
                     }
                     break;
+                case UNFOLDED_LINE:
+                    for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
+                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (largestDataSetLength);
+                        float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
+                        PointF startPoint = dataModel.getDataSet()[i];
+                        PointF endPoint = dataModel.getDataSet()[i + 1];
+                        canvas.drawLine((float) leftAxisMargin + ((float) i * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2) - ((float) startPoint.y * pixelsPerY), (float) leftAxisMargin + (((float) i + 1f)  * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) endPoint.y * pixelsPerY) + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2), dataModel.getPaint());
+                    }
+                    break;
                 case CONSTANT_LINE:
+                    float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (rangeOfXValues);
+                    float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
                     PointF startPoint = convertXYtoPx(new PointF((float) dataSetMinX , dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
                     PointF endPoint = convertXYtoPx(new PointF((float) dataSetMaxX , dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
                     canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
@@ -385,6 +395,7 @@ public class GraphViewDualVariable extends View {
      */
     private void getMinMaxOfDataSets() {
         for (GraphViewDataModel dataSet : dataSetList) {
+            largestDataSetLength = Math.max(largestDataSetLength, dataSet.getDataSet().length);
             for (PointF dataPoint : dataSet.getDataSet()) {
                 if (dataSet.getGraphType() == GraphViewDataModel.STANDARD_LINE) {
                     dataSetMaxX = Math.max(dataSetMaxX, dataPoint.x);

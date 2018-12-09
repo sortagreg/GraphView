@@ -8,17 +8,17 @@ import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
 
-public class GraphViewDualVariableTest {
+public class GraphViewTest {
 
     private Canvas canvas;
     private Context context;
-    private GraphViewDualVariable subject;
+    private GraphView subject;
 
     @Before
     public void setUp() throws Exception {
         canvas = mock(Canvas.class);
         context = mock(Context.class);
-        subject = new GraphViewDualVariable(context);
+        subject = new GraphView(context);
     }
 
     @Test

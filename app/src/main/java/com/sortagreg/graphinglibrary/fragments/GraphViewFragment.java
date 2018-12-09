@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.sortagreg.graphinglibrary.R;
 import com.sortagreg.graphinglibrary.models.GraphViewDataModel;
-import com.sortagreg.graphinglibrary.views.GraphViewDualVariable;
+import com.sortagreg.graphinglibrary.views.GraphView;
 import com.sortagreg.graphinglibrary.views.GraphViewSingleVariable;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class GraphViewFragment extends Fragment {
     @BindView(R.id.graphViewSingleVar)
     GraphViewSingleVariable graphViewSingleVar;
     @BindView(R.id.graphView)
-    GraphViewDualVariable graphViewDualVariable;
+    GraphView graphView;
     public GraphViewFragment() {
         // Required empty public constructor
     }
@@ -104,7 +104,7 @@ public class GraphViewFragment extends Fragment {
         dataSetList2.add(graphViewDataModel);
 
         graphViewSingleVar.addToDataSetListBulk(dataSetList);
-        graphViewDualVariable.addToDataSetListBulk(dataSetList2);
+        graphView.addToDataSetListBulk(dataSetList2);
 
         return view;
     }

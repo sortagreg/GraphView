@@ -15,5 +15,6 @@
             <enum name="Unfolded" value="1"/>
             <enum name="Custom" value="2"/>
         </attr>
+        <attr name="title" format="string"/>
     </declare-styleable>
 </resources>

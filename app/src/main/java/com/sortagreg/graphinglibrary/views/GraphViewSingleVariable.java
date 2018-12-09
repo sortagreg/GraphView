@@ -13,14 +13,14 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.sortagreg.graphinglibrary.R;
-import com.sortagreg.graphinglibrary.models.GraphViewDataModel;
+import com.sortagreg.graphview.GraphViewDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.CONSTANT_LINE;
-import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.STATE_LINE;
-import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.UNFOLDED_LINE;
+import static com.sortagreg.graphview.GraphViewDataModel.CONSTANT_LINE;
+import static com.sortagreg.graphview.GraphViewDataModel.STATE_LINE;
+import static com.sortagreg.graphview.GraphViewDataModel.UNFOLDED_LINE;
 
 public class GraphViewSingleVariable extends View {
     private Context context;

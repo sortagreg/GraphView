@@ -10,6 +10,11 @@
         <attr name="axisMarginLeft" format="integer" />
         <attr name="axisMarginRight" format="integer" />
         <attr name="shouldDrawBox" format="boolean" />
+        <attr name="labelStyle" format="integer">
+            <enum name="Standard" value="0"/>
+            <enum name="Unfolded" value="1"/>
+            <enum name="Custom" value="2"/>
+        </attr>
     </declare-styleable>
     <declare-styleable name="GraphViewSingleVariable">
         <attr name="numberOfVerticalMarkersSV" format="integer"/>

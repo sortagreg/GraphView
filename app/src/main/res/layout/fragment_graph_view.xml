@@ -8,7 +8,7 @@
     android:background="@android:color/darker_gray"
     tools:context=".fragments.GraphViewFragment">
 
-    <com.sortagreg.graphinglibrary.views.GraphView
+    <com.sortagreg.graphview.GraphView
         android:id="@+id/graphView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -21,9 +21,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shouldDrawBox="true"/>
+        app:shouldDrawBox="true"
+        app:title="Standard Graph Test Title"/>
 
-    <com.sortagreg.graphinglibrary.views.GraphView
+    <com.sortagreg.graphview.GraphView
         android:id="@+id/graphViewSingleVar"
         android:layout_width="match_parent"
         android:layout_height="0dp"

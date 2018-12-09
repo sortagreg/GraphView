@@ -8,33 +8,27 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import com.sortagreg.graphinglibrary.R;
 import com.sortagreg.graphinglibrary.models.GraphViewDataModel;
 import com.sortagreg.graphinglibrary.views.GraphView;
+import com.sortagreg.graphinglibrary.views.GraphViewSingleVariable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class GraphViewFragment extends Fragment {
 
+    @BindView(R.id.graphViewSingleVar)
+    GraphViewSingleVariable graphViewSingleVar;
     @BindView(R.id.graphView)
     GraphView graphView;
-    @BindView(R.id.verticalMarkerInput)
-    EditText verticalMarkerInput;
-    @BindView(R.id.verticalMarkerButton)
-    Button verticalMarkerButton;
-
     public GraphViewFragment() {
         // Required empty public constructor
     }
@@ -46,11 +40,18 @@ public class GraphViewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_graph_view, container, false);
         ButterKnife.bind(this, view);
         List<GraphViewDataModel> dataSetList = new ArrayList<>();
+        List<GraphViewDataModel> dataSetList2 = new ArrayList<>();
 //        PointF[] dataSet = {new PointF(0.0f,0.0f), new PointF(4f, 4f)};
 //        dataSetList.add(dataSet);
 //        PointF[] dataSet2 = {new PointF(1.0f,0.0f), new PointF(4f, 3f)};
 //        dataSetList.add(dataSet2);
-//        PointF[] dataSet3 = {new PointF(0.0f,-1.0f), new PointF(1.0f,1.0f), new PointF(2f, 2f), new PointF(3f, 3f), new PointF(4f, 4f), new PointF(2f, 4f), new PointF(1f, 3f)};
+
+        Paint paint2 = new Paint();
+        paint2.setColor(0xFF0000FF);
+        paint2.setStrokeWidth(5f);
+//        PointF[] dataSet3 = {new PointF(0.0f,0.0f), new PointF(1.0f,1.0f), new PointF(2f, 2f), new PointF(3f, 3f), new PointF(4f, 4f), new PointF(2f, 4f), new PointF(1f, 3f)};
+//        GraphViewDataModel smallGraphViewDataModel = new GraphViewDataModel(dataSet3, paint2, GraphViewDataModel.UNFOLDED_LINE);
+//        graphViewSingleVar.addToDataSetList(smallGraphViewDataModel);
 //        dataSetList.add(dataSet3);
 
         // Draw two cyclic data sets
@@ -65,10 +66,10 @@ public class GraphViewFragment extends Fragment {
         paint.setColor(0xFF0000FF);
         paint.setStrokeWidth(5f);
         GraphViewDataModel graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.STANDARD_GRAPH);
-        dataSetList.add(graphViewDataModel);
+        dataSetList2.add(graphViewDataModel);
         // Unfolded
-//        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.UNFOLDED_GRAPH);
-//        dataSetList.add(graphViewDataModel);
+        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.UNFOLDED_GRAPH);
+        dataSetList.add(graphViewDataModel);
 
 
         int[] adp1002 = {9800,8600,8600,7400,6200,5200,5200,5200,5200,5200,5200,5200,5200,5200,5200,5200,5200,5200,5200,5200,4200,3200,2400,1600,1100,700,300,200,0,100,200,300,400,600,700,900,1000,1200,1400,1600,2000,2400,3000,4100,5500,7300,9400,11700,14200,16700,19300,21800,24100,26200,28200,30000,31700,33500,35200,37000,38900,40900,43100,45200,47500,49700,52000,54100,56200,58200,60200,62000,63800,65500,67300,69000,70800,72500,74300,76100,77900,79700,81500,83200,84900,86600,88200,89700,91200,92600,94100,95400,96900,98200,99600,100900,102300,103600,104800,106100,107300,108500,109600,110700,111700,112800,113700,114500,115400,116200,117000,117000,117000,117000,117000,117000,117000,117000,117000,117000,117000,117000,117000,117000,117000,117700,118500,119300,120000,120600,121100,121400,121700,121900,122000,122000,122000,121900,121700,121600,121400,121200,121000,120800,120600,120300,119900,119400,118400,116900,115000,112700,110100,107300,104400,101400,98500,95800,93400,91200,89200,87300,85400,83600,81700,79600,77300,74900,72300,69600,66900,64200,61500,59000,56500,54200,52100,50100,48100,46200,44300,42400,40400,38300,36200,34100,32100,29900,27900,25900,24000,22200,20600,19100,17600,16200,14900,13500,12300,11000};
@@ -82,10 +83,10 @@ public class GraphViewFragment extends Fragment {
         paint.setColor(0xFFFF0000);
         paint.setStrokeWidth(5f);
         graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.STANDARD_GRAPH);
-        dataSetList.add(graphViewDataModel);
+        dataSetList2.add(graphViewDataModel);
         // Unfolded
-//        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.UNFOLDED_GRAPH);
-//        dataSetList.add(graphViewDataModel);
+        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.UNFOLDED_GRAPH);
+        dataSetList.add(graphViewDataModel);
 
         // Draw two constant lines
         PointF constantLine = new PointF(0f, 10876f);
@@ -94,8 +95,9 @@ public class GraphViewFragment extends Fragment {
         paint = new Paint();
         paint.setColor(0xFF00FF00);
         paint.setStrokeWidth(5f);
-        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.CONSTANT_GRAPH);
+        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
         dataSetList.add(graphViewDataModel);
+        dataSetList2.add(graphViewDataModel);
 
         constantLine = new PointF(0f, 4140f);
         bigDataSet = new PointF[1];
@@ -103,19 +105,14 @@ public class GraphViewFragment extends Fragment {
         paint = new Paint();
         paint.setColor(0xFF00FFFF);
         paint.setStrokeWidth(5f);
-        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.CONSTANT_GRAPH);
+        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
         dataSetList.add(graphViewDataModel);
+        dataSetList2.add(graphViewDataModel);
 
-        graphView.addToDataSetListBulk(dataSetList);
+        graphViewSingleVar.addToDataSetListBulk(dataSetList);
+        graphView.addToDataSetListBulk(dataSetList2);
 
         return view;
-    }
-
-    @OnClick(R.id.verticalMarkerButton)
-    public void verticalMarkerButtonOnClick() {
-        if (!verticalMarkerInput.getText().toString().equals("")) {
-            graphView.setNumberOfVerticalMarkers(Integer.valueOf(verticalMarkerInput.getText().toString()));
-        } else Toast.makeText(getContext(), "Must input a value.", Toast.LENGTH_LONG).show();
     }
 
 }

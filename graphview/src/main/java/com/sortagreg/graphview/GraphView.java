@@ -32,7 +32,7 @@ public class GraphView extends View {
     private Context context;
     private static final String TAG = "GraphView";
 
-    private String graphTitle = "Test Graph Title";
+    private String title = "";
 
     private Paint backgroundPaint = new Paint();
     private Paint axisPaint = new Paint();
@@ -134,6 +134,7 @@ public class GraphView extends View {
         leftAxisMargin = typedArray.getInteger(R.styleable.GraphView_axisMarginLeft, DEFAULT_LEFT_MARGIN);
         shouldDrawBox = typedArray.getBoolean(R.styleable.GraphView_shouldDrawBox, false);
         labelStyle = typedArray.getInteger(R.styleable.GraphView_labelStyle, STANDARD_LABELS);
+        title = typedArray.getString(R.styleable.GraphView_title) != null ? typedArray.getString(R.styleable.GraphView_title) : "";
         typedArray.recycle();
 
         // Init other values here
@@ -227,6 +228,11 @@ public class GraphView extends View {
 
     public void setRightAxisMargin(int rightAxisMargin) {
         this.rightAxisMargin = rightAxisMargin;
+        invalidate();
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
         invalidate();
     }
 
@@ -371,7 +377,7 @@ public class GraphView extends View {
         }
         // Title label
         textPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(graphTitle, canvas.getWidth() / 2f, 50f, textPaint);
+        canvas.drawText(title, canvas.getWidth() / 2f, 50f, textPaint);
     }
 
     private void drawUnfoldedTextLabels(Canvas canvas) {
@@ -404,7 +410,7 @@ public class GraphView extends View {
         }
         // Title label
         textPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(graphTitle, canvas.getWidth() / 2f, 50f, textPaint);
+        canvas.drawText(title, canvas.getWidth() / 2f, 50f, textPaint);
     }
 
     /**
@@ -479,6 +485,7 @@ public class GraphView extends View {
         savedState.rightAxisMargin = rightAxisMargin;
         savedState.shouldDrawBox = shouldDrawBox;
         savedState.labelStyle = labelStyle;
+        savedState.title = title;
         return savedState;
     }
 
@@ -502,6 +509,7 @@ public class GraphView extends View {
         setRightAxisMargin(savedState.rightAxisMargin);
         setShouldDrawBox(savedState.shouldDrawBox);
         setLabelStyle(savedState.labelStyle);
+        setTitle(savedState.title);
     }
 
     /**
@@ -518,6 +526,7 @@ public class GraphView extends View {
         private static final String RIGHT_AXIS_MARGIN = "right axis margin";
         private static final String SHOULD_DRAW_BOX = "should draw box";
         private static final String LABEL_STYLE = "label style";
+        private static final String TITLE = "title";
         Bundle bundle;
         int numberOfVerticalMarkers;
         int numberOfHorizontalMarkers;
@@ -529,6 +538,7 @@ public class GraphView extends View {
         int rightAxisMargin;
         boolean shouldDrawBox;
         int labelStyle;
+        String title;
 
         public GraphViewSavedState(Parcelable superState) {
             super(superState);
@@ -553,6 +563,7 @@ public class GraphView extends View {
             rightAxisMargin = bundle.getInt(RIGHT_AXIS_MARGIN, DEFAULT_RIGHT_MARGIN);
             shouldDrawBox = bundle.getBoolean(SHOULD_DRAW_BOX);
             labelStyle = bundle.getInt(LABEL_STYLE);
+            title = bundle.getString(TITLE);
         }
 
         /**
@@ -575,6 +586,7 @@ public class GraphView extends View {
             outBundle.putInt(LEFT_AXIS_MARGIN, leftAxisMargin);
             outBundle.putBoolean(SHOULD_DRAW_BOX, shouldDrawBox);
             outBundle.putInt(LABEL_STYLE, labelStyle);
+            outBundle.putString(TITLE, title);
             out.writeBundle(outBundle);
         }
 

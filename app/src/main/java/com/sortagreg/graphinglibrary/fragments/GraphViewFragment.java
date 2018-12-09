@@ -65,6 +65,7 @@ public class GraphViewFragment extends Fragment {
         Paint paint = new Paint();
         paint.setColor(0xFF0000FF);
         paint.setStrokeWidth(5f);
+
         GraphViewDataModel graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphView.STANDARD_GRAPH);
         dataSetList2.add(graphViewDataModel);
         // Unfolded

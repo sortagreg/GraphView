@@ -10,6 +10,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.sortagreg.graphinglibrary.R;
@@ -30,6 +31,7 @@ import static com.sortagreg.graphinglibrary.models.GraphViewDataModel.UNFOLDED_L
  */
 public class GraphView extends View {
     private Context context;
+    private static final String TAG = "GraphView";
 
     private String graphTitle = "Test Graph Title";
 
@@ -162,11 +164,11 @@ public class GraphView extends View {
                 drawUnfoldedTextLabels(canvas);
                 break;
             case CUSTOM_LABELS:
+                Log.w(TAG, "onDraw: Custom label is not implemented yet. Using standard by default");
                 // TODO add custom label ability
-                break;
+                // break;
             default: drawStandardTextLabels(canvas);
         }
-
     }
 
     /**
@@ -330,9 +332,9 @@ public class GraphView extends View {
                     float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
                     PointF startPoint = convertXYtoPx(new PointF((float) dataSetMinX , dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
                     PointF endPoint = convertXYtoPx(new PointF((float) dataSetMaxX , dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
-                    canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
+                    canvas.drawLine((float) leftAxisMargin, startPoint.y, (float) canvas.getWidth() - (float) rightAxisMargin, endPoint.y, dataModel.getPaint());
                     break;
-                case STATE_LINE:
+                case STATE_LINE: // TODO implement state lines
                     break;
             }
 
@@ -341,9 +343,11 @@ public class GraphView extends View {
     }
 
     private void drawStandardTextLabels(Canvas canvas) {
+        // TODO split method to drawX, drawY, drawTitle
+
         Paint textPaint = new Paint();
-        textPaint.setColor(0xFF000000);
-        textPaint.setTextSize(30f);
+        textPaint.setColor(0xFF000000); // TODO paint color should be configurable
+        textPaint.setTextSize(30f); // TODO text size should be configurable
         textPaint.setTextAlign(Paint.Align.RIGHT);
         textPaint.setFakeBoldText(true);
         // Y-Axis labels
@@ -372,9 +376,11 @@ public class GraphView extends View {
     }
 
     private void drawUnfoldedTextLabels(Canvas canvas) {
+        // TODO split method to drawX, drawY, drawTitle
+
         Paint textPaint = new Paint();
-        textPaint.setColor(0xFF000000);
-        textPaint.setTextSize(30f);
+        textPaint.setColor(0xFF000000); // TODO paint color should be configurable
+        textPaint.setTextSize(30f); // TODO text size should be configurable
         textPaint.setTextAlign(Paint.Align.RIGHT);
         textPaint.setFakeBoldText(true);
         // Y-Axis labels
@@ -400,33 +406,6 @@ public class GraphView extends View {
         // Title label
         textPaint.setTextAlign(Paint.Align.CENTER);
         canvas.drawText(graphTitle, canvas.getWidth() / 2f, 50f, textPaint);
-    }
-
-    /**
-     * Draws 3 red test points on the graph in fixed locations, bottom left, center, top right.
-     *
-     * Method used to help debug issues and test algorithms.  These three dots will always be drawn
-     * at their respective places as they are determined from the canvas size, and not by any
-     * derived calculation.
-     *
-     * @param canvas
-     * @param pixelsPerX
-     * @param pixelsPerY
-     */
-    private void drawTestPoints(Canvas canvas, float pixelsPerX, float pixelsPerY) {
-        Paint testPaint = new Paint();
-        // KNOWN ORIGIN
-        testPaint.setColor(0xAAAA0000);//Red
-        canvas.drawCircle((float) leftAxisMargin, (float) canvas.getHeight() - (float) bottomAxisMargin, 30f, testPaint);
-        // KNOWN (MAX X, MAX Y)
-        canvas.drawCircle((float) canvas.getWidth() - (float) rightAxisMargin, (float) topAxisMargin, 30f, testPaint);
-        // KNOWN (MID, MID)
-        canvas.drawCircle(leftAxisMargin + ((float) (canvas.getWidth() - leftAxisMargin - rightAxisMargin) / 2f), canvas.getHeight() - bottomAxisMargin - ((float) (canvas.getHeight() - bottomAxisMargin -topAxisMargin) / 2f), 30f, testPaint);
-        // TEST conversion method (2,2)
-        testPaint.setColor(0xAA0000AA);
-        PointF dataPoint = new PointF(2f, 2f);
-        PointF convertedDP = convertXYtoPx(dataPoint, canvas, pixelsPerX, pixelsPerY);
-        canvas.drawCircle(convertedDP.x, convertedDP.y, 15f, testPaint);
     }
 
     /**
@@ -472,6 +451,7 @@ public class GraphView extends View {
      * Initialize the Paint Objects.
      */
     private void setPaintLines() {
+        // TODO Make all paints configurable
         axisPaint.setColor(0xff000000);
         axisPaint.setStrokeWidth(5.0f);
         markerPaint.setColor(0xAAd3d3d3);

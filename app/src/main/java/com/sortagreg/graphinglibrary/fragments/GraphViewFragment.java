@@ -87,6 +87,7 @@ public class GraphViewFragment extends Fragment {
             if (i % 30 == 0) state = !state;
         }
         graphViewDataModel = new GraphViewDataModel(stateLine, paint, GraphViewDataModel.STATE_LINE);
+        dataSetList.add(graphViewDataModel);
 
         // Draw two constant lines
         PointF constantLine = new PointF(0f, 10876f);

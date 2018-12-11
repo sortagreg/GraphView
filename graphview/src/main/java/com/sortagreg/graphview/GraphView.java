@@ -337,7 +337,7 @@ public class GraphView extends View {
                     }
                     break;
                 case STATE_LINE: // TODO implement state lines
-                    for (int i = 0; i < dataModel.getDataSet().length - 1; i ++) {
+                    for (int i = 0; i < dataModel.getDataSet().length - 2; i ++) {
                         float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (dataModel.getDataSet().length);
                         PointF startPoint = new PointF((float) leftAxisMargin + ((float) i * pixelsPerX), dataModel.getDataSet()[i].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .3f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .6f) + topAxisMargin));
                         PointF endPoint = new PointF((float) leftAxisMargin + ((float) (i + 1) * pixelsPerX), dataModel.getDataSet()[i + 1].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .3f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .6f) + topAxisMargin));
@@ -441,8 +441,10 @@ public class GraphView extends View {
                     dataSetMaxX = Math.max(dataSetMaxX, dataPoint.x);
                     dataSetMinX = Math.min(dataSetMinX, dataPoint.x);
                 }
-                dataSetMaxY = Math.max(dataSetMaxY, dataPoint.y);
-                dataSetMinY = Math.min(dataSetMinY, dataPoint.y);
+                if (dataSet.getGraphType() != STATE_LINE) {
+                    dataSetMaxY = Math.max(dataSetMaxY, dataPoint.y);
+                    dataSetMinY = Math.min(dataSetMinY, dataPoint.y);
+                }
             }
         }
         // Use these values when calculating range of values and converting PointF objects.

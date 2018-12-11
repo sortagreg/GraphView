@@ -80,6 +80,9 @@ public class GraphViewFragment extends Fragment {
         dataSetList.add(graphViewDataModel);
 
         // State line
+        paint = new Paint();
+        paint.setColor(0xFFFF00FF);
+        paint.setStrokeWidth(5f);
         boolean state = false;
         PointF[] stateLine = new PointF[adp1002.length];
         for (int i = 0; i < stateLine.length - 1; i++) {

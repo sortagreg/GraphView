@@ -150,7 +150,7 @@ public class GraphView extends View {
         drawVerticalMarkers(canvas);
         drawHorizontalMarkers(canvas);
         drawAxes(canvas);
-        drawStandardDataSets(canvas);
+        drawDataSets(canvas);
         switch (labelStyle) {
             case STANDARD_LABELS:
                 drawStandardTextLabels(canvas);
@@ -303,7 +303,7 @@ public class GraphView extends View {
      *
      * @param canvas Canvas Object to be drawn to
      */
-    private void drawStandardDataSets(Canvas canvas) {
+    private void drawDataSets(Canvas canvas) {
         getMinMaxOfDataSets();
         rangeOfXValues = adjustedDataSetMaxX - adjustedDataSetMinX;
         rangeOfYValues = adjustedDataSetMaxY - adjustedDataSetMinY;
@@ -339,8 +339,8 @@ public class GraphView extends View {
                 case STATE_LINE: // TODO implement state lines
                     for (int i = 0; i < dataModel.getDataSet().length - 2; i ++) {
                         float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (dataModel.getDataSet().length);
-                        PointF startPoint = new PointF((float) leftAxisMargin + ((float) i * pixelsPerX), dataModel.getDataSet()[i].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .3f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .6f) + topAxisMargin));
-                        PointF endPoint = new PointF((float) leftAxisMargin + ((float) (i + 1) * pixelsPerX), dataModel.getDataSet()[i + 1].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .3f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .6f) + topAxisMargin));
+                        PointF startPoint = new PointF((float) leftAxisMargin + ((float) i * pixelsPerX), dataModel.getDataSet()[i].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .15f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .6f) + topAxisMargin));
+                        PointF endPoint = new PointF((float) leftAxisMargin + ((float) (i + 1) * pixelsPerX), dataModel.getDataSet()[i + 1].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .85f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .6f) + topAxisMargin));
                         canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
                     }
                     break;

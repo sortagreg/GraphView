@@ -64,9 +64,6 @@ public class GraphView extends View {
 
     private boolean shouldDrawBox;
 
-
-    //    private List<PointF[]> standardDataSetList;
-//    private List<PointF> constantLineDataSetList;
     private List<GraphViewDataModel> dataSetList;
     private float dataSetMinX = Float.MAX_VALUE;
     private float dataSetMaxX = Float.MIN_VALUE;
@@ -78,7 +75,6 @@ public class GraphView extends View {
     private float adjustedDataSetMaxY;
     private float rangeOfXValues;
     private float rangeOfYValues;
-    private int largestDataSetLength;
 
     /**
      * Constructor for a GraphView in code.
@@ -139,7 +135,6 @@ public class GraphView extends View {
 
         // Init other values here
         setPaintLines();
-//        standardDataSetList = new ArrayList<>();
         dataSetList = new ArrayList<>();
     }
 
@@ -325,7 +320,7 @@ public class GraphView extends View {
                     break;
                 case UNFOLDED_LINE:
                     for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
-                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (largestDataSetLength);
+                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (dataModel.getDataSet().length);
                         float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
                         PointF startPoint = dataModel.getDataSet()[i];
                         PointF endPoint = dataModel.getDataSet()[i + 1];
@@ -333,13 +328,21 @@ public class GraphView extends View {
                     }
                     break;
                 case CONSTANT_LINE:
-                    float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (rangeOfXValues);
-                    float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
-                    PointF startPoint = convertXYtoPx(new PointF((float) dataSetMinX , dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
-                    PointF endPoint = convertXYtoPx(new PointF((float) dataSetMaxX , dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
-                    canvas.drawLine((float) leftAxisMargin, startPoint.y, (float) canvas.getWidth() - (float) rightAxisMargin, endPoint.y, dataModel.getPaint());
+                    if (true) {
+                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (rangeOfXValues);
+                        float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
+                        PointF startPoint = convertXYtoPx(new PointF((float) dataSetMinX, dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
+                        PointF endPoint = convertXYtoPx(new PointF((float) dataSetMaxX, dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
+                        canvas.drawLine((float) leftAxisMargin, startPoint.y, (float) canvas.getWidth() - (float) rightAxisMargin, endPoint.y, dataModel.getPaint());
+                    }
                     break;
                 case STATE_LINE: // TODO implement state lines
+                    for (int i = 0; i < dataModel.getDataSet().length - 1; i ++) {
+                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (dataModel.getDataSet().length);
+                        PointF startPoint = new PointF((float) leftAxisMargin + ((float) i * pixelsPerX), dataModel.getDataSet()[i].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .3f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .6f) + topAxisMargin));
+                        PointF endPoint = new PointF((float) leftAxisMargin + ((float) (i + 1) * pixelsPerX), dataModel.getDataSet()[i + 1].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .3f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .6f) + topAxisMargin));
+                        canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
+                    }
                     break;
             }
 
@@ -400,7 +403,7 @@ public class GraphView extends View {
         // X-Axis labels
         if (numberOfHorizontalLabels > 0) {
             float pixelsPerLabel = (canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (float) numberOfHorizontalLabels;
-            float valuePerStep = largestDataSetLength / numberOfHorizontalLabels;
+            float valuePerStep = dataSetList.get(0).getDataSet().length / numberOfHorizontalLabels;
             for (int i = 0; i < numberOfHorizontalLabels; i++) {
                 int labelValue = (int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep].x;
                 canvas.rotate(270, (float) leftAxisMargin + 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
@@ -433,7 +436,6 @@ public class GraphView extends View {
      */
     private void getMinMaxOfDataSets() {
         for (GraphViewDataModel dataSet : dataSetList) {
-            largestDataSetLength = Math.max(largestDataSetLength, dataSet.getDataSet().length);
             for (PointF dataPoint : dataSet.getDataSet()) {
                 if (dataSet.getGraphType() == STANDARD_LINE) {
                     dataSetMaxX = Math.max(dataSetMaxX, dataPoint.x);

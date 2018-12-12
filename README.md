@@ -72,3 +72,14 @@ graphView.addToDataSetList(dataModel);
 ```
 
 ![Basic Demo Screenshot](https://github.com/sortagreg/GraphView/blob/Documentation/graphview/images/BasicDemoScreenshot.png)
+
+## License
+```
+Copyright 2018 Marshall Lad
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+```

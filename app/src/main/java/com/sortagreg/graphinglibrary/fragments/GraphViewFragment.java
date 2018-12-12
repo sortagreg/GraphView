@@ -50,10 +50,33 @@ public class GraphViewFragment extends Fragment {
         }
         paint = new Paint();
         paint.setStrokeWidth(5f);
-        paint.setColor(0xFFFF3355);
+        paint.setColor(0xFFFF0000);
         GraphViewDataModel expCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
         dataSetList.add(expCurve);
 
+        exponentialCurve = new PointF[DATA_SET_LENGTH];
+        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
+            float x = i - 25;
+            PointF point = new PointF(x, -(x * x * x));
+            exponentialCurve[i] = point;
+        }
+        paint = new Paint();
+        paint.setStrokeWidth(5f);
+        paint.setColor(0xFF00FF00);
+        GraphViewDataModel inverseExpCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
+        dataSetList.add(inverseExpCurve);
+
+//        exponentialCurve = new PointF[DATA_SET_LENGTH];
+//        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
+//            float x = i;
+//            PointF point = new PointF(x, x * x);
+//            exponentialCurve[i] = point;
+//        }
+//        paint = new Paint();
+//        paint.setStrokeWidth(5f);
+//        paint.setColor(0xFF0000FF);
+//        GraphViewDataModel squareCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
+//        dataSetList.add(squareCurve);
 
 //        // State line
 //        paint = new Paint();
@@ -74,15 +97,6 @@ public class GraphViewFragment extends Fragment {
 //        bigDataSet[0] = constantLine;
 //        paint = new Paint();
 //        paint.setColor(0xFF00FF00);
-//        paint.setStrokeWidth(5f);
-//        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
-//        dataSetList.add(graphViewDataModel);
-//
-//        constantLine = new PointF(0f, 4140f);
-//        bigDataSet = new PointF[1];
-//        bigDataSet[0] = constantLine;
-//        paint = new Paint();
-//        paint.setColor(0xFF00FFFF);
 //        paint.setStrokeWidth(5f);
 //        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
 //        dataSetList.add(graphViewDataModel);

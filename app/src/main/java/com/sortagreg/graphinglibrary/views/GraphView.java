@@ -364,29 +364,11 @@ public class GraphView extends View {
      * @param canvas Canvas Object to be drawn to
      */
     private void drawDataSets(Canvas canvas) {
-        getMinMaxOfDataSets();
-        rangeOfXValues = adjustedDataSetMaxX - adjustedDataSetMinX;
-        rangeOfYValues = adjustedDataSetMaxY - adjustedDataSetMinY;
-//        rangeOfXValues = dataSetMaxX - dataSetMinX;
-//        rangeOfYValues = dataSetMaxY - dataSetMinY;
+        getStatsOnAllDataSets();
         for (GraphViewDataModel dataModel : dataSetList) {
             switch (dataModel.getGraphType()) {
                 case STANDARD_LINE:
-                    for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
-
-                        float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / rangeOfXValues;
-                        float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
-
-                        float startX = (dataModel.getDataSet()[i].x - adjustedDataSetMinX) * pixelsPerX + (float) leftAxisMargin;
-                        float startY = (float) canvas.getHeight() - (dataModel.getDataSet()[i].y - adjustedDataSetMinY) * pixelsPerY - (float) bottomAxisMargin;
-                        float endX = (dataModel.getDataSet()[i + 1].x - adjustedDataSetMinX) * pixelsPerX + (float) leftAxisMargin;
-                        float endY = (float) canvas.getHeight() - (dataModel.getDataSet()[i + 1].y - adjustedDataSetMinY) * pixelsPerY - (float) bottomAxisMargin;
-
-                        PointF startPoint = new PointF(startX, startY);
-                        PointF endPoint = new PointF(endX, endY);
-
-                        canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
-                    }
+                    drawStandardLine(canvas, dataModel);
                     break;
                 case UNFOLDED_LINE:
                     for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
@@ -421,6 +403,23 @@ public class GraphView extends View {
         }
     }
 
+    private void drawStandardLine(Canvas canvas, GraphViewDataModel dataModel) {
+        for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
+            float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / rangeOfXValues;
+            float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
+
+            float startX = (dataModel.getDataSet()[i].x - adjustedDataSetMinX) * pixelsPerX + (float) leftAxisMargin;
+            float startY = (float) canvas.getHeight() - (dataModel.getDataSet()[i].y - adjustedDataSetMinY) * pixelsPerY - (float) bottomAxisMargin;
+            float endX = (dataModel.getDataSet()[i + 1].x - adjustedDataSetMinX) * pixelsPerX + (float) leftAxisMargin;
+            float endY = (float) canvas.getHeight() - (dataModel.getDataSet()[i + 1].y - adjustedDataSetMinY) * pixelsPerY - (float) bottomAxisMargin;
+
+            PointF startPoint = new PointF(startX, startY);
+            PointF endPoint = new PointF(endX, endY);
+
+            canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
+        }
+    }
+
     /**
      * Draws the X and Y labels base on the max and min of the data set and the title
      *
@@ -439,9 +438,8 @@ public class GraphView extends View {
             float pixelsPerLabel = (canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (float) numberOfVerticalLabels;
             float valuePerStep = rangeOfYValues / numberOfVerticalLabels;
             for (int i = 1; i <= numberOfVerticalLabels; i++) {
-                int labelValue = (int) Math.floor((valuePerStep * i) + dataSetMinY);
-//                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
-                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - (float) bottomAxisMargin) - ((float) i * pixelsPerLabel) + 10f, textPaint);
+                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - (float) bottomAxisMargin) - ((float) i * pixelsPerLabel) + 20f, textPaint);
             }
         }
         // X-Axis labels
@@ -449,8 +447,7 @@ public class GraphView extends View {
             float pixelsPerLabel = (canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (float) numberOfHorizontalLabels;
             float valuePerStep = rangeOfXValues / numberOfHorizontalLabels;
             for (int i = 1; i <= numberOfHorizontalLabels; i++) {
-                int labelValue = (int) Math.floor((valuePerStep * i) + dataSetMinX);
-//                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinX);
+                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinX);
                 canvas.rotate(270, (float) leftAxisMargin + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
                 canvas.drawText(String.valueOf(labelValue), (float) leftAxisMargin + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f, textPaint);
                 canvas.rotate(-270, (float) leftAxisMargin + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
@@ -521,7 +518,7 @@ public class GraphView extends View {
     /**
      * Find and set the largest and smallest values to be found in all the data sets.
      */
-    private void getMinMaxOfDataSets() {
+    private void getStatsOnAllDataSets() {
         for (GraphViewDataModel dataSet : dataSetList) {
             for (PointF dataPoint : dataSet.getDataSet()) {
                 if (dataSet.getGraphType() == STANDARD_LINE) {
@@ -540,6 +537,9 @@ public class GraphView extends View {
         adjustedDataSetMinY = dataSetMinY - Math.abs(dataSetMinY * .1f);
         adjustedDataSetMaxX = dataSetMaxX + Math.abs(dataSetMaxX * .1f);
         adjustedDataSetMaxY = dataSetMaxY + Math.abs(dataSetMaxY * .1f);
+
+        rangeOfXValues = adjustedDataSetMaxX - adjustedDataSetMinX;
+        rangeOfYValues = adjustedDataSetMaxY - adjustedDataSetMinY;
     }
 
     /**

@@ -43,19 +43,27 @@ XML:
 ```
 FragmentGraph:
 ```
-List<GraphViewDataModel> dataSetList = new ArrayList<>();
-        int DATA_SET_LENGTH = 50;
-        Paint paint;
+// Using ButterKnife to bind the GraphView
+@BindView(R.id.graphView)
+GraphView graphView;
 
-        PointF[] exponentialCurve = new PointF[DATA_SET_LENGTH];
-        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
-            float x = i - 25;
-            PointF point = new PointF(x, x * x * x);
-            exponentialCurve[i] = point;
-        }
-        paint = new Paint();
-        paint.setStrokeWidth(5f);
-        paint.setColor(0xFFFF3355);
-        GraphViewDataModel expCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
-        dataSetList.add(expCurve);
+int DATA_SET_LENGTH = 50;
+
+// Instantiate a PointF[] to hold a data set
+PointF[] exponentialCurve = new PointF[DATA_SET_LENGTH];
+// Populate the data set
+for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
+    float x = i - 25;
+    PointF point = new PointF(x, x * x * x);
+    exponentialCurve[i] = point;
+}
+
+// Create a Paint object to style the line for the data set
+Paint paint = new Paint();
+paint.setStrokeWidth(5f);
+paint.setColor(0xFFFF3355);
+// GraphViewDataModel is a custom data wrapper class included in this library
+GraphViewDataModel dataModel = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
+// Draw the data set
+graphView.addToDataSetList(dataModel);
 ```

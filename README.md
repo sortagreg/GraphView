@@ -51,6 +51,7 @@ int DATA_SET_LENGTH = 50;
 
 // Instantiate a PointF[] to hold a data set
 PointF[] exponentialCurve = new PointF[DATA_SET_LENGTH];
+
 // Populate the data set
 for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
     float x = i - 25;
@@ -62,8 +63,10 @@ for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
 Paint paint = new Paint();
 paint.setStrokeWidth(5f);
 paint.setColor(0xFFFF3355);
+
 // GraphViewDataModel is a custom data wrapper class included in this library
 GraphViewDataModel dataModel = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
+
 // Draw the data set
 graphView.addToDataSetList(dataModel);
 ```

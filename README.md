@@ -4,6 +4,7 @@ A custom graph View Object for Android.
 Still in development.
 
 ## Description
+![Basic Demo Screenshot](https://github.com/sortagreg/GraphView/blob/Documentation/graphview/images/BasicDemoScreenshot.png)
 GraphView is a custom graphing library for Android.  GraphView can handle multiple styles of line graph, including data sets that are not organized in ascending order.  GraphView uses the basic Android Canvas methods to draw the graph and all of its associated pieces.
 
 GraphView uses a custom data class to wrap a simple PointF[] that represents the data set to drawn, a Paint Object to tell GraphView how to style your data set when it is drawn, and an Integer flag, used to represent the style of graph you wish your data set to be drawn in.
@@ -51,6 +52,7 @@ int DATA_SET_LENGTH = 50;
 
 // Instantiate a PointF[] to hold a data set
 PointF[] exponentialCurve = new PointF[DATA_SET_LENGTH];
+
 // Populate the data set
 for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
     float x = i - 25;
@@ -62,8 +64,10 @@ for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
 Paint paint = new Paint();
 paint.setStrokeWidth(5f);
 paint.setColor(0xFFFF3355);
+
 // GraphViewDataModel is a custom data wrapper class included in this library
 GraphViewDataModel dataModel = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
+
 // Draw the data set
 graphView.addToDataSetList(dataModel);
 ```

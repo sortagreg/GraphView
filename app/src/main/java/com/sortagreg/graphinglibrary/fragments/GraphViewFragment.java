@@ -26,8 +26,6 @@ import butterknife.ButterKnife;
  */
 public class GraphViewFragment extends Fragment {
 
-    @BindView(R.id.graphViewSingleVar)
-    GraphView graphViewSingleVar;
     @BindView(R.id.graphView)
     GraphView graphView;
     public GraphViewFragment() {
@@ -89,7 +87,6 @@ public class GraphViewFragment extends Fragment {
 //        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
 //        dataSetList.add(graphViewDataModel);
 
-        graphViewSingleVar.addToDataSetListBulk(dataSetList);
         graphView.addToDataSetListBulk(dataSetList);
 
         return view;

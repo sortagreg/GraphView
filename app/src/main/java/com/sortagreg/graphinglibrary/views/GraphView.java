@@ -372,29 +372,16 @@ public class GraphView extends View {
                     drawStandardLine(canvas, dataModel);
                     break;
                 case UNFOLDED_LINE:
-                    for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
-                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (dataModel.getDataSet().length);
-                        float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
-                        PointF startPoint = dataModel.getDataSet()[i];
-                        PointF endPoint = dataModel.getDataSet()[i + 1];
-//                        canvas.drawLine((float) leftAxisMargin + ((float) i * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2) - ((float) startPoint.y * pixelsPerY), (float) leftAxisMargin + (((float) i + 1f)  * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) endPoint.y * pixelsPerY) + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2), dataModel.getPaint());
-                        canvas.drawLine((float) leftAxisMargin + ((float) i * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin + (dataSetMinY * pixelsPerY) - ((dataSetMaxY - dataSetMaxY) * pixelsPerY / 2) - ((float) startPoint.y * pixelsPerY), (float) leftAxisMargin + (((float) i + 1f)  * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) endPoint.y * pixelsPerY) + (dataSetMinY * pixelsPerY) - ((dataSetMaxY - dataSetMaxY) * pixelsPerY / 2), dataModel.getPaint());
-                    }
+                    drawUnfoldedLine(canvas, dataModel);
                     break;
                 case CONSTANT_LINE:
-                    if (true) {
-                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (rangeOfXValues);
-                        float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
-                        PointF startPoint = convertXYtoPx(new PointF((float) dataSetMinX, dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
-                        PointF endPoint = convertXYtoPx(new PointF((float) dataSetMaxX, dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
-                        canvas.drawLine((float) leftAxisMargin, startPoint.y, (float) canvas.getWidth() - (float) rightAxisMargin, endPoint.y, dataModel.getPaint());
-                    }
+                    drawConstantLine(canvas, dataModel);
                     break;
                 case STATE_LINE:
                     for (int i = 0; i < dataModel.getDataSet().length - 2; i ++) {
-                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (dataModel.getDataSet().length);
-                        PointF startPoint = new PointF((float) leftAxisMargin + ((float) i * pixelsPerX), dataModel.getDataSet()[i].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .15f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .85f) + topAxisMargin));
-                        PointF endPoint = new PointF((float) leftAxisMargin + ((float) (i + 1) * pixelsPerX), dataModel.getDataSet()[i + 1].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .15f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .85f) + topAxisMargin));
+                        float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (dataModel.getDataSet().length);
+                        PointF startPoint = new PointF(leftAxisMargin + ((float) i * pixelsPerX), dataModel.getDataSet()[i].y == 0 ? ((((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .15f) + topAxisMargin) : ((((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .85f) + topAxisMargin));
+                        PointF endPoint = new PointF(leftAxisMargin + ((float) (i + 1) * pixelsPerX), dataModel.getDataSet()[i + 1].y == 0 ? ((((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .15f) + topAxisMargin) : ((((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .85f) + topAxisMargin));
                         canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
                     }
                     break;
@@ -404,15 +391,40 @@ public class GraphView extends View {
         }
     }
 
+    private void drawUnfoldedLine(Canvas canvas, GraphViewDataModel dataModel) {
+        for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
+            float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (dataModel.getDataSet().length);
+            float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
+
+            float startX = leftAxisMargin + (float) i * pixelsPerX;
+            float startY = (float) canvas.getHeight() - bottomAxisMargin - (dataModel.getDataSet()[i].y - adjustedDataSetMinY) * pixelsPerY;
+            float endX = leftAxisMargin + ((float) i + 1f) * pixelsPerX;
+            float endY = (float) canvas.getHeight() - bottomAxisMargin - (dataModel.getDataSet()[i + 1].y - adjustedDataSetMinY) * pixelsPerY;
+
+            PointF startPoint = new PointF(startX, startY);
+            PointF endPoint = new PointF(endX, endY);
+
+            canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
+        }
+    }
+
+    private void drawConstantLine(Canvas canvas, GraphViewDataModel dataModel) {
+        float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (rangeOfXValues);
+        float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (rangeOfYValues);
+        PointF startPoint = convertXYtoPx(new PointF(dataSetMinX, dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
+        PointF endPoint = convertXYtoPx(new PointF(dataSetMaxX, dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
+        canvas.drawLine(leftAxisMargin, startPoint.y, (float) canvas.getWidth() - rightAxisMargin, endPoint.y, dataModel.getPaint());
+    }
+
     private void drawStandardLine(Canvas canvas, GraphViewDataModel dataModel) {
         for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
             float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / rangeOfXValues;
             float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
 
-            float startX = (dataModel.getDataSet()[i].x - adjustedDataSetMinX) * pixelsPerX + (float) leftAxisMargin;
-            float startY = (float) canvas.getHeight() - (dataModel.getDataSet()[i].y - adjustedDataSetMinY) * pixelsPerY - (float) bottomAxisMargin;
-            float endX = (dataModel.getDataSet()[i + 1].x - adjustedDataSetMinX) * pixelsPerX + (float) leftAxisMargin;
-            float endY = (float) canvas.getHeight() - (dataModel.getDataSet()[i + 1].y - adjustedDataSetMinY) * pixelsPerY - (float) bottomAxisMargin;
+            float startX = (dataModel.getDataSet()[i].x - adjustedDataSetMinX) * pixelsPerX + leftAxisMargin;
+            float startY = (float) canvas.getHeight() - bottomAxisMargin - (dataModel.getDataSet()[i].y - adjustedDataSetMinY) * pixelsPerY;
+            float endX = (dataModel.getDataSet()[i + 1].x - adjustedDataSetMinX) * pixelsPerX + leftAxisMargin;
+            float endY = (float) canvas.getHeight() - bottomAxisMargin - (dataModel.getDataSet()[i + 1].y - adjustedDataSetMinY) * pixelsPerY;
 
             PointF startPoint = new PointF(startX, startY);
             PointF endPoint = new PointF(endX, endY);

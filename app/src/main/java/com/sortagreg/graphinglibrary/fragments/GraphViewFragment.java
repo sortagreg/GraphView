@@ -42,9 +42,9 @@ public class GraphViewFragment extends Fragment {
         int DATA_SET_LENGTH = 50;
         Paint paint;
 
-//        paint = new Paint();
-//        paint.setStrokeWidth(5f);
-//        paint.setColor(0xFFFF0000);
+        paint = new Paint();
+        paint.setStrokeWidth(5f);
+        paint.setColor(0xFFFF0000);
 //        PointF[] negativeValueArray = new PointF[]{new PointF(-1, -1), new PointF(-10, -10)};
 //        GraphViewDataModel negativeDataSet = new GraphViewDataModel(negativeValueArray, paint, GraphViewDataModel.STANDARD_LINE);
 //        graphView.addToDataSetList(negativeDataSet);
@@ -53,6 +53,12 @@ public class GraphViewFragment extends Fragment {
 //        GraphViewDataModel positiveDataSet = new GraphViewDataModel(positiveValueArray, paint, GraphViewDataModel.STANDARD_LINE);
 //        graphView.addToDataSetList(positiveDataSet);
 
+        // Unfolded Test Graph
+        PointF[] cyclicGraph = new PointF[]{new PointF(1,5), new PointF(2,10), new PointF(3,15), new PointF(4,15), new PointF(5,15), new PointF(6,20), new PointF(5,25), new PointF(4, 30), new PointF(3,30), new PointF(3,30), new PointF(3,30), new PointF(3,25), new PointF(2, 20), new PointF(1,5), new PointF(1,10), new PointF(1,5), new PointF(1,10)};
+        GraphViewDataModel cyclicDataModel = new GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.UNFOLDED_LINE);
+        GraphViewDataModel cyclicDataModelFolded = new GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.STANDARD_LINE);
+        graphView.addToDataSetList(cyclicDataModel);
+//        graphView.addToDataSetList(cyclicDataModelFolded);
 
 //        PointF[] exponentialCurve = new PointF[DATA_SET_LENGTH];
 //        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {

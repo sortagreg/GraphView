@@ -20,7 +20,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Demo Fragment for GraphView
+ *
+ * @author Marshall Ladd
  */
 public class GraphViewFragment extends Fragment {
 
@@ -100,7 +102,6 @@ public class GraphViewFragment extends Fragment {
         paint.setColor(0xFF00FF00);
         paint.setStrokeWidth(5f);
         graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
-        dataSetList.add(graphViewDataModel);
         dataSetList2.add(graphViewDataModel);
 
         constantLine = new PointF(0f, 4140f);
@@ -110,7 +111,6 @@ public class GraphViewFragment extends Fragment {
         paint.setColor(0xFF00FFFF);
         paint.setStrokeWidth(5f);
         graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
-        dataSetList.add(graphViewDataModel);
         dataSetList2.add(graphViewDataModel);
 
         graphViewSingleVar.addToDataSetListBulk(dataSetList);

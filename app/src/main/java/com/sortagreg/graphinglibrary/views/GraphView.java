@@ -409,11 +409,17 @@ public class GraphView extends View {
     }
 
     private void drawConstantLine(Canvas canvas, GraphViewDataModel dataModel) {
-        float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (rangeOfXValues);
         float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (rangeOfYValues);
-        PointF startPoint = convertXYtoPx(new PointF(dataSetMinX, dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
-        PointF endPoint = convertXYtoPx(new PointF(dataSetMaxX, dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
-        canvas.drawLine(leftAxisMargin, startPoint.y, (float) canvas.getWidth() - rightAxisMargin, endPoint.y, dataModel.getPaint());
+
+        float startX = leftAxisMargin;
+        float startY = (float) canvas.getHeight() - bottomAxisMargin - (dataModel.getDataSet()[0].y - adjustedDataSetMinY) * pixelsPerY;
+        float endX = (float) canvas.getWidth() - rightAxisMargin;
+        float endY = (float) canvas.getHeight() - bottomAxisMargin - (dataModel.getDataSet()[0].y - adjustedDataSetMinY) * pixelsPerY;
+
+        PointF startPoint = new PointF(startX, startY);
+        PointF endPoint = new PointF(endX, endY);
+
+        canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
     }
 
     private void drawStandardLine(Canvas canvas, GraphViewDataModel dataModel) {

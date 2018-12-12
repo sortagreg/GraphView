@@ -34,7 +34,6 @@ public class GraphView extends View {
 
     private String title = "";
 
-    private Paint backgroundPaint = new Paint();
     private Paint axisPaint = new Paint();
     private Paint markerPaint = new Paint();
     private Paint dataSetPaint = new Paint();
@@ -64,9 +63,6 @@ public class GraphView extends View {
 
     private boolean shouldDrawBox;
 
-
-    //    private List<PointF[]> standardDataSetList;
-//    private List<PointF> constantLineDataSetList;
     private List<GraphViewDataModel> dataSetList;
     private float dataSetMinX = Float.MAX_VALUE;
     private float dataSetMaxX = Float.MIN_VALUE;
@@ -78,7 +74,6 @@ public class GraphView extends View {
     private float adjustedDataSetMaxY;
     private float rangeOfXValues;
     private float rangeOfYValues;
-    private int largestDataSetLength;
 
     /**
      * Constructor for a GraphView in code.
@@ -139,7 +134,6 @@ public class GraphView extends View {
 
         // Init other values here
         setPaintLines();
-//        standardDataSetList = new ArrayList<>();
         dataSetList = new ArrayList<>();
     }
 
@@ -155,7 +149,7 @@ public class GraphView extends View {
         drawVerticalMarkers(canvas);
         drawHorizontalMarkers(canvas);
         drawAxes(canvas);
-        drawStandardDataSets(canvas);
+        drawDataSets(canvas);
         switch (labelStyle) {
             case STANDARD_LABELS:
                 drawStandardTextLabels(canvas);
@@ -191,56 +185,115 @@ public class GraphView extends View {
         invalidate();
     }
 
+    /**
+     * Update the number of labels to draw along the y axis
+     *
+     * @param numberOfVerticalLabels
+     */
     public void setNumberOfVerticalLabels(int numberOfVerticalLabels) {
         this.numberOfVerticalLabels = numberOfVerticalLabels;
         invalidate();
     }
 
+    /**
+     * Update the number of labels to draw along the x axis
+     *
+     * @param numberOfHorizontalLabels
+     */
     public void setNumberOfHorizontalLabels(int numberOfHorizontalLabels) {
         this.numberOfHorizontalLabels = numberOfHorizontalLabels;
         invalidate();
     }
 
+    /**
+     * Switch the graph between the different label styles
+     *
+     * @param labelStyle
+     */
     public void setLabelStyle(int labelStyle) {
         this.labelStyle = labelStyle;
         invalidate();
     }
 
+    /**
+     * If true, the graph will be surrounded by a border on all 4 sides.  If false,
+     * a border will only print on the X and Y axis.
+     *
+     * @param shouldDrawBox
+     */
     public void setShouldDrawBox(boolean shouldDrawBox) {
         this.shouldDrawBox = shouldDrawBox;
         invalidate();
     }
 
+    /**
+     * Set the width of the margin on the top of the graph
+     *
+     * @param topAxisMargin
+     */
     public void setTopAxisMargin(int topAxisMargin) {
         this.topAxisMargin = topAxisMargin;
         invalidate();
     }
 
+    /**
+     * Set the width of the margin on the bottom of the graph
+     *
+     * @param bottomAxisMargin
+     */
     public void setBottomAxisMargin(int bottomAxisMargin) {
         this.bottomAxisMargin = bottomAxisMargin;
         invalidate();
     }
 
+    /**
+     * Set the width of the margin on the left side of the graph
+     *
+     * @param leftAxisMargin
+     */
     public void setLeftAxisMargin(int leftAxisMargin) {
         this.leftAxisMargin = leftAxisMargin;
         invalidate();
     }
 
+    /**
+     * Set the width of the margin on the right side of the graph
+     *
+     * @param rightAxisMargin
+     */
     public void setRightAxisMargin(int rightAxisMargin) {
         this.rightAxisMargin = rightAxisMargin;
         invalidate();
     }
 
+    /**
+     * Update the text value of the title
+     *
+     * @param title
+     */
     public void setTitle(String title) {
         this.title = title;
         invalidate();
     }
 
+    /**
+     * Add a data set to the graph tpo be drawn.
+     *
+     * If you are adding more than one data set to the graph, you should use
+     * addToDataSetListBulk() to be more efficient.
+     *
+     * @param dataSet
+     */
     public void addToDataSetList(GraphViewDataModel dataSet) {
         this.dataSetList.add(dataSet);
         invalidate();
     }
 
+    /**
+     * Add a group of data sets to the graph to be drawn.
+     *
+     * @param dataSetList
+     */
     public void addToDataSetListBulk(List<GraphViewDataModel> dataSetList) {
         this.dataSetList.addAll(dataSetList);
         invalidate();
@@ -308,7 +361,7 @@ public class GraphView extends View {
      *
      * @param canvas Canvas Object to be drawn to
      */
-    private void drawStandardDataSets(Canvas canvas) {
+    private void drawDataSets(Canvas canvas) {
         getMinMaxOfDataSets();
         rangeOfXValues = adjustedDataSetMaxX - adjustedDataSetMinX;
         rangeOfYValues = adjustedDataSetMaxY - adjustedDataSetMinY;
@@ -325,7 +378,7 @@ public class GraphView extends View {
                     break;
                 case UNFOLDED_LINE:
                     for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
-                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (largestDataSetLength);
+                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (dataModel.getDataSet().length);
                         float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
                         PointF startPoint = dataModel.getDataSet()[i];
                         PointF endPoint = dataModel.getDataSet()[i + 1];
@@ -333,13 +386,21 @@ public class GraphView extends View {
                     }
                     break;
                 case CONSTANT_LINE:
-                    float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (rangeOfXValues);
-                    float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
-                    PointF startPoint = convertXYtoPx(new PointF((float) dataSetMinX , dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
-                    PointF endPoint = convertXYtoPx(new PointF((float) dataSetMaxX , dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
-                    canvas.drawLine((float) leftAxisMargin, startPoint.y, (float) canvas.getWidth() - (float) rightAxisMargin, endPoint.y, dataModel.getPaint());
+                    if (true) {
+                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (rangeOfXValues);
+                        float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
+                        PointF startPoint = convertXYtoPx(new PointF((float) dataSetMinX, dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
+                        PointF endPoint = convertXYtoPx(new PointF((float) dataSetMaxX, dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
+                        canvas.drawLine((float) leftAxisMargin, startPoint.y, (float) canvas.getWidth() - (float) rightAxisMargin, endPoint.y, dataModel.getPaint());
+                    }
                     break;
-                case STATE_LINE: // TODO implement state lines
+                case STATE_LINE:
+                    for (int i = 0; i < dataModel.getDataSet().length - 2; i ++) {
+                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (dataModel.getDataSet().length);
+                        PointF startPoint = new PointF((float) leftAxisMargin + ((float) i * pixelsPerX), dataModel.getDataSet()[i].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .15f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .85f) + topAxisMargin));
+                        PointF endPoint = new PointF((float) leftAxisMargin + ((float) (i + 1) * pixelsPerX), dataModel.getDataSet()[i + 1].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .15f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .85f) + topAxisMargin));
+                        canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
+                    }
                     break;
             }
 
@@ -347,6 +408,11 @@ public class GraphView extends View {
         }
     }
 
+    /**
+     * Draws the X and Y labels base on the max and min of the data set and the title
+     *
+     * @param canvas
+     */
     private void drawStandardTextLabels(Canvas canvas) {
         // TODO split method to drawX, drawY, drawTitle
 
@@ -380,6 +446,12 @@ public class GraphView extends View {
         canvas.drawText(title, canvas.getWidth() / 2f, 50f, textPaint);
     }
 
+    /**
+     * Draws X labels based on the exact values in the first data set in the dataSetList.
+     * The Y labels are drawn by min and max values.
+     *
+     * @param canvas
+     */
     private void drawUnfoldedTextLabels(Canvas canvas) {
         // TODO split method to drawX, drawY, drawTitle
 
@@ -400,7 +472,7 @@ public class GraphView extends View {
         // X-Axis labels
         if (numberOfHorizontalLabels > 0) {
             float pixelsPerLabel = (canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (float) numberOfHorizontalLabels;
-            float valuePerStep = largestDataSetLength / numberOfHorizontalLabels;
+            float valuePerStep = dataSetList.get(0).getDataSet().length / numberOfHorizontalLabels;
             for (int i = 0; i < numberOfHorizontalLabels; i++) {
                 int labelValue = (int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep].x;
                 canvas.rotate(270, (float) leftAxisMargin + 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
@@ -433,19 +505,19 @@ public class GraphView extends View {
      */
     private void getMinMaxOfDataSets() {
         for (GraphViewDataModel dataSet : dataSetList) {
-            largestDataSetLength = Math.max(largestDataSetLength, dataSet.getDataSet().length);
             for (PointF dataPoint : dataSet.getDataSet()) {
                 if (dataSet.getGraphType() == STANDARD_LINE) {
                     dataSetMaxX = Math.max(dataSetMaxX, dataPoint.x);
                     dataSetMinX = Math.min(dataSetMinX, dataPoint.x);
                 }
-                dataSetMaxY = Math.max(dataSetMaxY, dataPoint.y);
-                dataSetMinY = Math.min(dataSetMinY, dataPoint.y);
+                if (dataSet.getGraphType() != STATE_LINE) {
+                    dataSetMaxY = Math.max(dataSetMaxY, dataPoint.y);
+                    dataSetMinY = Math.min(dataSetMinY, dataPoint.y);
+                }
             }
         }
         // Use these values when calculating range of values and converting PointF objects.
         // Otherwise, comment these variables out and replace with normal dataSetMax/Min.
-        // TODO extract constant to a variable to adjust graph padding programmatically and in XML
         adjustedDataSetMinX = dataSetMinX - (dataSetMinX * .1f);
         adjustedDataSetMinY = dataSetMinY - (dataSetMinY * .1f);
         adjustedDataSetMaxX = dataSetMaxX + (dataSetMaxX * .1f);
@@ -486,6 +558,8 @@ public class GraphView extends View {
         savedState.shouldDrawBox = shouldDrawBox;
         savedState.labelStyle = labelStyle;
         savedState.title = title;
+        savedState.numberOfVerticalLabels = numberOfVerticalLabels;
+        savedState.numberOfHorizontalLabels = numberOfHorizontalLabels;
         return savedState;
     }
 
@@ -510,6 +584,8 @@ public class GraphView extends View {
         setShouldDrawBox(savedState.shouldDrawBox);
         setLabelStyle(savedState.labelStyle);
         setTitle(savedState.title);
+        setNumberOfHorizontalLabels(savedState.numberOfHorizontalLabels);
+        setNumberOfVerticalLabels(savedState.numberOfVerticalLabels);
     }
 
     /**

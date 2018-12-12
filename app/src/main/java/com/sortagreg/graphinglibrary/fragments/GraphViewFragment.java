@@ -20,7 +20,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Demo Fragment for GraphView
+ *
+ * @author Marshall Ladd
  */
 public class GraphViewFragment extends Fragment {
 
@@ -79,6 +81,19 @@ public class GraphViewFragment extends Fragment {
         graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.UNFOLDED_LINE);
         dataSetList.add(graphViewDataModel);
 
+        // State line
+        paint = new Paint();
+        paint.setColor(0xFFFF00FF);
+        paint.setStrokeWidth(5f);
+        boolean state = false;
+        PointF[] stateLine = new PointF[adp1002.length];
+        for (int i = 0; i < stateLine.length - 1; i++) {
+            stateLine[i] = new PointF(0f, state ? 1 : 0);
+            if (i % 30 == 0) state = !state;
+        }
+        graphViewDataModel = new GraphViewDataModel(stateLine, paint, GraphViewDataModel.STATE_LINE);
+        dataSetList.add(graphViewDataModel);
+
         // Draw two constant lines
         PointF constantLine = new PointF(0f, 10876f);
         bigDataSet = new PointF[1];
@@ -87,7 +102,6 @@ public class GraphViewFragment extends Fragment {
         paint.setColor(0xFF00FF00);
         paint.setStrokeWidth(5f);
         graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
-        dataSetList.add(graphViewDataModel);
         dataSetList2.add(graphViewDataModel);
 
         constantLine = new PointF(0f, 4140f);
@@ -97,7 +111,6 @@ public class GraphViewFragment extends Fragment {
         paint.setColor(0xFF00FFFF);
         paint.setStrokeWidth(5f);
         graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
-        dataSetList.add(graphViewDataModel);
         dataSetList2.add(graphViewDataModel);
 
         graphViewSingleVar.addToDataSetListBulk(dataSetList);

@@ -4,7 +4,7 @@ A custom graph View Object for Android.
 Still in development.
 
 ## Description
-![Basic Demo Screenshot](https://github.com/sortagreg/GraphView/blob/Documentation/graphview/images/BasicDemoScreenshot.png)
+![Basic Demo Screenshot](https://github.com/sortagreg/GraphView/blob/Documentation/graphview/images/BasicDemoScreenshot.png | width=200x)
 GraphView is a custom graphing library for Android.  GraphView can handle multiple styles of line graph, including data sets that are not organized in ascending order.  GraphView uses the basic Android Canvas methods to draw the graph and all of its associated pieces.
 
 GraphView uses a custom data class to wrap a simple PointF[] that represents the data set to drawn, a Paint Object to tell GraphView how to style your data set when it is drawn, and an Integer flag, used to represent the style of graph you wish your data set to be drawn in.

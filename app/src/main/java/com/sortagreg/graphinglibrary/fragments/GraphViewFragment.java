@@ -42,30 +42,42 @@ public class GraphViewFragment extends Fragment {
         int DATA_SET_LENGTH = 50;
         Paint paint;
 
-        PointF[] exponentialCurve = new PointF[DATA_SET_LENGTH];
-        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
-            float x = i - 25;
-            PointF point = new PointF(x, x * x * x);
-            exponentialCurve[i] = point;
-        }
-        paint = new Paint();
-        paint.setStrokeWidth(5f);
-        paint.setColor(0xFFFF0000);
-        GraphViewDataModel expCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
-        dataSetList.add(expCurve);
+//        paint = new Paint();
+//        paint.setStrokeWidth(5f);
+//        paint.setColor(0xFFFF0000);
+//        PointF[] negativeValueArray = new PointF[]{new PointF(-1, -1), new PointF(-10, -10)};
+//        GraphViewDataModel negativeDataSet = new GraphViewDataModel(negativeValueArray, paint, GraphViewDataModel.STANDARD_LINE);
+//        graphView.addToDataSetList(negativeDataSet);
+//
+//        PointF[] positiveValueArray = new PointF[]{new PointF(1, 1), new PointF(10, 10)};
+//        GraphViewDataModel positiveDataSet = new GraphViewDataModel(positiveValueArray, paint, GraphViewDataModel.STANDARD_LINE);
+//        graphView.addToDataSetList(positiveDataSet);
 
-        exponentialCurve = new PointF[DATA_SET_LENGTH];
-        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
-            float x = i - 25;
-            PointF point = new PointF(x, -(x * x * x));
-            exponentialCurve[i] = point;
-        }
-        paint = new Paint();
-        paint.setStrokeWidth(5f);
-        paint.setColor(0xFF00FF00);
-        GraphViewDataModel inverseExpCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
-        dataSetList.add(inverseExpCurve);
 
+//        PointF[] exponentialCurve = new PointF[DATA_SET_LENGTH];
+//        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
+//            float x = i - 25;
+//            PointF point = new PointF(x, x * x * x);
+//            exponentialCurve[i] = point;
+//        }
+//        paint = new Paint();
+//        paint.setStrokeWidth(5f);
+//        paint.setColor(0xFFFF0000);
+//        GraphViewDataModel expCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
+//        dataSetList.add(expCurve);
+//
+//        exponentialCurve = new PointF[DATA_SET_LENGTH];
+//        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
+//            float x = i - 25;
+//            PointF point = new PointF(x, -(x * x * x));
+//            exponentialCurve[i] = point;
+//        }
+//        paint = new Paint();
+//        paint.setStrokeWidth(5f);
+//        paint.setColor(0xFF00FF00);
+//        GraphViewDataModel inverseExpCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
+//        dataSetList.add(inverseExpCurve);
+//
 //        exponentialCurve = new PointF[DATA_SET_LENGTH];
 //        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
 //            float x = i;

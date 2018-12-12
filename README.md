@@ -17,4 +17,16 @@ GraphView currently supports four different styles of graphs:
 
 ## Label Styles
 
-## Example Usage
+## Usage
+In your project level gradle file, add the following:
+```
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+and in your app level gradle file add the following:
+```
+implementation 'com.github.sortagreg:GraphView:0.4'
+```

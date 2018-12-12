@@ -1,4 +1,4 @@
-package com.sortagreg.graphview;
+package com.sortagreg.graphinglibrary.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -13,13 +13,16 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
+
+import com.sortagreg.graphinglibrary.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sortagreg.graphview.GraphViewDataModel.CONSTANT_LINE;
-import static com.sortagreg.graphview.GraphViewDataModel.STANDARD_LINE;
-import static com.sortagreg.graphview.GraphViewDataModel.STATE_LINE;
-import static com.sortagreg.graphview.GraphViewDataModel.UNFOLDED_LINE;
+import static com.sortagreg.graphinglibrary.views.GraphViewDataModel.CONSTANT_LINE;
+import static com.sortagreg.graphinglibrary.views.GraphViewDataModel.STANDARD_LINE;
+import static com.sortagreg.graphinglibrary.views.GraphViewDataModel.STATE_LINE;
+import static com.sortagreg.graphinglibrary.views.GraphViewDataModel.UNFOLDED_LINE;
 
 //TODO update to handle empty data set list. Labels currently render wrong if there is no data.
 

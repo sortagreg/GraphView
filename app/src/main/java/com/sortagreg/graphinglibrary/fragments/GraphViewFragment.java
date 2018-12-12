@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sortagreg.graphinglibrary.R;
-import com.sortagreg.graphview.GraphView;
-import com.sortagreg.graphview.GraphViewDataModel;
+import com.sortagreg.graphinglibrary.views.GraphView;
+import com.sortagreg.graphinglibrary.views.GraphViewDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,18 +42,53 @@ public class GraphViewFragment extends Fragment {
         int DATA_SET_LENGTH = 50;
         Paint paint;
 
-        PointF[] exponentialCurve = new PointF[DATA_SET_LENGTH];
-        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
-            float x = i - 25;
-            PointF point = new PointF(x, x * x * x);
-            exponentialCurve[i] = point;
-        }
-        paint = new Paint();
-        paint.setStrokeWidth(5f);
-        paint.setColor(0xFFFF3355);
-        GraphViewDataModel expCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
-        dataSetList.add(expCurve);
+//        paint = new Paint();
+//        paint.setStrokeWidth(5f);
+//        paint.setColor(0xFFFF0000);
+//        PointF[] negativeValueArray = new PointF[]{new PointF(-1, -1), new PointF(-10, -10)};
+//        GraphViewDataModel negativeDataSet = new GraphViewDataModel(negativeValueArray, paint, GraphViewDataModel.STANDARD_LINE);
+//        graphView.addToDataSetList(negativeDataSet);
+//
+//        PointF[] positiveValueArray = new PointF[]{new PointF(1, 1), new PointF(10, 10)};
+//        GraphViewDataModel positiveDataSet = new GraphViewDataModel(positiveValueArray, paint, GraphViewDataModel.STANDARD_LINE);
+//        graphView.addToDataSetList(positiveDataSet);
 
+
+//        PointF[] exponentialCurve = new PointF[DATA_SET_LENGTH];
+//        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
+//            float x = i - 25;
+//            PointF point = new PointF(x, x * x * x);
+//            exponentialCurve[i] = point;
+//        }
+//        paint = new Paint();
+//        paint.setStrokeWidth(5f);
+//        paint.setColor(0xFFFF0000);
+//        GraphViewDataModel expCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
+//        dataSetList.add(expCurve);
+//
+//        exponentialCurve = new PointF[DATA_SET_LENGTH];
+//        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
+//            float x = i - 25;
+//            PointF point = new PointF(x, -(x * x * x));
+//            exponentialCurve[i] = point;
+//        }
+//        paint = new Paint();
+//        paint.setStrokeWidth(5f);
+//        paint.setColor(0xFF00FF00);
+//        GraphViewDataModel inverseExpCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
+//        dataSetList.add(inverseExpCurve);
+//
+//        exponentialCurve = new PointF[DATA_SET_LENGTH];
+//        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
+//            float x = i;
+//            PointF point = new PointF(x, x * x);
+//            exponentialCurve[i] = point;
+//        }
+//        paint = new Paint();
+//        paint.setStrokeWidth(5f);
+//        paint.setColor(0xFF0000FF);
+//        GraphViewDataModel squareCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
+//        dataSetList.add(squareCurve);
 
 //        // State line
 //        paint = new Paint();
@@ -74,15 +109,6 @@ public class GraphViewFragment extends Fragment {
 //        bigDataSet[0] = constantLine;
 //        paint = new Paint();
 //        paint.setColor(0xFF00FF00);
-//        paint.setStrokeWidth(5f);
-//        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
-//        dataSetList.add(graphViewDataModel);
-//
-//        constantLine = new PointF(0f, 4140f);
-//        bigDataSet = new PointF[1];
-//        bigDataSet[0] = constantLine;
-//        paint = new Paint();
-//        paint.setColor(0xFF00FFFF);
 //        paint.setStrokeWidth(5f);
 //        graphViewDataModel = new GraphViewDataModel(bigDataSet, paint, GraphViewDataModel.CONSTANT_LINE);
 //        dataSetList.add(graphViewDataModel);

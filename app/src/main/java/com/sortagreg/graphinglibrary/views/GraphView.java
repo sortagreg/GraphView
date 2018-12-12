@@ -70,10 +70,10 @@ public class GraphView extends View {
     private float dataSetMaxX = Float.MIN_VALUE;
     private float dataSetMinY = Float.MAX_VALUE;
     private float dataSetMaxY = Float.MIN_VALUE;
-    private float adjustedDataSetMinX;
-    private float adjustedDataSetMaxX;
-    private float adjustedDataSetMinY;
-    private float adjustedDataSetMaxY;
+//    private float adjustedDataSetMinX;
+//    private float adjustedDataSetMaxX;
+//    private float adjustedDataSetMinY;
+//    private float adjustedDataSetMaxY;
     private float rangeOfXValues;
     private float rangeOfYValues;
 
@@ -365,10 +365,10 @@ public class GraphView extends View {
      */
     private void drawDataSets(Canvas canvas) {
         getMinMaxOfDataSets();
-        rangeOfXValues = adjustedDataSetMaxX - adjustedDataSetMinX;
-        rangeOfYValues = adjustedDataSetMaxY - adjustedDataSetMinY;
-//        rangeOfXValues = dataSetMaxX - dataSetMinX;
-//        rangeOfYValues = dataSetMaxY - dataSetMinY;
+//        rangeOfXValues = adjustedDataSetMaxX - adjustedDataSetMinX;
+//        rangeOfYValues = adjustedDataSetMaxY - adjustedDataSetMinY;
+        rangeOfXValues = dataSetMaxX - dataSetMinX;
+        rangeOfYValues = dataSetMaxY - dataSetMinY;
         for (GraphViewDataModel dataModel : dataSetList) {
             switch (dataModel.getGraphType()) {
                 case STANDARD_LINE:
@@ -388,7 +388,8 @@ public class GraphView extends View {
                         float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
                         PointF startPoint = dataModel.getDataSet()[i];
                         PointF endPoint = dataModel.getDataSet()[i + 1];
-                        canvas.drawLine((float) leftAxisMargin + ((float) i * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2) - ((float) startPoint.y * pixelsPerY), (float) leftAxisMargin + (((float) i + 1f)  * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) endPoint.y * pixelsPerY) + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2), dataModel.getPaint());
+//                        canvas.drawLine((float) leftAxisMargin + ((float) i * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2) - ((float) startPoint.y * pixelsPerY), (float) leftAxisMargin + (((float) i + 1f)  * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) endPoint.y * pixelsPerY) + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2), dataModel.getPaint());
+                        canvas.drawLine((float) leftAxisMargin + ((float) i * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin + (dataSetMinY * pixelsPerY) - ((dataSetMaxY - dataSetMaxY) * pixelsPerY / 2) - ((float) startPoint.y * pixelsPerY), (float) leftAxisMargin + (((float) i + 1f)  * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) endPoint.y * pixelsPerY) + (dataSetMinY * pixelsPerY) - ((dataSetMaxY - dataSetMaxY) * pixelsPerY / 2), dataModel.getPaint());
                     }
                     break;
                 case CONSTANT_LINE:
@@ -432,7 +433,8 @@ public class GraphView extends View {
             float pixelsPerLabel = (canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (float) numberOfVerticalLabels;
             float valuePerStep = rangeOfYValues / numberOfVerticalLabels;
             for (int i = 1; i <= numberOfVerticalLabels; i++) {
-                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
+                int labelValue = (int) Math.floor((valuePerStep * i) + dataSetMinY);
+//                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
                 canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - (float) bottomAxisMargin) - ((float) i * pixelsPerLabel) + 10f, textPaint);
             }
         }
@@ -441,7 +443,8 @@ public class GraphView extends View {
             float pixelsPerLabel = (canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (float) numberOfHorizontalLabels;
             float valuePerStep = rangeOfXValues / numberOfHorizontalLabels;
             for (int i = 1; i <= numberOfHorizontalLabels; i++) {
-                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinX);
+                int labelValue = (int) Math.floor((valuePerStep * i) + dataSetMinX);
+//                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinX);
                 canvas.rotate(270, (float) leftAxisMargin + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
                 canvas.drawText(String.valueOf(labelValue), (float) leftAxisMargin + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f, textPaint);
                 canvas.rotate(-270, (float) leftAxisMargin + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
@@ -471,7 +474,8 @@ public class GraphView extends View {
             float pixelsPerLabel = (canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (float) numberOfVerticalLabels;
             float valuePerStep = rangeOfYValues / numberOfVerticalLabels;
             for (int i = 0; i < numberOfVerticalLabels; i++) {
-                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
+                int labelValue = (int) Math.floor((valuePerStep * i) + dataSetMinY);
+//                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
                 canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - (float) bottomAxisMargin) - ((float) i * pixelsPerLabel), textPaint);
             }
         }
@@ -501,8 +505,10 @@ public class GraphView extends View {
      * @return PointF with the literal pixel coordinates of the inputs (X,Y) values.
      */
     public PointF convertXYtoPx(PointF rawDataPoint, Canvas canvas, float pixelsPerX, float pixelsPerY) {
-        float newX = (float) leftAxisMargin + ((float) rawDataPoint.x * pixelsPerX) - (adjustedDataSetMinX * pixelsPerX) + ((adjustedDataSetMaxX - dataSetMaxX) * pixelsPerX / 2);
-        float newY = (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) rawDataPoint.y * pixelsPerY) + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2);
+        float newX = (float) leftAxisMargin + ((float) rawDataPoint.x * pixelsPerX) - (dataSetMinX * pixelsPerX) + ((dataSetMaxX - dataSetMaxX) * pixelsPerX / 2);
+//        float newX = (float) leftAxisMargin + ((float) rawDataPoint.x * pixelsPerX) - (adjustedDataSetMinX * pixelsPerX) + ((adjustedDataSetMaxX - dataSetMaxX) * pixelsPerX / 2);
+        float newY = (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) rawDataPoint.y * pixelsPerY) + (dataSetMinY * pixelsPerY) - ((dataSetMaxY - dataSetMaxY) * pixelsPerY / 2);
+//        float newY = (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) rawDataPoint.y * pixelsPerY) + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2);
         return new PointF(newX, newY);
     }
 
@@ -524,10 +530,10 @@ public class GraphView extends View {
         }
         // Use these values when calculating range of values and converting PointF objects.
         // Otherwise, comment these variables out and replace with normal dataSetMax/Min.
-        adjustedDataSetMinX = dataSetMinX - Math.abs(dataSetMinX * .1f);
-        adjustedDataSetMinY = dataSetMinY - Math.abs(dataSetMinY * .1f);
-        adjustedDataSetMaxX = dataSetMaxX + Math.abs(dataSetMaxX * .1f);
-        adjustedDataSetMaxY = dataSetMaxY + Math.abs(dataSetMaxY * .1f);
+//        adjustedDataSetMinX = dataSetMinX - Math.abs(dataSetMinX * .1f);
+//        adjustedDataSetMinY = dataSetMinY - Math.abs(dataSetMinY * .1f);
+//        adjustedDataSetMaxX = dataSetMaxX + Math.abs(dataSetMaxX * .1f);
+//        adjustedDataSetMaxY = dataSetMaxY + Math.abs(dataSetMaxY * .1f);
     }
 
     /**

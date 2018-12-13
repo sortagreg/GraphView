@@ -27,10 +27,13 @@ import butterknife.ButterKnife;
 public class GraphViewFragment extends Fragment {
 
     List<GraphViewDataModel> dataSetList = new ArrayList<>();
+    List<com.sortagreg.graphview.GraphViewDataModel> libraryDataSetList = new ArrayList<>();
     int DATA_SET_LENGTH = 50;
 
     @BindView(R.id.graphView)
     GraphView graphView;
+    @BindView(R.id.libraryGraphView)
+    com.sortagreg.graphview.GraphView libraryGraphView;
     public GraphViewFragment() {
         // Required empty public constructor
     }
@@ -46,13 +49,14 @@ public class GraphViewFragment extends Fragment {
 
 //        drawCrossHairs();
 
-//        drawExponentialCurves();
+        drawExponentialCurves();
 
 //        drawBinaryStateLine();
 
 //        drawConstants();
 
         graphView.addToDataSetListBulk(dataSetList);
+        libraryGraphView.addToDataSetListBulk(libraryDataSetList);
 
         return view;
     }
@@ -64,8 +68,10 @@ public class GraphViewFragment extends Fragment {
         PointF[] cyclicGraph = new PointF[]{new PointF(1,5), new PointF(2,10), new PointF(3,15), new PointF(4,15), new PointF(5,15), new PointF(6,20), new PointF(5,25), new PointF(4, 30), new PointF(3,30), new PointF(3,30), new PointF(3,30), new PointF(3,25), new PointF(2, 20), new PointF(1,5), new PointF(1,10), new PointF(1,5), new PointF(1,10)};
         GraphViewDataModel cyclicDataModel = new GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.UNFOLDED_LINE);
         GraphViewDataModel cyclicDataModelFolded = new GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.STANDARD_LINE);
-//        dataSetList.add(cyclicDataModel);
-        dataSetList.add(cyclicDataModelFolded);
+        com.sortagreg.graphview.GraphViewDataModel libraryCyclicDataModelFolded = new com.sortagreg.graphview.GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.STANDARD_LINE);
+        dataSetList.add(cyclicDataModel);
+//        dataSetList.add(cyclicDataModelFolded);
+        libraryDataSetList.add(libraryCyclicDataModelFolded);
     }
 
     private void drawExponentialCurves() {
@@ -79,7 +85,9 @@ public class GraphViewFragment extends Fragment {
         paint.setStrokeWidth(5f);
         paint.setColor(0xFFFF0000);
         GraphViewDataModel expCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
+        com.sortagreg.graphview.GraphViewDataModel libExpCurve = new com.sortagreg.graphview.GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
         dataSetList.add(expCurve);
+        libraryDataSetList.add(libExpCurve);
 
         exponentialCurve = new PointF[DATA_SET_LENGTH];
         for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
@@ -91,19 +99,21 @@ public class GraphViewFragment extends Fragment {
         paint.setStrokeWidth(5f);
         paint.setColor(0xFF00FF00);
         GraphViewDataModel inverseExpCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
+        com.sortagreg.graphview.GraphViewDataModel libInvExp = new com.sortagreg.graphview.GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
         dataSetList.add(inverseExpCurve);
+        libraryDataSetList.add(libInvExp);
 
-        exponentialCurve = new PointF[DATA_SET_LENGTH];
-        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
-            float x = i;
-            PointF point = new PointF(x, x * x);
-            exponentialCurve[i] = point;
-        }
-        paint = new Paint();
-        paint.setStrokeWidth(5f);
-        paint.setColor(0xFF0000FF);
-        GraphViewDataModel squareCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
-        dataSetList.add(squareCurve);
+//        exponentialCurve = new PointF[DATA_SET_LENGTH];
+//        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
+//            float x = i;
+//            PointF point = new PointF(x, x * x);
+//            exponentialCurve[i] = point;
+//        }
+//        paint = new Paint();
+//        paint.setStrokeWidth(5f);
+//        paint.setColor(0xFF0000FF);
+//        GraphViewDataModel squareCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
+//        dataSetList.add(squareCurve);
     }
 
     private void drawBinaryStateLine() {

@@ -36,5 +36,5 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.23.4'
     testImplementation 'org.hamcrest:hamcrest-junit:2.0.0.0'
 
-    implementation 'com.github.sortagreg:GraphView:dev-SNAPSHOT'
+    implementation 'com.github.sortagreg:GraphView:testing-SNAPSHOT'
 }

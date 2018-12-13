@@ -42,13 +42,13 @@ public class GraphViewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_graph_view, container, false);
         ButterKnife.bind(this, view);
 
-//        drawCrossHairs();
-
         drawUnfoldedDataSet();
+
+//        drawCrossHairs();
 
 //        drawExponentialCurves();
 
-//        drawBinaryStateLine();
+        drawBinaryStateLine();
 
 //        drawConstants();
 
@@ -64,8 +64,8 @@ public class GraphViewFragment extends Fragment {
         PointF[] cyclicGraph = new PointF[]{new PointF(1,5), new PointF(2,10), new PointF(3,15), new PointF(4,15), new PointF(5,15), new PointF(6,20), new PointF(5,25), new PointF(4, 30), new PointF(3,30), new PointF(3,30), new PointF(3,30), new PointF(3,25), new PointF(2, 20), new PointF(1,5), new PointF(1,10), new PointF(1,5), new PointF(1,10)};
         GraphViewDataModel cyclicDataModel = new GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.UNFOLDED_LINE);
         GraphViewDataModel cyclicDataModelFolded = new GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.STANDARD_LINE);
-        dataSetList.add(cyclicDataModel);
-//        dataSetList.add(cyclicDataModelFolded);
+//        dataSetList.add(cyclicDataModel);
+        dataSetList.add(cyclicDataModelFolded);
     }
 
     private void drawExponentialCurves() {
@@ -114,14 +114,14 @@ public class GraphViewFragment extends Fragment {
         PointF[] stateLine = new PointF[DATA_SET_LENGTH];
         for (int i = 0; i <= stateLine.length - 1; i++) {
             stateLine[i] = new PointF(0f, state ? 1 : 0);
-            if (i % 10 == 0) state = !state;
+            if (i % 3 == 0) state = !state;
         }
         GraphViewDataModel graphViewDataModel = new GraphViewDataModel(stateLine, paint, GraphViewDataModel.STATE_LINE);
         dataSetList.add(graphViewDataModel);
     }
 
     private void drawConstants() {
-        PointF constantLine = new PointF(0f, 876f);
+        PointF constantLine = new PointF(0f, 80f);
         PointF[] dataSet = new PointF[]{constantLine};
         Paint paint = new Paint();
         paint.setColor(0xFF00FF00);

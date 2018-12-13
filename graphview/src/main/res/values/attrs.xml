@@ -5,10 +5,11 @@
         <attr name="numberOfHorizontalMarkers" format="integer"/>
         <attr name="numberOfVerticalLabels" format="integer"/>
         <attr name="numberOfHorizontalLabels" format="integer"/>
-        <attr name="axisMarginTop" format="integer" />
-        <attr name="axisMarginBottom" format="integer" />
-        <attr name="axisMarginLeft" format="integer" />
-        <attr name="axisMarginRight" format="integer" />
+        <attr name="axisMarginTop" format="float" />
+        <attr name="axisMarginBottom" format="float" />
+        <attr name="axisMarginLeft" format="float" />
+        <attr name="axisMarginRight" format="float" />
+        <attr name="graphPaddingFactor" format="float" />
         <attr name="shouldDrawBox" format="boolean" />
         <attr name="labelStyle" format="integer">
             <enum name="Standard" value="0"/>

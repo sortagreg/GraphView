@@ -23,6 +23,8 @@ GraphView currently supports two different styles of labels:
 2) Incremental X, with normal Y labels
 
 ## Images
+Both of the following graphs come from the same data set, but are displayed using the **Incremental** graph and labels next to a **Standard** graph and labels.
+
 ![Standard and Incremental graph](https://github.com/sortagreg/GraphView/blob/dev/graphview/images/DemoScreenshot.png)
 
 ## Usage
@@ -96,7 +98,7 @@ Many of the portions of GraphView can be customized to fit your needs.  Options 
 * labelStyle : Standard, Unfolded, Custom
 * title : String
 
-Note: attribute `android:background:` must be set, otherwise the background of the GraphView will be transparent.
+Note: attribute `android:background` must be set, otherwise the background of the GraphView will be transparent.
 
 ## License
 ```

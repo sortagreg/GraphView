@@ -18,6 +18,12 @@ GraphView currently supports four different styles of graphs:
 4) Binary state graphs
 
 ## Label Styles
+GraphView currently supports two different styles of labels:
+1) Standard X, Y labels
+2) Incremental X, with normal Y labels
+
+## Images
+![Standard and Incremental graph](https://github.com/sortagreg/GraphView/blob/dev/graphview/images/DemoScreenshot.png)
 
 ## Usage
 ### Prerequisites
@@ -89,6 +95,7 @@ Many of the portions of GraphView can be customized to fit your needs.  Options 
 * shouldDrawBox : boolean
 * labelStyle : Standard, Unfolded, Custom
 * title : String
+
 Note: attribute `android:background:` must be set, otherwise the background of the GraphView will be transparent.
 
 ## License

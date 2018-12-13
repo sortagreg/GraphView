@@ -42,11 +42,11 @@ public class GraphViewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_graph_view, container, false);
         ButterKnife.bind(this, view);
 
-        drawUnfoldedDataSet();
+//        drawUnfoldedDataSet();
 
 //        drawCrossHairs();
 
-//        drawExponentialCurves();
+        drawExponentialCurves();
 
         drawBinaryStateLine();
 

@@ -35,20 +35,23 @@ public class GraphView extends View {
     private Context context;
     private static final String TAG = "GraphView";
 
+    // Configurables
     private String title = "";
 
     private Paint axisPaint = new Paint();
     private Paint markerPaint = new Paint();
     private Paint dataSetPaint = new Paint();
 
-    public static final float DEFAULT_TOP_MARGIN = 75;
-    public static final float DEFAULT_BOTTOM_MARGIN = 175;
-    public static final float DEFAULT_LEFT_MARGIN = 175;
-    public static final float DEFAULT_RIGHT_MARGIN = 75;
+    public static final float DEFAULT_TOP_MARGIN = 75f;
+    public static final float DEFAULT_BOTTOM_MARGIN = 175f;
+    public static final float DEFAULT_LEFT_MARGIN = 175f;
+    public static final float DEFAULT_RIGHT_MARGIN = 75f;
+    public static final float DEFAULT_GRAPH_PADDING_FACTOR = 0f;
     private float topAxisMargin;
     private float bottomAxisMargin;
     private float leftAxisMargin;
     private float rightAxisMargin;
+    private float graphPaddingFactor;
 
     public static final int DEFAULT_NUMBER_VERT_MARKERS = 15;
     public static final int DEFAULT_NUMBER_HORI_MARKERS = 15;
@@ -66,6 +69,7 @@ public class GraphView extends View {
 
     private boolean shouldDrawBox;
 
+    // Calculated values
     private List<GraphViewDataModel> dataSetList;
     private float dataSetMinX = Float.MAX_VALUE;
     private float dataSetMaxX = Float.MIN_VALUE;
@@ -130,6 +134,7 @@ public class GraphView extends View {
         bottomAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginBottom, DEFAULT_BOTTOM_MARGIN);
         rightAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginRight, DEFAULT_RIGHT_MARGIN);
         leftAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginLeft, DEFAULT_LEFT_MARGIN);
+        graphPaddingFactor = typedArray.getFloat(R.styleable.GraphView_graphPaddingFactor, DEFAULT_GRAPH_PADDING_FACTOR);
         shouldDrawBox = typedArray.getBoolean(R.styleable.GraphView_shouldDrawBox, false);
         labelStyle = typedArray.getInteger(R.styleable.GraphView_labelStyle, STANDARD_LABELS);
         title = typedArray.getString(R.styleable.GraphView_title) != null ? typedArray.getString(R.styleable.GraphView_title) : "";
@@ -151,8 +156,8 @@ public class GraphView extends View {
     protected void onDraw(Canvas canvas) {
         drawVerticalMarkers(canvas);
         drawHorizontalMarkers(canvas);
-        drawAxes(canvas);
         drawDataSets(canvas);
+        drawAxes(canvas);
         switch (labelStyle) {
             case STANDARD_LABELS:
                 drawStandardTextLabels(canvas);
@@ -266,6 +271,16 @@ public class GraphView extends View {
      */
     public void setRightAxisMargin(float rightAxisMargin) {
         this.rightAxisMargin = rightAxisMargin;
+        invalidate();
+    }
+
+    /**
+     * Update how much padding a graph should have.
+     *
+     * @param graphPaddingFactor float value from 0.0(no padding) or greater than.
+     */
+    public void setGraphPaddingFactor(float graphPaddingFactor) {
+        this.graphPaddingFactor = graphPaddingFactor;
         invalidate();
     }
 
@@ -523,23 +538,6 @@ public class GraphView extends View {
     }
 
     /**
-     * Method converts an (X,Y) pair to its appropriate pixel location values.
-     *
-     * @param rawDataPoint PointF data point to be converted.
-     * @param canvas Canvas Object to be drawn to.
-     * @param pixelsPerX float Calculated pixel per X value from all data sets.
-     * @param pixelsPerY float Calculated pixel per Y value from all data sets.
-     * @return PointF with the literal pixel coordinates of the inputs (X,Y) values.
-     */
-    public PointF convertXYtoPx(PointF rawDataPoint, Canvas canvas, float pixelsPerX, float pixelsPerY) {
-        float newX = (float) leftAxisMargin + ((float) rawDataPoint.x * pixelsPerX) - (dataSetMinX * pixelsPerX) + ((dataSetMaxX - dataSetMaxX) * pixelsPerX / 2);
-//        float newX = (float) leftAxisMargin + ((float) rawDataPoint.x * pixelsPerX) - (adjustedDataSetMinX * pixelsPerX) + ((adjustedDataSetMaxX - dataSetMaxX) * pixelsPerX / 2);
-        float newY = (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) rawDataPoint.y * pixelsPerY) + (dataSetMinY * pixelsPerY) - ((dataSetMaxY - dataSetMaxY) * pixelsPerY / 2);
-//        float newY = (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) rawDataPoint.y * pixelsPerY) + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2);
-        return new PointF(newX, newY);
-    }
-
-    /**
      * Find and set the largest and smallest values to be found in all the data sets.
      */
     private void getStatsOnAllDataSets() {
@@ -557,10 +555,10 @@ public class GraphView extends View {
         }
         // Use these values when calculating range of values and converting PointF objects.
         // Otherwise, comment these variables out and replace with normal dataSetMax/Min.
-        adjustedDataSetMinX = dataSetMinX - Math.abs(dataSetMinX * .1f);
-        adjustedDataSetMinY = dataSetMinY - Math.abs(dataSetMinY * .1f);
-        adjustedDataSetMaxX = dataSetMaxX + Math.abs(dataSetMaxX * .1f);
-        adjustedDataSetMaxY = dataSetMaxY + Math.abs(dataSetMaxY * .1f);
+        adjustedDataSetMinX = dataSetMinX - Math.abs(dataSetMinX * graphPaddingFactor);
+        adjustedDataSetMinY = dataSetMinY - Math.abs(dataSetMinY * graphPaddingFactor);
+        adjustedDataSetMaxX = dataSetMaxX + Math.abs(dataSetMaxX * graphPaddingFactor);
+        adjustedDataSetMaxY = dataSetMaxY + Math.abs(dataSetMaxY * graphPaddingFactor);
 
         rangeOfXValues = adjustedDataSetMaxX - adjustedDataSetMinX;
         rangeOfYValues = adjustedDataSetMaxY - adjustedDataSetMinY;
@@ -597,6 +595,7 @@ public class GraphView extends View {
         savedState.bottomAxisMargin = bottomAxisMargin;
         savedState.leftAxisMargin = leftAxisMargin;
         savedState.rightAxisMargin = rightAxisMargin;
+        savedState.graphPaddingFactor = graphPaddingFactor;
         savedState.shouldDrawBox = shouldDrawBox;
         savedState.labelStyle = labelStyle;
         savedState.title = title;
@@ -623,6 +622,7 @@ public class GraphView extends View {
         setBottomAxisMargin(savedState.bottomAxisMargin);
         setLeftAxisMargin(savedState.leftAxisMargin);
         setRightAxisMargin(savedState.rightAxisMargin);
+        setGraphPaddingFactor(savedState.graphPaddingFactor);
         setShouldDrawBox(savedState.shouldDrawBox);
         setLabelStyle(savedState.labelStyle);
         setTitle(savedState.title);
@@ -642,6 +642,7 @@ public class GraphView extends View {
         private static final String BOTTOM_AXIS_MARGIN = "bottom axis margin";
         private static final String LEFT_AXIS_MARGIN = "left axis margin";
         private static final String RIGHT_AXIS_MARGIN = "right axis margin";
+        private static final String GRAPH_PADDING_FACTOR = "graph padding factor";
         private static final String SHOULD_DRAW_BOX = "should draw box";
         private static final String LABEL_STYLE = "label style";
         private static final String TITLE = "title";
@@ -654,6 +655,7 @@ public class GraphView extends View {
         float bottomAxisMargin;
         float leftAxisMargin;
         float rightAxisMargin;
+        float graphPaddingFactor;
         boolean shouldDrawBox;
         int labelStyle;
         String title;
@@ -679,6 +681,7 @@ public class GraphView extends View {
             bottomAxisMargin = bundle.getFloat(BOTTOM_AXIS_MARGIN, DEFAULT_BOTTOM_MARGIN);
             leftAxisMargin = bundle.getFloat(LEFT_AXIS_MARGIN, DEFAULT_LEFT_MARGIN);
             rightAxisMargin = bundle.getFloat(RIGHT_AXIS_MARGIN, DEFAULT_RIGHT_MARGIN);
+            graphPaddingFactor = bundle.getFloat(GRAPH_PADDING_FACTOR, DEFAULT_GRAPH_PADDING_FACTOR);
             shouldDrawBox = bundle.getBoolean(SHOULD_DRAW_BOX);
             labelStyle = bundle.getInt(LABEL_STYLE);
             title = bundle.getString(TITLE);
@@ -702,6 +705,7 @@ public class GraphView extends View {
             outBundle.putFloat(BOTTOM_AXIS_MARGIN, bottomAxisMargin);
             outBundle.putFloat(RIGHT_AXIS_MARGIN, rightAxisMargin);
             outBundle.putFloat(LEFT_AXIS_MARGIN, leftAxisMargin);
+            outBundle.putFloat(GRAPH_PADDING_FACTOR, graphPaddingFactor);
             outBundle.putBoolean(SHOULD_DRAW_BOX, shouldDrawBox);
             outBundle.putInt(LABEL_STYLE, labelStyle);
             outBundle.putString(TITLE, title);

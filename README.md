@@ -20,7 +20,7 @@ GraphView currently supports four different styles of graphs:
 ## Label Styles
 
 ## Usage
-### Perquisites
+### Prerequisites
 In your project level gradle file, add the following:
 ```
 allprojects {
@@ -31,7 +31,7 @@ allprojects {
 ```
 and in your app level gradle file add the following:
 ```
-implementation 'com.github.sortagreg:GraphView:0.4'
+implementation 'com.github.sortagreg:GraphView:1.0RC'
 ```
 ### Example
 XML:
@@ -73,7 +73,23 @@ GraphViewDataModel dataModel = new GraphViewDataModel(exponentialCurve, paint, G
 graphView.addToDataSetList(dataModel);
 ```
 
-![Basic Demo Screenshot](https://github.com/sortagreg/GraphView/blob/Documentation/graphview/images/BasicDemoScreenshot.png)
+### Customization
+Many of the portions of GraphView can be customized to fit your needs.  Options can be set in the XML or in Java.
+
+#### Current Customization Options
+* numberOfVerticalMarkers : Integer
+* numberOfHorizontalMarkers : Integer
+* numberOfVerticalLabels : Integer
+* numberOfHorizontalLabels : Integer
+* axisMarginTop : float
+* axisMarginBottom : float
+* axisMarginLeft : float
+* axisMarginRight : float
+* graphPaddingFactor : float
+* shouldDrawBox : boolean
+* labelStyle : Standard, Unfolded, Custom
+* title : String
+Note: attribute `android:background:` must be set, otherwise the background of the GraphView will be transparent.
 
 ## License
 ```

@@ -3,6 +3,8 @@ A custom graph View Object for Android.
 
 Still in development.
 
+[![](https://jitpack.io/v/sortagreg/GraphView.svg)](https://jitpack.io/#sortagreg/GraphView)
+
 ## Description
 GraphView is a custom graphing library for Android.  GraphView can handle multiple styles of line graph, including data sets that are not organized in ascending order.  GraphView uses the basic Android Canvas methods to draw the graph and all of its associated pieces.
 

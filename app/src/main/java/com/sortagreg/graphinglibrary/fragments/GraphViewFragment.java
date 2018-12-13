@@ -45,11 +45,11 @@ public class GraphViewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_graph_view, container, false);
         ButterKnife.bind(this, view);
 
-//        drawUnfoldedDataSet();
+        drawUnfoldedDataSet();
 
 //        drawCrossHairs();
 
-        drawExponentialCurves();
+//        drawExponentialCurves();
 
 //        drawBinaryStateLine();
 
@@ -67,11 +67,13 @@ public class GraphViewFragment extends Fragment {
         paint.setColor(0xFF0000FF);
         PointF[] cyclicGraph = new PointF[]{new PointF(1,5), new PointF(2,10), new PointF(3,15), new PointF(4,15), new PointF(5,15), new PointF(6,20), new PointF(5,25), new PointF(4, 30), new PointF(3,30), new PointF(3,30), new PointF(3,30), new PointF(3,25), new PointF(2, 20), new PointF(1,5), new PointF(1,10), new PointF(1,5), new PointF(1,10)};
         GraphViewDataModel cyclicDataModel = new GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.UNFOLDED_LINE);
-        GraphViewDataModel cyclicDataModelFolded = new GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.STANDARD_LINE);
         com.sortagreg.graphview.GraphViewDataModel libraryCyclicDataModelFolded = new com.sortagreg.graphview.GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.STANDARD_LINE);
-        dataSetList.add(cyclicDataModel);
+        graphView.addToDataSetList(cyclicDataModel);
+        libraryGraphView.addToDataSetList(libraryCyclicDataModelFolded);
+        libraryGraphView.setTitle("Standard Graph & Labels");
+        graphView.setTitle("Incremental Graph & Labels");
 //        dataSetList.add(cyclicDataModelFolded);
-        libraryDataSetList.add(libraryCyclicDataModelFolded);
+//        libraryDataSetList.add(libraryCyclicDataModelFolded);
     }
 
     private void drawExponentialCurves() {

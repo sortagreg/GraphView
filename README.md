@@ -3,6 +3,8 @@ A custom graph View Object for Android.
 
 Still in development.
 
+[![](https://jitpack.io/v/sortagreg/GraphView.svg)](https://jitpack.io/#sortagreg/GraphView)
+
 ## Description
 GraphView is a custom graphing library for Android.  GraphView can handle multiple styles of line graph, including data sets that are not organized in ascending order.  GraphView uses the basic Android Canvas methods to draw the graph and all of its associated pieces.
 
@@ -16,9 +18,17 @@ GraphView currently supports four different styles of graphs:
 4) Binary state graphs
 
 ## Label Styles
+GraphView currently supports two different styles of labels:
+1) Standard X, Y labels
+2) Incremental X, with normal Y labels
+
+## Images
+Both of the following graphs come from the same data set, but are displayed using the **Incremental** graph and labels next to a **Standard** graph and labels.
+
+![Standard and Incremental graph](https://github.com/sortagreg/GraphView/blob/dev/graphview/images/DemoScreenshot.png)
 
 ## Usage
-### Perquisites
+### Prerequisites
 In your project level gradle file, add the following:
 ```
 allprojects {
@@ -29,7 +39,7 @@ allprojects {
 ```
 and in your app level gradle file add the following:
 ```
-implementation 'com.github.sortagreg:GraphView:0.4'
+implementation 'com.github.sortagreg:GraphView:1.0RC'
 ```
 ### Example
 XML:
@@ -71,4 +81,32 @@ GraphViewDataModel dataModel = new GraphViewDataModel(exponentialCurve, paint, G
 graphView.addToDataSetList(dataModel);
 ```
 
-![Basic Demo Screenshot](https://github.com/sortagreg/GraphView/blob/Documentation/graphview/images/BasicDemoScreenshot.png)
+### Customization
+Many of the portions of GraphView can be customized to fit your needs.  Options can be set in the XML or in Java.
+
+#### Current Customization Options
+* numberOfVerticalMarkers : Integer
+* numberOfHorizontalMarkers : Integer
+* numberOfVerticalLabels : Integer
+* numberOfHorizontalLabels : Integer
+* axisMarginTop : float
+* axisMarginBottom : float
+* axisMarginLeft : float
+* axisMarginRight : float
+* graphPaddingFactor : float
+* shouldDrawBox : boolean
+* labelStyle : Standard, Unfolded, Custom
+* title : String
+
+Note: attribute `android:background` must be set, otherwise the background of the GraphView will be transparent.
+
+## License
+```
+Copyright 2018 Marshall Lad
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+```

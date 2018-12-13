@@ -102,7 +102,7 @@ Note: attribute `android:background` must be set, otherwise the background of th
 
 ## License
 ```
-Copyright 2018 Marshall Lad
+Copyright 2018 Marshall Ladd
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

@@ -404,6 +404,16 @@ public class GraphView extends View {
         }
     }
 
+    /**
+     * Draws a line showing the state of something denoted by 1 or 0
+     *
+     * Data set for this should be an array with the y coordinate is either a 1 or 0 to denote a state
+     * of something.  Graph will display a constant line near the bottom the graph for a 0 or a constant
+     * line near the top for a 1.
+     *
+     * @param canvas
+     * @param dataModel
+     */
     private void drawBinaryStateLine(Canvas canvas, GraphViewDataModel dataModel) {
         for (int i = 0; i < dataModel.getDataSet().length - 1; i ++) {
             float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (dataModel.getDataSet().length - 1);
@@ -415,6 +425,12 @@ public class GraphView extends View {
         }
     }
 
+    /**
+     * Draws a graph incrementally, taking each point in sequence, and displays (sequence value, actual Y)
+     *
+     * @param canvas
+     * @param dataModel
+     */
     private void drawUnfoldedLine(Canvas canvas, GraphViewDataModel dataModel) {
         for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
             float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (dataModel.getDataSet().length - 1);
@@ -432,6 +448,12 @@ public class GraphView extends View {
         }
     }
 
+    /**
+     * Takes a single point in a GraphViewDataModel and displays a constant based on the point's Y
+     *
+     * @param canvas
+     * @param dataModel
+     */
     private void drawConstantLine(Canvas canvas, GraphViewDataModel dataModel) {
         float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (rangeOfYValues);
 
@@ -446,6 +468,12 @@ public class GraphView extends View {
         canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
     }
 
+    /**
+     * Draws a line from a data set, using (X,Y) pairs
+     *
+     * @param canvas
+     * @param dataModel
+     */
     private void drawStandardLine(Canvas canvas, GraphViewDataModel dataModel) {
         for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
             float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / rangeOfXValues;

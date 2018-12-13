@@ -454,22 +454,22 @@ public class GraphView extends View {
         textPaint.setFakeBoldText(true);
         // Y-Axis labels
         if (numberOfVerticalLabels > 0) {
-            float pixelsPerLabel = (canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (float) numberOfVerticalLabels;
+            float pixelsPerLabel = (canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (float) numberOfVerticalLabels;
             float valuePerStep = rangeOfYValues / numberOfVerticalLabels;
             for (int i = 1; i <= numberOfVerticalLabels; i++) {
                 int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
-                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - (float) bottomAxisMargin) - ((float) i * pixelsPerLabel) + 20f, textPaint);
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - bottomAxisMargin) - ((float) i * pixelsPerLabel) + 20f, textPaint);
             }
         }
         // X-Axis labels
         if (numberOfHorizontalLabels > 0) {
-            float pixelsPerLabel = (canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (float) numberOfHorizontalLabels;
+            float pixelsPerLabel = (canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (float) numberOfHorizontalLabels;
             float valuePerStep = rangeOfXValues / numberOfHorizontalLabels;
             for (int i = 1; i <= numberOfHorizontalLabels; i++) {
                 int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinX);
-                canvas.rotate(270, (float) leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
-                canvas.drawText(String.valueOf(labelValue), (float) leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f, textPaint);
-                canvas.rotate(-270, (float) leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
+                canvas.rotate(270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
+                canvas.rotate(-270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
             }
         }
         // Title label
@@ -493,23 +493,22 @@ public class GraphView extends View {
         textPaint.setFakeBoldText(true);
         // Y-Axis labels
         if (numberOfVerticalLabels > 0) {
-            float pixelsPerLabel = (canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (float) numberOfVerticalLabels;
+            float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin -  bottomAxisMargin) / (float) numberOfVerticalLabels;
             float valuePerStep = rangeOfYValues / numberOfVerticalLabels;
             for (int i = 1; i <= numberOfVerticalLabels; i++) {
-//                int labelValue = (int) Math.floor((valuePerStep * i) + dataSetMinY);
                 int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
-                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - (float) bottomAxisMargin) - ((float) i * pixelsPerLabel), textPaint);
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - bottomAxisMargin) - ((float) i * pixelsPerLabel) + 20f, textPaint);
             }
         }
         // X-Axis labels
         if (numberOfHorizontalLabels > 0) {
-            float pixelsPerLabel = (canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (float) numberOfHorizontalLabels;
+            float pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (float) numberOfHorizontalLabels;
             float valuePerStep = dataSetList.get(0).getDataSet().length / numberOfHorizontalLabels;
             for (int i = 1; i <= numberOfHorizontalLabels; i++) {
                 int labelValue = (int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep].x;
-                canvas.rotate(270, (float) leftAxisMargin - 20f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
-                canvas.drawText(String.valueOf(labelValue), (float) leftAxisMargin - 20f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f, textPaint);
-                canvas.rotate(-270, (float) leftAxisMargin - 20f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
+                canvas.rotate(270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
+                canvas.rotate(-270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
             }
         }
         // Title label

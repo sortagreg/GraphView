@@ -22,7 +22,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shouldDrawBox="true"
-        app:title="Demo Graph"/>
+        app:title="Demo Graph"
+        app:labelStyle="Unfolded"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"

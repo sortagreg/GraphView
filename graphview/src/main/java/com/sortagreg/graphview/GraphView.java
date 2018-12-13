@@ -32,20 +32,23 @@ public class GraphView extends View {
     private Context context;
     private static final String TAG = "GraphView";
 
+    // Configurables
     private String title = "";
 
     private Paint axisPaint = new Paint();
     private Paint markerPaint = new Paint();
     private Paint dataSetPaint = new Paint();
 
-    public static final float DEFAULT_TOP_MARGIN = 75;
-    public static final float DEFAULT_BOTTOM_MARGIN = 175;
-    public static final float DEFAULT_LEFT_MARGIN = 175;
-    public static final float DEFAULT_RIGHT_MARGIN = 75;
+    public static final float DEFAULT_TOP_MARGIN = 75f;
+    public static final float DEFAULT_BOTTOM_MARGIN = 175f;
+    public static final float DEFAULT_LEFT_MARGIN = 175f;
+    public static final float DEFAULT_RIGHT_MARGIN = 75f;
+    public static final float DEFAULT_GRAPH_PADDING_FACTOR = 0f;
     private float topAxisMargin;
     private float bottomAxisMargin;
     private float leftAxisMargin;
     private float rightAxisMargin;
+    private float graphPaddingFactor;
 
     public static final int DEFAULT_NUMBER_VERT_MARKERS = 15;
     public static final int DEFAULT_NUMBER_HORI_MARKERS = 15;
@@ -63,6 +66,7 @@ public class GraphView extends View {
 
     private boolean shouldDrawBox;
 
+    // Calculated values
     private List<GraphViewDataModel> dataSetList;
     private float dataSetMinX = Float.MAX_VALUE;
     private float dataSetMaxX = Float.MIN_VALUE;
@@ -127,6 +131,7 @@ public class GraphView extends View {
         bottomAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginBottom, DEFAULT_BOTTOM_MARGIN);
         rightAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginRight, DEFAULT_RIGHT_MARGIN);
         leftAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginLeft, DEFAULT_LEFT_MARGIN);
+        graphPaddingFactor = typedArray.getFloat(R.styleable.GraphView_graphPaddingFactor, DEFAULT_GRAPH_PADDING_FACTOR);
         shouldDrawBox = typedArray.getBoolean(R.styleable.GraphView_shouldDrawBox, false);
         labelStyle = typedArray.getInteger(R.styleable.GraphView_labelStyle, STANDARD_LABELS);
         title = typedArray.getString(R.styleable.GraphView_title) != null ? typedArray.getString(R.styleable.GraphView_title) : "";
@@ -148,20 +153,23 @@ public class GraphView extends View {
     protected void onDraw(Canvas canvas) {
         drawVerticalMarkers(canvas);
         drawHorizontalMarkers(canvas);
-        drawAxes(canvas);
         drawDataSets(canvas);
-        switch (labelStyle) {
-            case STANDARD_LABELS:
-                drawStandardTextLabels(canvas);
-                break;
-            case UNFOLDED_LABELS:
-                drawUnfoldedTextLabels(canvas);
-                break;
-            case CUSTOM_LABELS:
-                Log.w(TAG, "onDraw: Custom label is not implemented yet. Using standard by default");
-                // TODO add custom label ability
-                // break;
-            default: drawStandardTextLabels(canvas);
+        drawAxes(canvas);
+        if (!dataSetList.isEmpty()) {
+            switch (labelStyle) {
+                case STANDARD_LABELS:
+                    drawStandardTextLabels(canvas);
+                    break;
+                case UNFOLDED_LABELS:
+                    drawUnfoldedTextLabels(canvas);
+                    break;
+                case CUSTOM_LABELS:
+                    Log.w(TAG, "onDraw: Custom label is not implemented yet. Using standard by default");
+                    // TODO add custom label ability
+                    // break;
+                default:
+                    drawStandardTextLabels(canvas);
+            }
         }
     }
 
@@ -263,6 +271,16 @@ public class GraphView extends View {
      */
     public void setRightAxisMargin(float rightAxisMargin) {
         this.rightAxisMargin = rightAxisMargin;
+        invalidate();
+    }
+
+    /**
+     * Update how much padding a graph should have.
+     *
+     * @param graphPaddingFactor float value from 0.0(no padding) or greater than.
+     */
+    public void setGraphPaddingFactor(float graphPaddingFactor) {
+        this.graphPaddingFactor = graphPaddingFactor;
         invalidate();
     }
 
@@ -369,31 +387,13 @@ public class GraphView extends View {
                     drawStandardLine(canvas, dataModel);
                     break;
                 case UNFOLDED_LINE:
-                    for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
-                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (dataModel.getDataSet().length);
-                        float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
-                        PointF startPoint = dataModel.getDataSet()[i];
-                        PointF endPoint = dataModel.getDataSet()[i + 1];
-//                        canvas.drawLine((float) leftAxisMargin + ((float) i * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2) - ((float) startPoint.y * pixelsPerY), (float) leftAxisMargin + (((float) i + 1f)  * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) endPoint.y * pixelsPerY) + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2), dataModel.getPaint());
-                        canvas.drawLine((float) leftAxisMargin + ((float) i * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin + (dataSetMinY * pixelsPerY) - ((dataSetMaxY - dataSetMaxY) * pixelsPerY / 2) - ((float) startPoint.y * pixelsPerY), (float) leftAxisMargin + (((float) i + 1f)  * pixelsPerX), (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) endPoint.y * pixelsPerY) + (dataSetMinY * pixelsPerY) - ((dataSetMaxY - dataSetMaxY) * pixelsPerY / 2), dataModel.getPaint());
-                    }
+                    drawUnfoldedLine(canvas, dataModel);
                     break;
                 case CONSTANT_LINE:
-                    if (true) {
-                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (rangeOfXValues);
-                        float pixelsPerY = ((float) canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (rangeOfYValues);
-                        PointF startPoint = convertXYtoPx(new PointF((float) dataSetMinX, dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
-                        PointF endPoint = convertXYtoPx(new PointF((float) dataSetMaxX, dataModel.getDataSet()[0].y), canvas, pixelsPerX, pixelsPerY);
-                        canvas.drawLine((float) leftAxisMargin, startPoint.y, (float) canvas.getWidth() - (float) rightAxisMargin, endPoint.y, dataModel.getPaint());
-                    }
+                    drawConstantLine(canvas, dataModel);
                     break;
                 case STATE_LINE:
-                    for (int i = 0; i < dataModel.getDataSet().length - 2; i ++) {
-                        float pixelsPerX = ((float) canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (dataModel.getDataSet().length);
-                        PointF startPoint = new PointF((float) leftAxisMargin + ((float) i * pixelsPerX), dataModel.getDataSet()[i].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .15f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .85f) + topAxisMargin));
-                        PointF endPoint = new PointF((float) leftAxisMargin + ((float) (i + 1) * pixelsPerX), dataModel.getDataSet()[i + 1].y == 0 ? ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .15f) + topAxisMargin) : ((((float) canvas.getHeight() - (float) bottomAxisMargin - (float) topAxisMargin) * .85f) + topAxisMargin));
-                        canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
-                    }
+                    drawBinaryStateLine(canvas, dataModel);
                     break;
             }
 
@@ -401,15 +401,85 @@ public class GraphView extends View {
         }
     }
 
+    /**
+     * Draws a line showing the state of something denoted by 1 or 0
+     *
+     * Data set for this should be an array with the y coordinate is either a 1 or 0 to denote a state
+     * of something.  Graph will display a constant line near the bottom the graph for a 0 or a constant
+     * line near the top for a 1.
+     *
+     * @param canvas
+     * @param dataModel
+     */
+    private void drawBinaryStateLine(Canvas canvas, GraphViewDataModel dataModel) {
+        for (int i = 0; i < dataModel.getDataSet().length - 1; i ++) {
+            float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (dataModel.getDataSet().length - 1);
+
+            PointF startPoint = new PointF(leftAxisMargin + ((float) i * pixelsPerX), dataModel.getDataSet()[i].y == 0 ? ((((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .15f) + topAxisMargin) : ((((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .85f) + topAxisMargin));
+            PointF endPoint = new PointF(leftAxisMargin + ((float) (i + 1) * pixelsPerX), dataModel.getDataSet()[i + 1].y == 0 ? ((((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .15f) + topAxisMargin) : ((((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .85f) + topAxisMargin));
+
+            canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
+        }
+    }
+
+    /**
+     * Draws a graph incrementally, taking each point in sequence, and displays (sequence value, actual Y)
+     *
+     * @param canvas
+     * @param dataModel
+     */
+    private void drawUnfoldedLine(Canvas canvas, GraphViewDataModel dataModel) {
+        for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
+            float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (dataModel.getDataSet().length - 1);
+            float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
+
+            float startX = leftAxisMargin + (float) i * pixelsPerX;
+            float startY = (float) canvas.getHeight() - bottomAxisMargin - (dataModel.getDataSet()[i].y - adjustedDataSetMinY) * pixelsPerY;
+            float endX = leftAxisMargin + ((float) i + 1f) * pixelsPerX;
+            float endY = (float) canvas.getHeight() - bottomAxisMargin - (dataModel.getDataSet()[i + 1].y - adjustedDataSetMinY) * pixelsPerY;
+
+            PointF startPoint = new PointF(startX, startY);
+            PointF endPoint = new PointF(endX, endY);
+
+            canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
+        }
+    }
+
+    /**
+     * Takes a single point in a GraphViewDataModel and displays a constant based on the point's Y
+     *
+     * @param canvas
+     * @param dataModel
+     */
+    private void drawConstantLine(Canvas canvas, GraphViewDataModel dataModel) {
+        float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (rangeOfYValues);
+
+        float startX = leftAxisMargin;
+        float startY = (float) canvas.getHeight() - bottomAxisMargin - (dataModel.getDataSet()[0].y - adjustedDataSetMinY) * pixelsPerY;
+        float endX = (float) canvas.getWidth() - rightAxisMargin;
+        float endY = (float) canvas.getHeight() - bottomAxisMargin - (dataModel.getDataSet()[0].y - adjustedDataSetMinY) * pixelsPerY;
+
+        PointF startPoint = new PointF(startX, startY);
+        PointF endPoint = new PointF(endX, endY);
+
+        canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
+    }
+
+    /**
+     * Draws a line from a data set, using (X,Y) pairs
+     *
+     * @param canvas
+     * @param dataModel
+     */
     private void drawStandardLine(Canvas canvas, GraphViewDataModel dataModel) {
         for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
             float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / rangeOfXValues;
             float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
 
-            float startX = (dataModel.getDataSet()[i].x - adjustedDataSetMinX) * pixelsPerX + (float) leftAxisMargin;
-            float startY = (float) canvas.getHeight() - (dataModel.getDataSet()[i].y - adjustedDataSetMinY) * pixelsPerY - (float) bottomAxisMargin;
-            float endX = (dataModel.getDataSet()[i + 1].x - adjustedDataSetMinX) * pixelsPerX + (float) leftAxisMargin;
-            float endY = (float) canvas.getHeight() - (dataModel.getDataSet()[i + 1].y - adjustedDataSetMinY) * pixelsPerY - (float) bottomAxisMargin;
+            float startX = (dataModel.getDataSet()[i].x - adjustedDataSetMinX) * pixelsPerX + leftAxisMargin;
+            float startY = (float) canvas.getHeight() - bottomAxisMargin - (dataModel.getDataSet()[i].y - adjustedDataSetMinY) * pixelsPerY;
+            float endX = (dataModel.getDataSet()[i + 1].x - adjustedDataSetMinX) * pixelsPerX + leftAxisMargin;
+            float endY = (float) canvas.getHeight() - bottomAxisMargin - (dataModel.getDataSet()[i + 1].y - adjustedDataSetMinY) * pixelsPerY;
 
             PointF startPoint = new PointF(startX, startY);
             PointF endPoint = new PointF(endX, endY);
@@ -433,27 +503,27 @@ public class GraphView extends View {
         textPaint.setFakeBoldText(true);
         // Y-Axis labels
         if (numberOfVerticalLabels > 0) {
-            float pixelsPerLabel = (canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (float) numberOfVerticalLabels;
+            float pixelsPerLabel = (canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (float) numberOfVerticalLabels;
             float valuePerStep = rangeOfYValues / numberOfVerticalLabels;
             for (int i = 1; i <= numberOfVerticalLabels; i++) {
                 int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
-                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - (float) bottomAxisMargin) - ((float) i * pixelsPerLabel) + 20f, textPaint);
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - bottomAxisMargin) - ((float) i * pixelsPerLabel) + 20f, textPaint);
             }
         }
         // X-Axis labels
         if (numberOfHorizontalLabels > 0) {
-            float pixelsPerLabel = (canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (float) numberOfHorizontalLabels;
+            float pixelsPerLabel = (canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (float) numberOfHorizontalLabels;
             float valuePerStep = rangeOfXValues / numberOfHorizontalLabels;
             for (int i = 1; i <= numberOfHorizontalLabels; i++) {
                 int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinX);
-                canvas.rotate(270, (float) leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
-                canvas.drawText(String.valueOf(labelValue), (float) leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f, textPaint);
-                canvas.rotate(-270, (float) leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
+                canvas.rotate(270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
+                canvas.rotate(-270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
             }
         }
         // Title label
         textPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(title, canvas.getWidth() / 2f, 50f, textPaint);
+        canvas.drawText(title, canvas.getWidth() / 2f, topAxisMargin / 2f, textPaint);
     }
 
     /**
@@ -472,45 +542,27 @@ public class GraphView extends View {
         textPaint.setFakeBoldText(true);
         // Y-Axis labels
         if (numberOfVerticalLabels > 0) {
-            float pixelsPerLabel = (canvas.getHeight() - (float) topAxisMargin - (float) bottomAxisMargin) / (float) numberOfVerticalLabels;
+            float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin -  bottomAxisMargin) / (float) numberOfVerticalLabels;
             float valuePerStep = rangeOfYValues / numberOfVerticalLabels;
             for (int i = 1; i <= numberOfVerticalLabels; i++) {
-//                int labelValue = (int) Math.floor((valuePerStep * i) + dataSetMinY);
                 int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
-                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - (float) bottomAxisMargin) - ((float) i * pixelsPerLabel), textPaint);
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - bottomAxisMargin) - ((float) i * pixelsPerLabel) + 20f, textPaint);
             }
         }
         // X-Axis labels
         if (numberOfHorizontalLabels > 0) {
-            float pixelsPerLabel = (canvas.getWidth() - (float) leftAxisMargin - (float) rightAxisMargin) / (float) numberOfHorizontalLabels;
+            float pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (float) numberOfHorizontalLabels;
             float valuePerStep = dataSetList.get(0).getDataSet().length / numberOfHorizontalLabels;
             for (int i = 1; i <= numberOfHorizontalLabels; i++) {
                 int labelValue = (int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep].x;
-                canvas.rotate(270, (float) leftAxisMargin - 20f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
-                canvas.drawText(String.valueOf(labelValue), (float) leftAxisMargin - 20f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f, textPaint);
-                canvas.rotate(-270, (float) leftAxisMargin - 20f + (i * pixelsPerLabel), (float) canvas.getHeight() - (float) bottomAxisMargin + 10f);
+                canvas.rotate(270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
+                canvas.rotate(-270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
             }
         }
         // Title label
         textPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(title, canvas.getWidth() / 2f, 50f, textPaint);
-    }
-
-    /**
-     * Method converts an (X,Y) pair to its appropriate pixel location values.
-     *
-     * @param rawDataPoint PointF data point to be converted.
-     * @param canvas Canvas Object to be drawn to.
-     * @param pixelsPerX float Calculated pixel per X value from all data sets.
-     * @param pixelsPerY float Calculated pixel per Y value from all data sets.
-     * @return PointF with the literal pixel coordinates of the inputs (X,Y) values.
-     */
-    public PointF convertXYtoPx(PointF rawDataPoint, Canvas canvas, float pixelsPerX, float pixelsPerY) {
-        float newX = (float) leftAxisMargin + ((float) rawDataPoint.x * pixelsPerX) - (dataSetMinX * pixelsPerX) + ((dataSetMaxX - dataSetMaxX) * pixelsPerX / 2);
-//        float newX = (float) leftAxisMargin + ((float) rawDataPoint.x * pixelsPerX) - (adjustedDataSetMinX * pixelsPerX) + ((adjustedDataSetMaxX - dataSetMaxX) * pixelsPerX / 2);
-        float newY = (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) rawDataPoint.y * pixelsPerY) + (dataSetMinY * pixelsPerY) - ((dataSetMaxY - dataSetMaxY) * pixelsPerY / 2);
-//        float newY = (float) canvas.getHeight() - (float) bottomAxisMargin - ((float) rawDataPoint.y * pixelsPerY) + (adjustedDataSetMinY * pixelsPerY) - ((adjustedDataSetMaxY - dataSetMaxY) * pixelsPerY / 2);
-        return new PointF(newX, newY);
+        canvas.drawText(title, canvas.getWidth() / 2f, topAxisMargin / 2f, textPaint);
     }
 
     /**
@@ -531,10 +583,10 @@ public class GraphView extends View {
         }
         // Use these values when calculating range of values and converting PointF objects.
         // Otherwise, comment these variables out and replace with normal dataSetMax/Min.
-        adjustedDataSetMinX = dataSetMinX - Math.abs(dataSetMinX * .1f);
-        adjustedDataSetMinY = dataSetMinY - Math.abs(dataSetMinY * .1f);
-        adjustedDataSetMaxX = dataSetMaxX + Math.abs(dataSetMaxX * .1f);
-        adjustedDataSetMaxY = dataSetMaxY + Math.abs(dataSetMaxY * .1f);
+        adjustedDataSetMinX = dataSetMinX - Math.abs(dataSetMinX * graphPaddingFactor);
+        adjustedDataSetMinY = dataSetMinY - Math.abs(dataSetMinY * graphPaddingFactor);
+        adjustedDataSetMaxX = dataSetMaxX + Math.abs(dataSetMaxX * graphPaddingFactor);
+        adjustedDataSetMaxY = dataSetMaxY + Math.abs(dataSetMaxY * graphPaddingFactor);
 
         rangeOfXValues = adjustedDataSetMaxX - adjustedDataSetMinX;
         rangeOfYValues = adjustedDataSetMaxY - adjustedDataSetMinY;
@@ -571,6 +623,7 @@ public class GraphView extends View {
         savedState.bottomAxisMargin = bottomAxisMargin;
         savedState.leftAxisMargin = leftAxisMargin;
         savedState.rightAxisMargin = rightAxisMargin;
+        savedState.graphPaddingFactor = graphPaddingFactor;
         savedState.shouldDrawBox = shouldDrawBox;
         savedState.labelStyle = labelStyle;
         savedState.title = title;
@@ -597,6 +650,7 @@ public class GraphView extends View {
         setBottomAxisMargin(savedState.bottomAxisMargin);
         setLeftAxisMargin(savedState.leftAxisMargin);
         setRightAxisMargin(savedState.rightAxisMargin);
+        setGraphPaddingFactor(savedState.graphPaddingFactor);
         setShouldDrawBox(savedState.shouldDrawBox);
         setLabelStyle(savedState.labelStyle);
         setTitle(savedState.title);
@@ -616,6 +670,7 @@ public class GraphView extends View {
         private static final String BOTTOM_AXIS_MARGIN = "bottom axis margin";
         private static final String LEFT_AXIS_MARGIN = "left axis margin";
         private static final String RIGHT_AXIS_MARGIN = "right axis margin";
+        private static final String GRAPH_PADDING_FACTOR = "graph padding factor";
         private static final String SHOULD_DRAW_BOX = "should draw box";
         private static final String LABEL_STYLE = "label style";
         private static final String TITLE = "title";
@@ -628,6 +683,7 @@ public class GraphView extends View {
         float bottomAxisMargin;
         float leftAxisMargin;
         float rightAxisMargin;
+        float graphPaddingFactor;
         boolean shouldDrawBox;
         int labelStyle;
         String title;
@@ -653,6 +709,7 @@ public class GraphView extends View {
             bottomAxisMargin = bundle.getFloat(BOTTOM_AXIS_MARGIN, DEFAULT_BOTTOM_MARGIN);
             leftAxisMargin = bundle.getFloat(LEFT_AXIS_MARGIN, DEFAULT_LEFT_MARGIN);
             rightAxisMargin = bundle.getFloat(RIGHT_AXIS_MARGIN, DEFAULT_RIGHT_MARGIN);
+            graphPaddingFactor = bundle.getFloat(GRAPH_PADDING_FACTOR, DEFAULT_GRAPH_PADDING_FACTOR);
             shouldDrawBox = bundle.getBoolean(SHOULD_DRAW_BOX);
             labelStyle = bundle.getInt(LABEL_STYLE);
             title = bundle.getString(TITLE);
@@ -676,6 +733,7 @@ public class GraphView extends View {
             outBundle.putFloat(BOTTOM_AXIS_MARGIN, bottomAxisMargin);
             outBundle.putFloat(RIGHT_AXIS_MARGIN, rightAxisMargin);
             outBundle.putFloat(LEFT_AXIS_MARGIN, leftAxisMargin);
+            outBundle.putFloat(GRAPH_PADDING_FACTOR, graphPaddingFactor);
             outBundle.putBoolean(SHOULD_DRAW_BOX, shouldDrawBox);
             outBundle.putInt(LABEL_STYLE, labelStyle);
             outBundle.putString(TITLE, title);

@@ -25,7 +25,7 @@ GraphView currently supports two different styles of labels:
 ## Images
 Both of the following graphs come from the same data set, but are displayed using the **Incremental** graph and labels next to a **Standard** graph and labels.
 
-![Standard and Incremental graph](https://github.com/sortagreg/GraphView/blob/dev/graphview/images/DemoScreenshot.png)
+![Standard and Incremental graph](https://github.com/sortagreg/GraphView/blob/master/images/DemoScreenshot.png)
 
 ## Usage
 ### Prerequisites

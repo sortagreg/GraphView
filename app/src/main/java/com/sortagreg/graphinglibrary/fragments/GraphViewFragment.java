@@ -46,9 +46,9 @@ public class GraphViewFragment extends Fragment {
 
 //        drawCrossHairs();
 
-        drawExponentialCurves();
+//        drawExponentialCurves();
 
-        drawBinaryStateLine();
+//        drawBinaryStateLine();
 
 //        drawConstants();
 

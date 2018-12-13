@@ -158,18 +158,21 @@ public class GraphView extends View {
         drawHorizontalMarkers(canvas);
         drawDataSets(canvas);
         drawAxes(canvas);
-        switch (labelStyle) {
-            case STANDARD_LABELS:
-                drawStandardTextLabels(canvas);
-                break;
-            case UNFOLDED_LABELS:
-                drawUnfoldedTextLabels(canvas);
-                break;
-            case CUSTOM_LABELS:
-                Log.w(TAG, "onDraw: Custom label is not implemented yet. Using standard by default");
-                // TODO add custom label ability
-                // break;
-            default: drawStandardTextLabels(canvas);
+        if (!dataSetList.isEmpty()) {
+            switch (labelStyle) {
+                case STANDARD_LABELS:
+                    drawStandardTextLabels(canvas);
+                    break;
+                case UNFOLDED_LABELS:
+                    drawUnfoldedTextLabels(canvas);
+                    break;
+                case CUSTOM_LABELS:
+                    Log.w(TAG, "onDraw: Custom label is not implemented yet. Using standard by default");
+                    // TODO add custom label ability
+                    // break;
+                default:
+                    drawStandardTextLabels(canvas);
+            }
         }
     }
 
@@ -495,7 +498,7 @@ public class GraphView extends View {
         }
         // Title label
         textPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(title, canvas.getWidth() / 2f, 50f, textPaint);
+        canvas.drawText(title, canvas.getWidth() / 2f, topAxisMargin / 2f, textPaint);
     }
 
     /**
@@ -534,7 +537,7 @@ public class GraphView extends View {
         }
         // Title label
         textPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(title, canvas.getWidth() / 2f, 50f, textPaint);
+        canvas.drawText(title, canvas.getWidth() / 2f, topAxisMargin / 2f, textPaint);
     }
 
     /**

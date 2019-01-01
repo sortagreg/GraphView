@@ -38,6 +38,22 @@ public class GraphViewDataModel {
         this.graphType = graphType;
     }
 
+
+    /**
+     * Constructor for a data set, used in GraphView
+     *
+     * @param paint Paint object to specify the properties of how the data should be drawn
+     * @param graphType Type of graph to draw this data set as
+     */
+    public GraphViewDataModel(long[] xSet, long[] ySet, Paint paint, Integer graphType) {
+        this.dataSet = new PointF[ySet.length];
+        for (int i = 0; i < this.dataSet.length; i++) {
+            dataSet[i] = new PointF(xSet[i], ySet[i]);
+        }
+        this.paint = paint;
+        this.graphType = graphType;
+    }
+
     /**
      * Returns the data set
      *
@@ -100,6 +116,7 @@ public class GraphViewDataModel {
                 ", graphType=" + graphType +
                 '}';
     }
+
     @Override
     public int hashCode() {
 

@@ -13,16 +13,15 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-
-import com.sortagreg.graphinglibrary.R;
+import com.sortagreg.graphview.GraphViewDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sortagreg.graphinglibrary.views.GraphViewDataModel.CONSTANT_LINE;
-import static com.sortagreg.graphinglibrary.views.GraphViewDataModel.STANDARD_LINE;
-import static com.sortagreg.graphinglibrary.views.GraphViewDataModel.STATE_LINE;
-import static com.sortagreg.graphinglibrary.views.GraphViewDataModel.UNFOLDED_LINE;
+import static com.sortagreg.graphview.GraphViewDataModel.CONSTANT_LINE;
+import static com.sortagreg.graphview.GraphViewDataModel.STANDARD_LINE;
+import static com.sortagreg.graphview.GraphViewDataModel.STATE_LINE;
+import static com.sortagreg.graphview.GraphViewDataModel.UNFOLDED_LINE;
 
 //TODO update to handle empty data set list. Labels currently render wrong if there is no data.
 
@@ -70,7 +69,7 @@ public class GraphView extends View {
     private boolean shouldDrawBox;
 
     // Calculated values
-    private List<GraphViewDataModel> dataSetList;
+    private List<com.sortagreg.graphinglibrary.views.GraphViewDataModel> dataSetList;
     private float dataSetMinX = Float.MAX_VALUE;
     private float dataSetMaxX = Float.MIN_VALUE;
     private float dataSetMinY = Float.MAX_VALUE;
@@ -125,19 +124,19 @@ public class GraphView extends View {
 
         // Init custom attributes from XML here
         if (attrs == null) return;
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.GraphView);
-        numberOfHorizontalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalMarkers, DEFAULT_NUMBER_HORI_MARKERS);
-        numberOfVerticalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfVerticalMarkers, DEFAULT_NUMBER_VERT_MARKERS);
-        numberOfHorizontalLabels = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalLabels, DEFAULT_NUMBER_HORI_LABELS);
-        numberOfVerticalLabels = typedArray.getInteger(R.styleable.GraphView_numberOfVerticalLabels, DEFAULT_NUMBER_VERT_LABELS);
-        topAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginTop, DEFAULT_TOP_MARGIN);
-        bottomAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginBottom, DEFAULT_BOTTOM_MARGIN);
-        rightAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginRight, DEFAULT_RIGHT_MARGIN);
-        leftAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginLeft, DEFAULT_LEFT_MARGIN);
-        graphPaddingFactor = typedArray.getFloat(R.styleable.GraphView_graphPaddingFactor, DEFAULT_GRAPH_PADDING_FACTOR);
-        shouldDrawBox = typedArray.getBoolean(R.styleable.GraphView_shouldDrawBox, false);
-        labelStyle = typedArray.getInteger(R.styleable.GraphView_labelStyle, STANDARD_LABELS);
-        title = typedArray.getString(R.styleable.GraphView_title) != null ? typedArray.getString(R.styleable.GraphView_title) : "";
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, com.sortagreg.graphview.R.styleable.GraphView);
+        numberOfHorizontalMarkers = typedArray.getInteger(com.sortagreg.graphview.R.styleable.GraphView_numberOfHorizontalMarkers, DEFAULT_NUMBER_HORI_MARKERS);
+        numberOfVerticalMarkers = typedArray.getInteger(com.sortagreg.graphview.R.styleable.GraphView_numberOfVerticalMarkers, DEFAULT_NUMBER_VERT_MARKERS);
+        numberOfHorizontalLabels = typedArray.getInteger(com.sortagreg.graphview.R.styleable.GraphView_numberOfHorizontalLabels, DEFAULT_NUMBER_HORI_LABELS);
+        numberOfVerticalLabels = typedArray.getInteger(com.sortagreg.graphview.R.styleable.GraphView_numberOfVerticalLabels, DEFAULT_NUMBER_VERT_LABELS);
+        topAxisMargin = typedArray.getFloat(com.sortagreg.graphview.R.styleable.GraphView_axisMarginTop, DEFAULT_TOP_MARGIN);
+        bottomAxisMargin = typedArray.getFloat(com.sortagreg.graphview.R.styleable.GraphView_axisMarginBottom, DEFAULT_BOTTOM_MARGIN);
+        rightAxisMargin = typedArray.getFloat(com.sortagreg.graphview.R.styleable.GraphView_axisMarginRight, DEFAULT_RIGHT_MARGIN);
+        leftAxisMargin = typedArray.getFloat(com.sortagreg.graphview.R.styleable.GraphView_axisMarginLeft, DEFAULT_LEFT_MARGIN);
+        graphPaddingFactor = typedArray.getFloat(com.sortagreg.graphview.R.styleable.GraphView_graphPaddingFactor, DEFAULT_GRAPH_PADDING_FACTOR);
+        shouldDrawBox = typedArray.getBoolean(com.sortagreg.graphview.R.styleable.GraphView_shouldDrawBox, false);
+        labelStyle = typedArray.getInteger(com.sortagreg.graphview.R.styleable.GraphView_labelStyle, STANDARD_LABELS);
+        title = typedArray.getString(com.sortagreg.graphview.R.styleable.GraphView_title) != null ? typedArray.getString(com.sortagreg.graphview.R.styleable.GraphView_title) : "";
         typedArray.recycle();
 
         // Init other values here
@@ -305,7 +304,7 @@ public class GraphView extends View {
      *
      * @param dataSet
      */
-    public void addToDataSetList(GraphViewDataModel dataSet) {
+    public void addToDataSetList(com.sortagreg.graphinglibrary.views.GraphViewDataModel dataSet) {
         this.dataSetList.add(dataSet);
         invalidate();
     }
@@ -315,7 +314,7 @@ public class GraphView extends View {
      *
      * @param dataSetList
      */
-    public void addToDataSetListBulk(List<GraphViewDataModel> dataSetList) {
+    public void addToDataSetListBulk(List<com.sortagreg.graphinglibrary.views.GraphViewDataModel> dataSetList) {
         this.dataSetList.addAll(dataSetList);
         invalidate();
     }
@@ -384,7 +383,7 @@ public class GraphView extends View {
      */
     private void drawDataSets(Canvas canvas) {
         getStatsOnAllDataSets();
-        for (GraphViewDataModel dataModel : dataSetList) {
+        for (com.sortagreg.graphinglibrary.views.GraphViewDataModel dataModel : dataSetList) {
             switch (dataModel.getGraphType()) {
                 case STANDARD_LINE:
                     drawStandardLine(canvas, dataModel);
@@ -414,7 +413,7 @@ public class GraphView extends View {
      * @param canvas
      * @param dataModel
      */
-    private void drawBinaryStateLine(Canvas canvas, GraphViewDataModel dataModel) {
+    private void drawBinaryStateLine(Canvas canvas, com.sortagreg.graphinglibrary.views.GraphViewDataModel dataModel) {
         for (int i = 0; i < dataModel.getDataSet().length - 1; i ++) {
             float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (dataModel.getDataSet().length - 1);
 
@@ -431,7 +430,7 @@ public class GraphView extends View {
      * @param canvas
      * @param dataModel
      */
-    private void drawUnfoldedLine(Canvas canvas, GraphViewDataModel dataModel) {
+    private void drawUnfoldedLine(Canvas canvas, com.sortagreg.graphinglibrary.views.GraphViewDataModel dataModel) {
         for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
             float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (dataModel.getDataSet().length - 1);
             float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
@@ -454,7 +453,7 @@ public class GraphView extends View {
      * @param canvas
      * @param dataModel
      */
-    private void drawConstantLine(Canvas canvas, GraphViewDataModel dataModel) {
+    private void drawConstantLine(Canvas canvas, com.sortagreg.graphinglibrary.views.GraphViewDataModel dataModel) {
         float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (rangeOfYValues);
 
         float startX = leftAxisMargin;
@@ -474,7 +473,7 @@ public class GraphView extends View {
      * @param canvas
      * @param dataModel
      */
-    private void drawStandardLine(Canvas canvas, GraphViewDataModel dataModel) {
+    private void drawStandardLine(Canvas canvas, com.sortagreg.graphinglibrary.views.GraphViewDataModel dataModel) {
         for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
             float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / rangeOfXValues;
             float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
@@ -572,7 +571,7 @@ public class GraphView extends View {
      * Find and set the largest and smallest values to be found in all the data sets.
      */
     private void getStatsOnAllDataSets() {
-        for (GraphViewDataModel dataSet : dataSetList) {
+        for (com.sortagreg.graphinglibrary.views.GraphViewDataModel dataSet : dataSetList) {
             for (PointF dataPoint : dataSet.getDataSet()) {
                 if (dataSet.getGraphType() == STANDARD_LINE) {
                     dataSetMaxX = Math.max(dataSetMaxX, dataPoint.x);
@@ -619,7 +618,7 @@ public class GraphView extends View {
     @Override
     protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
-        GraphViewSavedState savedState = new GraphViewSavedState(superState);
+        GraphView.GraphViewSavedState savedState = new GraphView.GraphViewSavedState(superState);
         savedState.numberOfVerticalMarkers = numberOfVerticalMarkers;
         savedState.numberOfHorizontalMarkers = numberOfHorizontalMarkers;
         savedState.topAxisMargin = topAxisMargin;
@@ -645,7 +644,7 @@ public class GraphView extends View {
      */
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        GraphViewSavedState savedState = (GraphViewSavedState) state;
+        GraphView.GraphViewSavedState savedState = (GraphView.GraphViewSavedState) state;
         super.onRestoreInstanceState(savedState.getSuperState());
         setNumberOfVerticalMarkers(savedState.numberOfVerticalMarkers);
         setNumberOfHorizontalMarkers(savedState.numberOfHorizontalMarkers);
@@ -743,14 +742,14 @@ public class GraphView extends View {
             out.writeBundle(outBundle);
         }
 
-        public static final Creator<GraphViewSavedState> CREATOR
-                = new Creator<GraphViewSavedState>() {
-            public GraphViewSavedState createFromParcel(Parcel in) {
-                return new GraphViewSavedState(in);
+        public static final Creator<GraphView.GraphViewSavedState> CREATOR
+                = new Creator<GraphView.GraphViewSavedState>() {
+            public GraphView.GraphViewSavedState createFromParcel(Parcel in) {
+                return new GraphView.GraphViewSavedState(in);
             }
 
-            public GraphViewSavedState[] newArray(int size) {
-                return new GraphViewSavedState[size];
+            public GraphView.GraphViewSavedState[] newArray(int size) {
+                return new GraphView.GraphViewSavedState[size];
             }
         };
     }

@@ -57,7 +57,9 @@ public class GraphViewFragment extends Fragment {
 
         graphView.addToDataSetListBulk(dataSetList);
         libraryGraphView.addToDataSetListBulk(libraryDataSetList);
-
+//        graphView.setLeftSideText("TEST");
+//        graphView.setRightSideText("TEST");
+//        graphView.setBottomText("TEST");
         return view;
     }
 
@@ -74,9 +76,9 @@ public class GraphViewFragment extends Fragment {
         GraphViewDataModel cyclicDataModel = new GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.STANDARD_LINE);
         com.sortagreg.graphview.GraphViewDataModel libraryCyclicDataModelUnfolded = new com.sortagreg.graphview.GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.UNFOLDED_LINE);
         libraryGraphView.addToDataSetList(libraryCyclicDataModelUnfolded);
-        libraryGraphView.setTitle("Incremental Graph & Labels");
+        libraryGraphView.setTitle("Incremental Graph & Labels, from library");
         graphView.addToDataSetList(testGraph);
-        graphView.setTitle("Standard Graph & Labels");
+        graphView.setTitle("Standard Graph & Labels, not library.");
 //        dataSetList.add(cyclicDataModelFolded);
 //        libraryDataSetList.add(libraryCyclicDataModelFolded);
     }

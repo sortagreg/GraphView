@@ -16,10 +16,7 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sortagreg.graphview.GraphViewDataModel.CONSTANT_LINE;
-import static com.sortagreg.graphview.GraphViewDataModel.STANDARD_LINE;
-import static com.sortagreg.graphview.GraphViewDataModel.STATE_LINE;
-import static com.sortagreg.graphview.GraphViewDataModel.UNFOLDED_LINE;
+import static com.sortagreg.graphview.GraphViewDataModel.*;
 
 //TODO update to handle empty data set list. Labels currently render wrong if there is no data.
 
@@ -34,6 +31,9 @@ public class GraphView extends View {
 
     // Configurables
     private String title = "";
+    private String rightSideText = "";
+    private String leftSideText = "";
+    private String bottomText = "";
 
     private Paint axisPaint = new Paint();
     private Paint markerPaint = new Paint();
@@ -42,7 +42,7 @@ public class GraphView extends View {
     public static final float DEFAULT_TOP_MARGIN = 75f;
     public static final float DEFAULT_BOTTOM_MARGIN = 175f;
     public static final float DEFAULT_LEFT_MARGIN = 175f;
-    public static final float DEFAULT_RIGHT_MARGIN = 75f;
+    public static final float DEFAULT_RIGHT_MARGIN = 175f;
     public static final float DEFAULT_GRAPH_PADDING_FACTOR = 0f;
     private float topAxisMargin;
     private float bottomAxisMargin;
@@ -57,11 +57,15 @@ public class GraphView extends View {
 
     public static final int DEFAULT_NUMBER_VERT_LABELS = 15;
     public static final int DEFAULT_NUMBER_HORI_LABELS = 15;
+    public static final int DEFAULT_NUMBER_BOTTOM_LABELS = 15;
+    public static final int DEFAULT_NUMBER_RIGHT_SIDE_LABELS = 0;
     public static final int STANDARD_LABELS = 0;
     public static final int UNFOLDED_LABELS = 1;
     public static final int CUSTOM_LABELS = 2;
     private int numberOfVerticalLabels;
     private int numberOfHorizontalLabels;
+    private int numberOfRightSideLabels;
+    private int numberOfBottomLabels;
     private int labelStyle;
 
     private boolean shouldDrawBox;
@@ -127,6 +131,7 @@ public class GraphView extends View {
         numberOfVerticalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfVerticalMarkers, DEFAULT_NUMBER_VERT_MARKERS);
         numberOfHorizontalLabels = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalLabels, DEFAULT_NUMBER_HORI_LABELS);
         numberOfVerticalLabels = typedArray.getInteger(R.styleable.GraphView_numberOfVerticalLabels, DEFAULT_NUMBER_VERT_LABELS);
+        numberOfRightSideLabels = typedArray.getInteger(R.styleable.GraphView_numberOfRightSideLabels, DEFAULT_NUMBER_RIGHT_SIDE_LABELS);
         topAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginTop, DEFAULT_TOP_MARGIN);
         bottomAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginBottom, DEFAULT_BOTTOM_MARGIN);
         rightAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginRight, DEFAULT_RIGHT_MARGIN);
@@ -135,6 +140,9 @@ public class GraphView extends View {
         shouldDrawBox = typedArray.getBoolean(R.styleable.GraphView_shouldDrawBox, false);
         labelStyle = typedArray.getInteger(R.styleable.GraphView_labelStyle, STANDARD_LABELS);
         title = typedArray.getString(R.styleable.GraphView_title) != null ? typedArray.getString(R.styleable.GraphView_title) : "";
+        bottomText = typedArray.getString(R.styleable.GraphView_bottomText) != null ? typedArray.getString(R.styleable.GraphView_bottomText) : "";
+        rightSideText = typedArray.getString(R.styleable.GraphView_rightSideText) != null ? typedArray.getString(R.styleable.GraphView_rightSideText) : "";
+        leftSideText = typedArray.getString(R.styleable.GraphView_leftSideText) != null ? typedArray.getString(R.styleable.GraphView_leftSideText) : "";
         typedArray.recycle();
 
         // Init other values here
@@ -170,6 +178,8 @@ public class GraphView extends View {
                 default:
                     drawStandardTextLabels(canvas);
             }
+            drawRightSideLabels(canvas);
+            drawKeyLabels(canvas);
         }
     }
 
@@ -200,6 +210,11 @@ public class GraphView extends View {
      */
     public void setNumberOfVerticalLabels(int numberOfVerticalLabels) {
         this.numberOfVerticalLabels = numberOfVerticalLabels;
+        invalidate();
+    }
+
+    public void setNumberOfRightSideLabels(int numberOfRightSideLabels) {
+        this.numberOfRightSideLabels = numberOfRightSideLabels;
         invalidate();
     }
 
@@ -291,6 +306,26 @@ public class GraphView extends View {
      */
     public void setTitle(String title) {
         this.title = title;
+        invalidate();
+    }
+
+    public void setRightSideText(String rightSideText) {
+        this.rightSideText = rightSideText;
+        invalidate();
+    }
+
+    public void setLeftSideText(String leftSideText) {
+        this.leftSideText = leftSideText;
+        invalidate();
+    }
+
+    public void setBottomText(String bottomText) {
+        this.bottomText = bottomText;
+        invalidate();
+    }
+
+    public void setNumberOfBottomLabels(int numberOfBottomLabels) {
+        this.numberOfBottomLabels = numberOfBottomLabels;
         invalidate();
     }
 
@@ -522,8 +557,8 @@ public class GraphView extends View {
             }
         }
         // Title label
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(title, canvas.getWidth() / 2f, topAxisMargin / 2f, textPaint);
+//        textPaint.setTextAlign(Paint.Align.CENTER);
+//        canvas.drawText(title, canvas.getWidth() / 2f, topAxisMargin / 2f, textPaint);
     }
 
     /**
@@ -561,8 +596,40 @@ public class GraphView extends View {
             }
         }
         // Title label
+//        textPaint.setTextAlign(Paint.Align.CENTER);
+//        canvas.drawText(title, canvas.getWidth() / 2f, topAxisMargin / 2f, textPaint);
+    }
+
+    private void drawRightSideLabels(Canvas canvas) {
+        if (numberOfRightSideLabels <= 0) return;
+        Paint textPaint = new Paint();
+        textPaint.setColor(0xFF000000); // TODO paint color should be configurable
+        textPaint.setTextSize(30f); // TODO text size should be configurable
+        textPaint.setTextAlign(Paint.Align.LEFT);
+        textPaint.setFakeBoldText(true);
+
+        float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin -  bottomAxisMargin) / (float) numberOfRightSideLabels;
+        float valuePerStep = rangeOfYValues / numberOfRightSideLabels;
+        for (int i = 1; i <= numberOfRightSideLabels; i++) {
+            int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
+            canvas.drawText(String.valueOf(labelValue), canvas.getWidth() - rightAxisMargin + 10f, (canvas.getHeight() - bottomAxisMargin) - ((float) i * pixelsPerLabel) + 20f, textPaint);
+        }
+    }
+
+    private void drawKeyLabels(Canvas canvas) {
+        Paint textPaint = new Paint();
+        textPaint.setColor(0xFF000000); // TODO paint color should be configurable
+        textPaint.setTextSize(30f); // TODO text size should be configurable
         textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setFakeBoldText(true);
         canvas.drawText(title, canvas.getWidth() / 2f, topAxisMargin / 2f, textPaint);
+        canvas.drawText(bottomText, canvas.getWidth() / 2f, canvas.getHeight() - 20f, textPaint);
+        canvas.rotate(270, 40f, canvas.getHeight() / 2f);
+        canvas.drawText(leftSideText, 40f, canvas.getHeight() / 2f, textPaint);
+        canvas.rotate(-270, 40f, canvas.getHeight() / 2f);
+        canvas.rotate(270, canvas.getWidth() - 20f, canvas.getHeight() / 2f);
+        canvas.drawText(rightSideText, canvas.getWidth() - 20f, canvas.getHeight() / 2f, textPaint);
+        canvas.rotate(-270, canvas.getWidth() - 20f, canvas.getHeight() / 2f);
     }
 
     /**
@@ -616,7 +683,7 @@ public class GraphView extends View {
     @Override
     protected Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
-        GraphViewSavedState savedState = new GraphViewSavedState(superState);
+        GraphView.GraphViewSavedState savedState = new GraphView.GraphViewSavedState(superState);
         savedState.numberOfVerticalMarkers = numberOfVerticalMarkers;
         savedState.numberOfHorizontalMarkers = numberOfHorizontalMarkers;
         savedState.topAxisMargin = topAxisMargin;
@@ -628,7 +695,12 @@ public class GraphView extends View {
         savedState.labelStyle = labelStyle;
         savedState.title = title;
         savedState.numberOfVerticalLabels = numberOfVerticalLabels;
+        savedState.numberOfRightSideLabels = numberOfRightSideLabels;
         savedState.numberOfHorizontalLabels = numberOfHorizontalLabels;
+        savedState.numberOfBottomLabels = numberOfBottomLabels;
+        savedState.bottomText = bottomText;
+        savedState.leftSideText = leftSideText;
+        savedState.rightSideText = rightSideText;
         return savedState;
     }
 
@@ -642,7 +714,7 @@ public class GraphView extends View {
      */
     @Override
     protected void onRestoreInstanceState(Parcelable state) {
-        GraphViewSavedState savedState = (GraphViewSavedState) state;
+        GraphView.GraphViewSavedState savedState = (GraphView.GraphViewSavedState) state;
         super.onRestoreInstanceState(savedState.getSuperState());
         setNumberOfVerticalMarkers(savedState.numberOfVerticalMarkers);
         setNumberOfHorizontalMarkers(savedState.numberOfHorizontalMarkers);
@@ -654,8 +726,13 @@ public class GraphView extends View {
         setShouldDrawBox(savedState.shouldDrawBox);
         setLabelStyle(savedState.labelStyle);
         setTitle(savedState.title);
+        setBottomText(savedState.bottomText);
+        setRightSideText(savedState.rightSideText);
+        setLeftSideText(savedState.leftSideText);
         setNumberOfHorizontalLabels(savedState.numberOfHorizontalLabels);
         setNumberOfVerticalLabels(savedState.numberOfVerticalLabels);
+        setNumberOfRightSideLabels(savedState.numberOfRightSideLabels);
+        setNumberOfBottomLabels(savedState.numberOfBottomLabels);
     }
 
     /**
@@ -666,6 +743,8 @@ public class GraphView extends View {
         private static final String NUMBER_OF_HORIZONTAL_MARKERS = "# of horizontal markers";
         private static final String NUMBER_OF_HORIZONTAL_LABELS = "# of horizontal labels";
         private static final String NUMBER_OF_VERTICAL_LABELS = "# of vertical labels";
+        private static final String NUMBER_OF_RIGHT_SIDE_LABELS = "# of right side labels";
+        private static final String NUMBER_OF_BOTTOM_LABELS = "# of bottom side labels";
         private static final String TOP_AXIS_MARGIN = "top axis margin";
         private static final String BOTTOM_AXIS_MARGIN = "bottom axis margin";
         private static final String LEFT_AXIS_MARGIN = "left axis margin";
@@ -674,11 +753,16 @@ public class GraphView extends View {
         private static final String SHOULD_DRAW_BOX = "should draw box";
         private static final String LABEL_STYLE = "label style";
         private static final String TITLE = "title";
+        private static final String RIGHT_SIDE_TEXT = "right side text";
+        private static final String LEFT_SIDE_TEXT = "left side text";
+        private static final String BOTTOM_TEXT = "bottom text";
         Bundle bundle;
         int numberOfVerticalMarkers;
         int numberOfHorizontalMarkers;
         int numberOfVerticalLabels;
         int numberOfHorizontalLabels;
+        int numberOfRightSideLabels;
+        int numberOfBottomLabels;
         float topAxisMargin;
         float bottomAxisMargin;
         float leftAxisMargin;
@@ -687,6 +771,9 @@ public class GraphView extends View {
         boolean shouldDrawBox;
         int labelStyle;
         String title;
+        String rightSideText;
+        String leftSideText;
+        String bottomText;
 
         public GraphViewSavedState(Parcelable superState) {
             super(superState);
@@ -704,7 +791,9 @@ public class GraphView extends View {
             numberOfVerticalMarkers = bundle.getInt(NUMBER_OF_VERTICAL_MARKERS, DEFAULT_NUMBER_VERT_MARKERS);
             numberOfHorizontalMarkers = bundle.getInt(NUMBER_OF_HORIZONTAL_MARKERS, DEFAULT_NUMBER_HORI_MARKERS);
             numberOfVerticalLabels = bundle.getInt(NUMBER_OF_VERTICAL_LABELS, DEFAULT_NUMBER_VERT_LABELS);
+            numberOfRightSideLabels = bundle.getInt(NUMBER_OF_RIGHT_SIDE_LABELS, DEFAULT_NUMBER_RIGHT_SIDE_LABELS);
             numberOfHorizontalLabels = bundle.getInt(NUMBER_OF_HORIZONTAL_LABELS, DEFAULT_NUMBER_HORI_LABELS);
+            numberOfBottomLabels = bundle.getInt(NUMBER_OF_BOTTOM_LABELS, DEFAULT_NUMBER_BOTTOM_LABELS);
             topAxisMargin = bundle.getFloat(TOP_AXIS_MARGIN, DEFAULT_TOP_MARGIN);
             bottomAxisMargin = bundle.getFloat(BOTTOM_AXIS_MARGIN, DEFAULT_BOTTOM_MARGIN);
             leftAxisMargin = bundle.getFloat(LEFT_AXIS_MARGIN, DEFAULT_LEFT_MARGIN);
@@ -713,6 +802,9 @@ public class GraphView extends View {
             shouldDrawBox = bundle.getBoolean(SHOULD_DRAW_BOX);
             labelStyle = bundle.getInt(LABEL_STYLE);
             title = bundle.getString(TITLE);
+            rightSideText = bundle.getString(RIGHT_SIDE_TEXT);
+            leftSideText = bundle.getString(LEFT_SIDE_TEXT);
+            bottomText = bundle.getString(BOTTOM_TEXT);
         }
 
         /**
@@ -729,6 +821,8 @@ public class GraphView extends View {
             outBundle.putInt(NUMBER_OF_VERTICAL_MARKERS, numberOfVerticalMarkers);
             outBundle.putInt(NUMBER_OF_VERTICAL_LABELS, numberOfVerticalLabels);
             outBundle.putInt(NUMBER_OF_HORIZONTAL_LABELS, numberOfHorizontalLabels);
+            outBundle.putInt(NUMBER_OF_RIGHT_SIDE_LABELS, numberOfRightSideLabels);
+            outBundle.putInt(NUMBER_OF_BOTTOM_LABELS, numberOfBottomLabels);
             outBundle.putFloat(TOP_AXIS_MARGIN, topAxisMargin);
             outBundle.putFloat(BOTTOM_AXIS_MARGIN, bottomAxisMargin);
             outBundle.putFloat(RIGHT_AXIS_MARGIN, rightAxisMargin);
@@ -740,14 +834,14 @@ public class GraphView extends View {
             out.writeBundle(outBundle);
         }
 
-        public static final Creator<GraphViewSavedState> CREATOR
-                = new Creator<GraphViewSavedState>() {
-            public GraphViewSavedState createFromParcel(Parcel in) {
-                return new GraphViewSavedState(in);
+        public static final Creator<GraphView.GraphViewSavedState> CREATOR
+                = new Creator<GraphView.GraphViewSavedState>() {
+            public GraphView.GraphViewSavedState createFromParcel(Parcel in) {
+                return new GraphView.GraphViewSavedState(in);
             }
 
-            public GraphViewSavedState[] newArray(int size) {
-                return new GraphViewSavedState[size];
+            public GraphView.GraphViewSavedState[] newArray(int size) {
+                return new GraphView.GraphViewSavedState[size];
             }
         };
     }

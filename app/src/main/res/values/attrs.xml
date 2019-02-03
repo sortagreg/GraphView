@@ -6,7 +6,6 @@
         <attr name="numberOfVerticalLabels" format="integer"/>
         <attr name="numberOfRightSideLabels" format="integer"/>
         <attr name="numberOfHorizontalLabels" format="integer"/>
-        <attr name="numberOfBottomLabels" format="integer"/>
         <attr name="axisMarginTop" format="float" />
         <attr name="axisMarginBottom" format="float" />
         <attr name="axisMarginLeft" format="float" />

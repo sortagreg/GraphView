@@ -10,8 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sortagreg.graphinglibrary.R;
-import com.sortagreg.graphinglibrary.views.GraphView;
-import com.sortagreg.graphinglibrary.views.GraphViewDataModel;
+import com.sortagreg.graphview.GraphViewDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ public class GraphViewFragment extends Fragment {
     int DATA_SET_LENGTH = 50;
 
     @BindView(R.id.graphView)
-    GraphView graphView;
+    com.sortagreg.graphview.GraphView graphView;
     @BindView(R.id.libraryGraphView)
     com.sortagreg.graphview.GraphView libraryGraphView;
     public GraphViewFragment() {

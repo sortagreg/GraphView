@@ -13,15 +13,12 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-import com.sortagreg.graphview.GraphViewDataModel;
+import com.sortagreg.graphinglibrary.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.sortagreg.graphview.GraphViewDataModel.CONSTANT_LINE;
-import static com.sortagreg.graphview.GraphViewDataModel.STANDARD_LINE;
-import static com.sortagreg.graphview.GraphViewDataModel.STATE_LINE;
-import static com.sortagreg.graphview.GraphViewDataModel.UNFOLDED_LINE;
+import static com.sortagreg.graphinglibrary.views.GraphViewDataModel.*;
 
 //TODO update to handle empty data set list. Labels currently render wrong if there is no data.
 
@@ -131,23 +128,23 @@ public class GraphView extends View {
 
         // Init custom attributes from XML here
         if (attrs == null) return;
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, com.sortagreg.graphview.R.styleable.GraphView);
-        numberOfHorizontalMarkers = typedArray.getInteger(com.sortagreg.graphview.R.styleable.GraphView_numberOfHorizontalMarkers, DEFAULT_NUMBER_HORI_MARKERS);
-        numberOfVerticalMarkers = typedArray.getInteger(com.sortagreg.graphview.R.styleable.GraphView_numberOfVerticalMarkers, DEFAULT_NUMBER_VERT_MARKERS);
-        numberOfHorizontalLabels = typedArray.getInteger(com.sortagreg.graphview.R.styleable.GraphView_numberOfHorizontalLabels, DEFAULT_NUMBER_HORI_LABELS);
-        numberOfVerticalLabels = typedArray.getInteger(com.sortagreg.graphview.R.styleable.GraphView_numberOfVerticalLabels, DEFAULT_NUMBER_VERT_LABELS);
-        numberOfRightSideLabels = typedArray.getInteger(com.sortagreg.graphview.R.styleable.GraphView_numberOfRightSideLabels, DEFAULT_NUMBER_RIGHT_SIDE_LABELS);
-        topAxisMargin = typedArray.getFloat(com.sortagreg.graphview.R.styleable.GraphView_axisMarginTop, DEFAULT_TOP_MARGIN);
-        bottomAxisMargin = typedArray.getFloat(com.sortagreg.graphview.R.styleable.GraphView_axisMarginBottom, DEFAULT_BOTTOM_MARGIN);
-        rightAxisMargin = typedArray.getFloat(com.sortagreg.graphview.R.styleable.GraphView_axisMarginRight, DEFAULT_RIGHT_MARGIN);
-        leftAxisMargin = typedArray.getFloat(com.sortagreg.graphview.R.styleable.GraphView_axisMarginLeft, DEFAULT_LEFT_MARGIN);
-        graphPaddingFactor = typedArray.getFloat(com.sortagreg.graphview.R.styleable.GraphView_graphPaddingFactor, DEFAULT_GRAPH_PADDING_FACTOR);
-        shouldDrawBox = typedArray.getBoolean(com.sortagreg.graphview.R.styleable.GraphView_shouldDrawBox, false);
-        labelStyle = typedArray.getInteger(com.sortagreg.graphview.R.styleable.GraphView_labelStyle, STANDARD_LABELS);
-        title = typedArray.getString(com.sortagreg.graphview.R.styleable.GraphView_title) != null ? typedArray.getString(com.sortagreg.graphview.R.styleable.GraphView_title) : "";
-        bottomText = typedArray.getString(com.sortagreg.graphview.R.styleable.GraphView_bottomText) != null ? typedArray.getString(com.sortagreg.graphview.R.styleable.GraphView_bottomText) : "";
-        rightSideText = typedArray.getString(com.sortagreg.graphview.R.styleable.GraphView_rightSideText) != null ? typedArray.getString(com.sortagreg.graphview.R.styleable.GraphView_rightSideText) : "";
-        leftSideText = typedArray.getString(com.sortagreg.graphview.R.styleable.GraphView_leftSideText) != null ? typedArray.getString(com.sortagreg.graphview.R.styleable.GraphView_leftSideText) : "";
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.GraphView);
+        numberOfHorizontalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalMarkers, DEFAULT_NUMBER_HORI_MARKERS);
+        numberOfVerticalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfVerticalMarkers, DEFAULT_NUMBER_VERT_MARKERS);
+        numberOfHorizontalLabels = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalLabels, DEFAULT_NUMBER_HORI_LABELS);
+        numberOfVerticalLabels = typedArray.getInteger(R.styleable.GraphView_numberOfVerticalLabels, DEFAULT_NUMBER_VERT_LABELS);
+        numberOfRightSideLabels = typedArray.getInteger(R.styleable.GraphView_numberOfRightSideLabels, DEFAULT_NUMBER_RIGHT_SIDE_LABELS);
+        topAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginTop, DEFAULT_TOP_MARGIN);
+        bottomAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginBottom, DEFAULT_BOTTOM_MARGIN);
+        rightAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginRight, DEFAULT_RIGHT_MARGIN);
+        leftAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginLeft, DEFAULT_LEFT_MARGIN);
+        graphPaddingFactor = typedArray.getFloat(R.styleable.GraphView_graphPaddingFactor, DEFAULT_GRAPH_PADDING_FACTOR);
+        shouldDrawBox = typedArray.getBoolean(R.styleable.GraphView_shouldDrawBox, false);
+        labelStyle = typedArray.getInteger(R.styleable.GraphView_labelStyle, STANDARD_LABELS);
+        title = typedArray.getString(R.styleable.GraphView_title) != null ? typedArray.getString(R.styleable.GraphView_title) : "";
+        bottomText = typedArray.getString(R.styleable.GraphView_bottomText) != null ? typedArray.getString(R.styleable.GraphView_bottomText) : "";
+        rightSideText = typedArray.getString(R.styleable.GraphView_rightSideText) != null ? typedArray.getString(R.styleable.GraphView_rightSideText) : "";
+        leftSideText = typedArray.getString(R.styleable.GraphView_leftSideText) != null ? typedArray.getString(R.styleable.GraphView_leftSideText) : "";
         typedArray.recycle();
 
         // Init other values here

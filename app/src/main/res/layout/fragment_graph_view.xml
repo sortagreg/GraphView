@@ -9,7 +9,7 @@
     tools:context=".fragments.GraphViewFragment">
 
     <com.sortagreg.graphview.GraphView
-        android:id="@+id/graphView"
+        android:id="@+id/graphViewTop"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -24,14 +24,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:shouldDrawBox="true"
         app:numberOfRightSideLabels="5"
-        app:numberOfHorizontalLabels="0"
+        app:numberOfHorizontalLabels="15"
         app:leftSideText="left"
         app:rightSideText="right"
         app:bottomText="bottom"
         app:graphPaddingFactor="0.1"/>
 
     <com.sortagreg.graphview.GraphView
-        android:id="@+id/libraryGraphView"
+        android:id="@+id/GraphViewBottom"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -46,7 +46,7 @@
         app:labelStyle="Unfolded"
         app:shouldDrawBox="true"
         app:numberOfRightSideLabels="5"
-        app:numberOfHorizontalLabels="0"
+        app:numberOfHorizontalLabels="10"
         app:leftSideText="left"
         app:rightSideText="right"
         app:bottomText="bottom"/>

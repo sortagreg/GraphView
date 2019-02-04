@@ -29,10 +29,10 @@ public class GraphViewFragment extends Fragment {
     List<com.sortagreg.graphview.GraphViewDataModel> libraryDataSetList = new ArrayList<>();
     int DATA_SET_LENGTH = 50;
 
-    @BindView(R.id.graphView)
-    com.sortagreg.graphview.GraphView graphView;
-    @BindView(R.id.libraryGraphView)
-    com.sortagreg.graphview.GraphView libraryGraphView;
+    @BindView(R.id.graphViewTop)
+    com.sortagreg.graphview.GraphView graphViewTop;
+    @BindView(R.id.GraphViewBottom)
+    com.sortagreg.graphview.GraphView graphViewBottom;
     public GraphViewFragment() {
         // Required empty public constructor
     }
@@ -54,11 +54,11 @@ public class GraphViewFragment extends Fragment {
 
 //        drawConstants();
 
-        graphView.addToDataSetListBulk(dataSetList);
-        libraryGraphView.addToDataSetListBulk(libraryDataSetList);
-//        graphView.setLeftSideText("TEST");
-//        graphView.setRightSideText("TEST");
-//        graphView.setBottomText("TEST");
+        graphViewTop.addToDataSetListBulk(dataSetList);
+        graphViewBottom.addToDataSetListBulk(libraryDataSetList);
+//        graphViewTop.setLeftSideText("TEST");
+//        graphViewTop.setRightSideText("TEST");
+//        graphViewTop.setBottomText("TEST");
         return view;
     }
 
@@ -73,11 +73,11 @@ public class GraphViewFragment extends Fragment {
         GraphViewDataModel testGraph = new GraphViewDataModel(asp1000, asl1001, paint, GraphViewDataModel.STANDARD_LINE);
         PointF[] cyclicGraph = new PointF[]{new PointF(1,5), new PointF(2,10), new PointF(3,15), new PointF(4,15), new PointF(5,15), new PointF(6,20), new PointF(5,25), new PointF(4, 30), new PointF(3,30), new PointF(3,30), new PointF(3,30), new PointF(3,25), new PointF(2, 20), new PointF(1,5), new PointF(1,10), new PointF(1,5), new PointF(1,10)};
         GraphViewDataModel cyclicDataModel = new GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.STANDARD_LINE);
-        com.sortagreg.graphview.GraphViewDataModel libraryCyclicDataModelUnfolded = new com.sortagreg.graphview.GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.UNFOLDED_LINE);
-        libraryGraphView.addToDataSetList(libraryCyclicDataModelUnfolded);
-        libraryGraphView.setTitle("Incremental Graph & Labels, from library");
-        graphView.addToDataSetList(testGraph);
-        graphView.setTitle("Standard Graph & Labels, not library.");
+        com.sortagreg.graphview.GraphViewDataModel libraryCyclicDataModelUnfolded = new com.sortagreg.graphview.GraphViewDataModel(asp1000, asl1001, paint, GraphViewDataModel.UNFOLDED_LINE);
+        graphViewBottom.addToDataSetList(libraryCyclicDataModelUnfolded);
+        graphViewBottom.setTitle("Incremental Graph & Labels");
+        graphViewTop.addToDataSetList(testGraph);
+        graphViewTop.setTitle("Standard Graph & Labels");
 //        dataSetList.add(cyclicDataModelFolded);
 //        libraryDataSetList.add(libraryCyclicDataModelFolded);
     }

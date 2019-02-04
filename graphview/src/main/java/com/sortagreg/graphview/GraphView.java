@@ -72,6 +72,7 @@ public class GraphView extends View {
 
     // Calculated values
     private List<GraphViewDataModel> dataSetList;
+    private List<GraphViewDataModel> secondaryDataSetList;
     private float dataSetMinX = Float.MAX_VALUE;
     private float dataSetMaxX = Float.MIN_VALUE;
     private float dataSetMinY = Float.MAX_VALUE;
@@ -148,6 +149,7 @@ public class GraphView extends View {
         // Init other values here
         setPaintLines();
         dataSetList = new ArrayList<>();
+        secondaryDataSetList = new ArrayList<>();
     }
 
     /**
@@ -349,6 +351,16 @@ public class GraphView extends View {
      */
     public void addToDataSetListBulk(List<GraphViewDataModel> dataSetList) {
         this.dataSetList.addAll(dataSetList);
+        invalidate();
+    }
+
+    public void addToSecondaryDataSetList(GraphViewDataModel dataSet) {
+        this.secondaryDataSetList.add(dataSet);
+        invalidate();
+    }
+
+    public void addToSecondaryDataSetListBulk(List<GraphViewDataModel> dataSetList) {
+        this.secondaryDataSetList.addAll(dataSetList);
         invalidate();
     }
 
@@ -589,7 +601,7 @@ public class GraphView extends View {
             float pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (float) numberOfHorizontalLabels;
             float valuePerStep = dataSetList.get(0).getDataSet().length / numberOfHorizontalLabels;
             for (int i = 1; i <= numberOfHorizontalLabels; i++) {
-                int labelValue = (int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep].x;
+                int labelValue = (int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep - 1].x;
                 canvas.rotate(270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
                 canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
                 canvas.rotate(-270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);

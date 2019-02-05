@@ -8,8 +8,8 @@
     android:background="@android:color/darker_gray"
     tools:context=".fragments.GraphViewFragment">
 
-    <com.sortagreg.graphinglibrary.views.GraphView
-        android:id="@+id/graphView"
+    <com.sortagreg.graphview.GraphView
+        android:id="@+id/graphViewTop"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -17,15 +17,21 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:background="@android:color/background_light"
+        app:labelStyle="Standard"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shouldDrawBox="true"
-        app:labelStyle="Standard"/>
+        app:numberOfRightSideLabels="5"
+        app:numberOfHorizontalLabels="15"
+        app:leftSideText="left"
+        app:rightSideText="right"
+        app:bottomText="bottom"
+        app:graphPaddingFactor="0.1"/>
 
     <com.sortagreg.graphview.GraphView
-        android:id="@+id/libraryGraphView"
+        android:id="@+id/GraphViewBottom"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
@@ -38,7 +44,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         app:labelStyle="Unfolded"
-        app:shouldDrawBox="true"/>
+        app:shouldDrawBox="true"
+        app:numberOfRightSideLabels="5"
+        app:numberOfHorizontalLabels="10"
+        app:leftSideText="left"
+        app:rightSideText="right"
+        app:bottomText="bottom"
+        app:axisMarginRight="50"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"

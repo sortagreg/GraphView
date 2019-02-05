@@ -25,7 +25,7 @@ GraphView currently supports two different styles of labels:
 ## Images
 Both of the following graphs come from the same data set, but are displayed using the **Incremental** graph and labels next to a **Standard** graph and labels.
 
-![Standard and Incremental graph](https://github.com/sortagreg/GraphView/blob/dev/graphview/images/DemoScreenshot.png)
+![Standard and Incremental graph](https://github.com/sortagreg/GraphView/blob/master/images/DemoScreenshot.png)
 
 ## Usage
 ### Prerequisites
@@ -87,7 +87,7 @@ Many of the portions of GraphView can be customized to fit your needs.  Options 
 #### Current Customization Options
 * numberOfVerticalMarkers : Integer
 * numberOfHorizontalMarkers : Integer
-* numberOfVerticalLabels : Integer
+* numberOfLeftSideLabels : Integer
 * numberOfHorizontalLabels : Integer
 * axisMarginTop : float
 * axisMarginBottom : float
@@ -102,7 +102,7 @@ Note: attribute `android:background` must be set, otherwise the background of th
 
 ## License
 ```
-Copyright 2018 Marshall Lad
+Copyright 2018 Marshall Ladd
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

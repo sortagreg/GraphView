@@ -71,15 +71,14 @@ public class GraphViewFragment extends Fragment {
         paint.setStrokeWidth(5f);
         paint.setColor(0xFF0000FF);
         GraphViewDataModel testGraph = new GraphViewDataModel(asp1000, asl1001, paint, GraphViewDataModel.STANDARD_LINE);
-        PointF[] cyclicGraph = new PointF[]{new PointF(1,5), new PointF(2,10), new PointF(3,15), new PointF(4,15), new PointF(5,15), new PointF(6,20), new PointF(5,25), new PointF(4, 30), new PointF(3,30), new PointF(3,30), new PointF(3,30), new PointF(3,25), new PointF(2, 20), new PointF(1,5), new PointF(1,10), new PointF(1,5), new PointF(1,10)};
-        GraphViewDataModel cyclicDataModel = new GraphViewDataModel(cyclicGraph, paint, GraphViewDataModel.STANDARD_LINE);
+        GraphViewDataModel testGraph2 = new GraphViewDataModel(asl1001, asp1000, paint, GraphViewDataModel.STANDARD_LINE);
+
         com.sortagreg.graphview.GraphViewDataModel libraryCyclicDataModelUnfolded = new com.sortagreg.graphview.GraphViewDataModel(asp1000, asl1001, paint, GraphViewDataModel.UNFOLDED_LINE);
         graphViewBottom.addToDataSetList(libraryCyclicDataModelUnfolded);
         graphViewBottom.setTitle("Incremental Graph & Labels");
         graphViewTop.addToDataSetList(testGraph);
+        graphViewTop.addToSecondaryDataSetList(testGraph2);
         graphViewTop.setTitle("Standard Graph & Labels");
-//        dataSetList.add(cyclicDataModelFolded);
-//        libraryDataSetList.add(libraryCyclicDataModelFolded);
     }
 
     private void drawExponentialCurves() {

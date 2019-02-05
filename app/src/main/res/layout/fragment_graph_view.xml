@@ -49,7 +49,8 @@
         app:numberOfHorizontalLabels="10"
         app:leftSideText="left"
         app:rightSideText="right"
-        app:bottomText="bottom"/>
+        app:bottomText="bottom"
+        app:axisMarginRight="50"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"

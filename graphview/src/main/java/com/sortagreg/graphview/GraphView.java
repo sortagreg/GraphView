@@ -73,16 +73,6 @@ public class GraphView extends View {
     // Calculated values
     private List<GraphViewDataModel> dataSetList;
     private List<GraphViewDataModel> secondaryDataSetList;
-    private float dataSetMinX = Float.MAX_VALUE;
-    private float dataSetMaxX = Float.MIN_VALUE;
-    private float dataSetMinY = Float.MAX_VALUE;
-    private float dataSetMaxY = Float.MIN_VALUE;
-    private float adjustedDataSetMinX;
-    private float adjustedDataSetMaxX;
-    private float adjustedDataSetMinY;
-    private float adjustedDataSetMaxY;
-    private float rangeOfXValues;
-    private float rangeOfYValues;
 
     /**
      * Constructor for a GraphView in code.
@@ -163,26 +153,11 @@ public class GraphView extends View {
     protected void onDraw(Canvas canvas) {
         drawVerticalMarkers(canvas);
         drawHorizontalMarkers(canvas);
-        drawDataSets(canvas);
+        drawDataSet(canvas, dataSetList, true);
+        drawDataSet(canvas, secondaryDataSetList, false);
         drawAxes(canvas);
-        if (!dataSetList.isEmpty()) {
-            switch (labelStyle) {
-                case STANDARD_LABELS:
-                    drawStandardTextLabels(canvas);
-                    break;
-                case UNFOLDED_LABELS:
-                    drawUnfoldedTextLabels(canvas);
-                    break;
-                case CUSTOM_LABELS:
-                    Log.w(TAG, "onDraw: Custom label is not implemented yet. Using standard by default");
-                    // TODO add custom label ability
-                    // break;
-                default:
-                    drawStandardTextLabels(canvas);
-            }
-            drawRightSideLabels(canvas);
-            drawKeyLabels(canvas);
-        }
+//        drawRightSideLabels(canvas, adjustedDataSetMinY, rangeOfYValues);
+        drawKeyLabels(canvas);
     }
 
     /**
@@ -421,30 +396,79 @@ public class GraphView extends View {
         }
     }
 
-    /**
-     * Draws the various data sets to the Canvas Object
-     *
-     * @param canvas Canvas Object to be drawn to
-     */
-    private void drawDataSets(Canvas canvas) {
-        getStatsOnAllDataSets();
+    private void drawDataSet(Canvas canvas, List<GraphViewDataModel> dataSetList, boolean isPrimary) {
+        float dataSetMinX = Float.MAX_VALUE;
+        float dataSetMaxX = Float.MIN_VALUE;
+        float dataSetMinY = Float.MAX_VALUE;
+        float dataSetMaxY = Float.MIN_VALUE;
+        float adjustedDataSetMinX;
+        float adjustedDataSetMaxX;
+        float adjustedDataSetMinY;
+        float adjustedDataSetMaxY;
+        float rangeOfXValues;
+        float rangeOfYValues;
+
+        if (dataSetList.isEmpty()) return;
+
+        // Calculate the values for the data set
+        for (GraphViewDataModel dataSet : dataSetList) {
+            for (PointF dataPoint : dataSet.getDataSet()) {
+                if (dataSet.getGraphType() == STANDARD_LINE) {
+                    dataSetMaxX = Math.max(dataSetMaxX, dataPoint.x);
+                    dataSetMinX = Math.min(dataSetMinX, dataPoint.x);
+                }
+                if (dataSet.getGraphType() != STATE_LINE) {
+                    dataSetMaxY = Math.max(dataSetMaxY, dataPoint.y);
+                    dataSetMinY = Math.min(dataSetMinY, dataPoint.y);
+                }
+            }
+        }
+        // Use these values when calculating range of values and converting PointF objects.
+        // Otherwise, comment these variables out and replace with normal dataSetMax/Min.
+        adjustedDataSetMinX = dataSetMinX - Math.abs(dataSetMaxX * graphPaddingFactor);
+        adjustedDataSetMinY = dataSetMinY - Math.abs(dataSetMaxY * graphPaddingFactor);
+        adjustedDataSetMaxX = dataSetMaxX + Math.abs(dataSetMaxX * graphPaddingFactor);
+        adjustedDataSetMaxY = dataSetMaxY + Math.abs(dataSetMaxY * graphPaddingFactor);
+
+        rangeOfXValues = adjustedDataSetMaxX - adjustedDataSetMinX;
+        rangeOfYValues = adjustedDataSetMaxY - adjustedDataSetMinY;
+
+        // Draw the data sets
         for (GraphViewDataModel dataModel : dataSetList) {
             switch (dataModel.getGraphType()) {
                 case STANDARD_LINE:
-                    drawStandardLine(canvas, dataModel);
+                    drawStandardLine(canvas, dataModel, adjustedDataSetMinX, adjustedDataSetMinY, rangeOfXValues, rangeOfYValues);
                     break;
                 case UNFOLDED_LINE:
-                    drawUnfoldedLine(canvas, dataModel);
+                    drawUnfoldedLine(canvas, dataModel, adjustedDataSetMinY, rangeOfYValues);
                     break;
                 case CONSTANT_LINE:
-                    drawConstantLine(canvas, dataModel);
+                    drawConstantLine(canvas, dataModel, adjustedDataSetMinY, rangeOfYValues);
                     break;
                 case STATE_LINE:
                     drawBinaryStateLine(canvas, dataModel);
                     break;
             }
+        }
 
-
+        // Draw the labels
+        if (isPrimary) {
+            switch (labelStyle) {
+                case STANDARD_LABELS:
+                    drawStandardTextLabels(canvas, adjustedDataSetMinX, adjustedDataSetMinY, rangeOfXValues, rangeOfYValues);
+                    break;
+                case UNFOLDED_LABELS:
+                    drawUnfoldedTextLabels(canvas, adjustedDataSetMinY, rangeOfYValues);
+                    break;
+                case CUSTOM_LABELS:
+                    Log.w(TAG, "onDraw: Custom label is not implemented yet. Using standard by default");
+                    // TODO add custom label ability
+                    // break;
+                default:
+                    drawStandardTextLabels(canvas, adjustedDataSetMinX, adjustedDataSetMinY, rangeOfXValues, rangeOfYValues);
+            }
+        } else {
+            drawRightSideLabels(canvas, adjustedDataSetMinY, rangeOfYValues);
         }
     }
 
@@ -471,11 +495,12 @@ public class GraphView extends View {
 
     /**
      * Draws a graph incrementally, taking each point in sequence, and displays (sequence value, actual Y)
-     *
-     * @param canvas
+     *  @param canvas
      * @param dataModel
+     * @param adjustedDataSetMinY
+     * @param rangeOfYValues
      */
-    private void drawUnfoldedLine(Canvas canvas, GraphViewDataModel dataModel) {
+    private void drawUnfoldedLine(Canvas canvas, GraphViewDataModel dataModel, float adjustedDataSetMinY, float rangeOfYValues) {
         for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
             float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (dataModel.getDataSet().length - 1);
             float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
@@ -494,11 +519,12 @@ public class GraphView extends View {
 
     /**
      * Takes a single point in a GraphViewDataModel and displays a constant based on the point's Y
-     *
-     * @param canvas
+     *  @param canvas
      * @param dataModel
+     * @param adjustedDataSetMinY
+     * @param rangeOfYValues
      */
-    private void drawConstantLine(Canvas canvas, GraphViewDataModel dataModel) {
+    private void drawConstantLine(Canvas canvas, GraphViewDataModel dataModel, float adjustedDataSetMinY, float rangeOfYValues) {
         float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (rangeOfYValues);
 
         float startX = leftAxisMargin;
@@ -514,11 +540,14 @@ public class GraphView extends View {
 
     /**
      * Draws a line from a data set, using (X,Y) pairs
-     *
-     * @param canvas
+     *  @param canvas
      * @param dataModel
+     * @param adjustedDataSetMinX
+     * @param adjustedDataSetMinY
+     * @param rangeOfXValues
+     * @param rangeOfYValues
      */
-    private void drawStandardLine(Canvas canvas, GraphViewDataModel dataModel) {
+    private void drawStandardLine(Canvas canvas, GraphViewDataModel dataModel, float adjustedDataSetMinX, float adjustedDataSetMinY, float rangeOfXValues, float rangeOfYValues) {
         for (int i = 0; i < dataModel.getDataSet().length - 1; i++) {
             float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / rangeOfXValues;
             float pixelsPerY = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
@@ -539,8 +568,12 @@ public class GraphView extends View {
      * Draws the X and Y labels base on the max and min of the data set and the title
      *
      * @param canvas
+     * @param adjustedDataSetMinX
+     * @param adjustedDataSetMinY
+     * @param rangeOfXValues
+     * @param rangeOfYValues
      */
-    private void drawStandardTextLabels(Canvas canvas) {
+    private void drawStandardTextLabels(Canvas canvas, float adjustedDataSetMinX, float adjustedDataSetMinY, float rangeOfXValues, float rangeOfYValues) {
         // TODO split method to drawX, drawY, drawTitle
 
         Paint textPaint = new Paint();
@@ -568,9 +601,6 @@ public class GraphView extends View {
                 canvas.rotate(-270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
             }
         }
-        // Title label
-//        textPaint.setTextAlign(Paint.Align.CENTER);
-//        canvas.drawText(title, canvas.getWidth() / 2f, topAxisMargin / 2f, textPaint);
     }
 
     /**
@@ -578,8 +608,10 @@ public class GraphView extends View {
      * The Y labels are drawn by min and max values.
      *
      * @param canvas
+     * @param adjustedDataSetMinY
+     * @param rangeOfYValues
      */
-    private void drawUnfoldedTextLabels(Canvas canvas) {
+    private void drawUnfoldedTextLabels(Canvas canvas, float adjustedDataSetMinY, float rangeOfYValues) {
         // TODO split method to drawX, drawY, drawTitle
 
         Paint textPaint = new Paint();
@@ -607,12 +639,9 @@ public class GraphView extends View {
                 canvas.rotate(-270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
             }
         }
-        // Title label
-//        textPaint.setTextAlign(Paint.Align.CENTER);
-//        canvas.drawText(title, canvas.getWidth() / 2f, topAxisMargin / 2f, textPaint);
     }
 
-    private void drawRightSideLabels(Canvas canvas) {
+    private void drawRightSideLabels(Canvas canvas, float adjustedDataSetMinY, float rangeOfYValues) {
         if (numberOfRightSideLabels <= 0) return;
         Paint textPaint = new Paint();
         textPaint.setColor(0xFF000000); // TODO paint color should be configurable
@@ -642,33 +671,6 @@ public class GraphView extends View {
         canvas.rotate(270, canvas.getWidth() - 20f, canvas.getHeight() / 2f);
         canvas.drawText(rightSideText, canvas.getWidth() - 20f, canvas.getHeight() / 2f, textPaint);
         canvas.rotate(-270, canvas.getWidth() - 20f, canvas.getHeight() / 2f);
-    }
-
-    /**
-     * Find and set the largest and smallest values to be found in all the data sets.
-     */
-    private void getStatsOnAllDataSets() {
-        for (GraphViewDataModel dataSet : dataSetList) {
-            for (PointF dataPoint : dataSet.getDataSet()) {
-                if (dataSet.getGraphType() == STANDARD_LINE) {
-                    dataSetMaxX = Math.max(dataSetMaxX, dataPoint.x);
-                    dataSetMinX = Math.min(dataSetMinX, dataPoint.x);
-                }
-                if (dataSet.getGraphType() != STATE_LINE) {
-                    dataSetMaxY = Math.max(dataSetMaxY, dataPoint.y);
-                    dataSetMinY = Math.min(dataSetMinY, dataPoint.y);
-                }
-            }
-        }
-        // Use these values when calculating range of values and converting PointF objects.
-        // Otherwise, comment these variables out and replace with normal dataSetMax/Min.
-        adjustedDataSetMinX = dataSetMinX - Math.abs(dataSetMaxX * graphPaddingFactor);
-        adjustedDataSetMinY = dataSetMinY - Math.abs(dataSetMaxY * graphPaddingFactor);
-        adjustedDataSetMaxX = dataSetMaxX + Math.abs(dataSetMaxX * graphPaddingFactor);
-        adjustedDataSetMaxY = dataSetMaxY + Math.abs(dataSetMaxY * graphPaddingFactor);
-
-        rangeOfXValues = adjustedDataSetMaxX - adjustedDataSetMinX;
-        rangeOfYValues = adjustedDataSetMaxY - adjustedDataSetMinY;
     }
 
     /**

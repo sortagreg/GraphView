@@ -2,7 +2,7 @@ package com.sortagreg.graphview;
 
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.util.Arrays;
 import java.util.Objects;

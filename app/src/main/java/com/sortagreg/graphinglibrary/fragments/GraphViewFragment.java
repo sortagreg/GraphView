@@ -4,19 +4,18 @@ package com.sortagreg.graphinglibrary.fragments;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.sortagreg.graphinglibrary.R;
+import com.sortagreg.graphview.GraphView;
 import com.sortagreg.graphview.GraphViewDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Demo Fragment for GraphView
@@ -29,9 +28,8 @@ public class GraphViewFragment extends Fragment {
     List<com.sortagreg.graphview.GraphViewDataModel> libraryDataSetList = new ArrayList<>();
     int DATA_SET_LENGTH = 50;
 
-    @BindView(R.id.graphViewTop)
     com.sortagreg.graphview.GraphView graphViewTop;
-    @BindView(R.id.GraphViewBottom)
+
     com.sortagreg.graphview.GraphView graphViewBottom;
     public GraphViewFragment() {
         // Required empty public constructor
@@ -42,7 +40,9 @@ public class GraphViewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_graph_view, container, false);
-        ButterKnife.bind(this, view);
+
+        graphViewTop = (GraphView) view.findViewById(R.id.graphViewTop);
+        graphViewBottom = (GraphView) view.findViewById(R.id.graphView);
 
         drawUnfoldedDataSet();
 

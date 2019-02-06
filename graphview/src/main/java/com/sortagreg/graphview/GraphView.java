@@ -59,6 +59,7 @@ public class GraphView extends View {
     public static final int DEFAULT_NUMBER_HORI_LABELS = 15;
     public static final int DEFAULT_NUMBER_BOTTOM_LABELS = 15;
     public static final int DEFAULT_NUMBER_RIGHT_SIDE_LABELS = 0;
+    public static final int DEFAULT_ROUNDING_FACTOR = 1;
     public static final int STANDARD_LABELS = 0;
     public static final int UNFOLDED_LABELS = 1;
     public static final int CUSTOM_LABELS = 2;
@@ -67,6 +68,8 @@ public class GraphView extends View {
     private int numberOfRightSideLabels;
     private int numberOfBottomLabels;
     private int labelStyle;
+    private boolean labelRounding;
+    private int labelRoundingFactor;
 
     private boolean shouldDrawBox;
 
@@ -134,6 +137,8 @@ public class GraphView extends View {
         bottomText = typedArray.getString(R.styleable.GraphView_bottomText) != null ? typedArray.getString(R.styleable.GraphView_bottomText) : "";
         rightSideText = typedArray.getString(R.styleable.GraphView_rightSideText) != null ? typedArray.getString(R.styleable.GraphView_rightSideText) : "";
         leftSideText = typedArray.getString(R.styleable.GraphView_leftSideText) != null ? typedArray.getString(R.styleable.GraphView_leftSideText) : "";
+        labelRounding = typedArray.getBoolean(R.styleable.GraphView_labelRounding, false);
+        labelRoundingFactor = typedArray.getInteger(R.styleable.GraphView_labelRoundingFactor, DEFAULT_ROUNDING_FACTOR);
         typedArray.recycle();
 
         // Init other values here
@@ -303,6 +308,16 @@ public class GraphView extends View {
 
     public void setNumberOfBottomLabels(int numberOfBottomLabels) {
         this.numberOfBottomLabels = numberOfBottomLabels;
+        invalidate();
+    }
+
+    public void setLabelRounding(boolean labelRounding) {
+        this.labelRounding = labelRounding;
+        invalidate();
+    }
+
+    public void setLabelRoundingFactor(int labelRoundingFactor) {
+        this.labelRoundingFactor = labelRoundingFactor;
         invalidate();
     }
 
@@ -715,6 +730,8 @@ public class GraphView extends View {
         savedState.bottomText = bottomText;
         savedState.leftSideText = leftSideText;
         savedState.rightSideText = rightSideText;
+        savedState.labelRoundingFactor = labelRoundingFactor;
+        savedState.labelRounding = labelRounding;
         return savedState;
     }
 
@@ -747,6 +764,8 @@ public class GraphView extends View {
         setNumberOfLeftSideLabels(savedState.numberOfLeftSideLabels);
         setNumberOfRightSideLabels(savedState.numberOfRightSideLabels);
         setNumberOfBottomLabels(savedState.numberOfBottomLabels);
+        setLabelRounding(savedState.labelRounding);
+        setLabelRoundingFactor(savedState.labelRoundingFactor);
     }
 
     /**
@@ -770,6 +789,8 @@ public class GraphView extends View {
         private static final String RIGHT_SIDE_TEXT = "right side text";
         private static final String LEFT_SIDE_TEXT = "left side text";
         private static final String BOTTOM_TEXT = "bottom text";
+        private static final String LABEL_ROUNDING = "label rounding";
+        private static final String LABEL_ROUNDING_FACTOR = "label rounding factor";
         Bundle bundle;
         int numberOfVerticalMarkers;
         int numberOfHorizontalMarkers;
@@ -788,6 +809,8 @@ public class GraphView extends View {
         String rightSideText;
         String leftSideText;
         String bottomText;
+        boolean labelRounding;
+        int labelRoundingFactor;
 
         public GraphViewSavedState(Parcelable superState) {
             super(superState);
@@ -819,6 +842,8 @@ public class GraphView extends View {
             rightSideText = bundle.getString(RIGHT_SIDE_TEXT);
             leftSideText = bundle.getString(LEFT_SIDE_TEXT);
             bottomText = bundle.getString(BOTTOM_TEXT);
+            labelRounding = bundle.getBoolean(LABEL_ROUNDING);
+            labelRoundingFactor = bundle.getInt(LABEL_ROUNDING_FACTOR);
         }
 
         /**
@@ -845,6 +870,8 @@ public class GraphView extends View {
             outBundle.putBoolean(SHOULD_DRAW_BOX, shouldDrawBox);
             outBundle.putInt(LABEL_STYLE, labelStyle);
             outBundle.putString(TITLE, title);
+            outBundle.putBoolean(LABEL_ROUNDING, labelRounding);
+            outBundle.putInt(LABEL_ROUNDING_FACTOR, labelRoundingFactor);
             out.writeBundle(outBundle);
         }
 

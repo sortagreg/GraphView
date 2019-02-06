@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="GraphView">
+        <attr name="title" format="string"/>
+        <attr name="rightSideText" format="string"/>
+        <attr name="leftSideText" format="string"/>
+        <attr name="bottomText" format="string"/>
         <attr name="numberOfVerticalMarkers" format="integer"/>
         <attr name="numberOfHorizontalMarkers" format="integer"/>
         <attr name="numberOfLeftSideLabels" format="integer"/>
@@ -17,9 +21,7 @@
             <enum name="Unfolded" value="1"/>
             <enum name="Custom" value="2"/>
         </attr>
-        <attr name="title" format="string"/>
-        <attr name="rightSideText" format="string"/>
-        <attr name="leftSideText" format="string"/>
-        <attr name="bottomText" format="string"/>
+        <attr name="labelRounding" format="boolean"/>
+        <attr name="labelRoundingFactor" format="integer"/>
     </declare-styleable>
 </resources>

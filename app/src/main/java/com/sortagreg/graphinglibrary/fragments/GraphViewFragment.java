@@ -42,15 +42,13 @@ public class GraphViewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_graph_view, container, false);
 
         graphViewTop = (GraphView) view.findViewById(R.id.graphViewTop);
-        graphViewBottom = (GraphView) view.findViewById(R.id.graphView);
+        graphViewBottom = (GraphView) view.findViewById(R.id.graphViewBottom);
 
-        drawUnfoldedDataSet();
 
 //        drawCrossHairs();
 
 //        drawExponentialCurves();
 
-        drawBinaryStateLine();
 
 //        drawConstants();
 
@@ -59,6 +57,10 @@ public class GraphViewFragment extends Fragment {
 //        graphViewTop.setLeftSideText("TEST");
 //        graphViewTop.setRightSideText("TEST");
 //        graphViewTop.setBottomText("TEST");
+
+        drawUnfoldedDataSet();
+        drawBinaryStateLine();
+
         return view;
     }
 

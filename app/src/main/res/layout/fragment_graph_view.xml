@@ -31,7 +31,7 @@
         app:graphPaddingFactor="0.1"/>
 
     <com.sortagreg.graphview.GraphView
-        android:id="@+id/GraphViewBottom"
+        android:id="@+id/graphViewBottom"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"

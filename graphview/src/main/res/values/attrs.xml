@@ -7,7 +7,7 @@
         <attr name="bottomText" format="string"/>
         <attr name="numberOfVerticalMarkers" format="integer"/>
         <attr name="numberOfHorizontalMarkers" format="integer"/>
-        <attr name="numberOfLeftSideLabels" format="integer"/>
+        <attr name="leftSideLabels" format="boolean"/>
         <attr name="numberOfRightSideLabels" format="integer"/>
         <attr name="numberOfHorizontalLabels" format="integer"/>
         <attr name="axisMarginTop" format="float" />
@@ -21,7 +21,7 @@
             <enum name="Unfolded" value="1"/>
             <enum name="Custom" value="2"/>
         </attr>
-        <attr name="labelRounding" format="boolean"/>
-        <attr name="labelRoundingFactor" format="integer"/>
+        <attr name="leftLabelRoundingFactor" format="integer"/>
+        <attr name="leftLabelStepFactor" format="integer" />
     </declare-styleable>
 </resources>

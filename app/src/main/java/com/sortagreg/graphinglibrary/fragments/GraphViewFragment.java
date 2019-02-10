@@ -52,8 +52,8 @@ public class GraphViewFragment extends Fragment {
 
 //        drawConstants();
 
-        graphViewTop.addToDataSetListBulk(dataSetList);
-        graphViewBottom.addToDataSetListBulk(libraryDataSetList);
+//        graphViewTop.addToDataSetListBulk(dataSetList);
+//        graphViewBottom.addToDataSetListBulk(libraryDataSetList);
 //        graphViewTop.setLeftSideText("TEST");
 //        graphViewTop.setRightSideText("TEST");
 //        graphViewTop.setBottomText("TEST");

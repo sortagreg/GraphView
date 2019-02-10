@@ -87,7 +87,7 @@ Many of the portions of GraphView can be customized to fit your needs.  Options 
 #### Current Customization Options
 * numberOfVerticalMarkers : Integer
 * numberOfHorizontalMarkers : Integer
-* numberOfLeftSideLabels : Integer
+* leftSideLabels : Integer
 * numberOfHorizontalLabels : Integer
 * axisMarginTop : float
 * axisMarginBottom : float

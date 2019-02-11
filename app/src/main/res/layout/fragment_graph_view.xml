@@ -22,14 +22,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shouldDrawBox="true"
-        app:numberOfRightSideLabels="5"
         app:leftSideText="left"
         app:rightSideText="right"
         app:bottomText="bottom"
         app:graphPaddingFactor="0.1"
         app:leftLabelRoundingFactor="1000"
-        app:leftLabelStepFactor="2"/>
+        app:leftLabelStepFactor="2"
+        app:xLabelRoundingFactor="100"
+        app:xLabelStepFactor="200"/>
 
     <com.sortagreg.graphview.GraphView
         android:id="@+id/graphViewBottom"
@@ -45,8 +45,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         app:labelStyle="Unfolded"
-        app:shouldDrawBox="true"
-        app:numberOfRightSideLabels="5"
         app:leftSideText="left"
         app:rightSideText="right"
         app:bottomText="bottom"

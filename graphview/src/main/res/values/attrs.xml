@@ -7,21 +7,26 @@
         <attr name="bottomText" format="string"/>
         <attr name="numberOfVerticalMarkers" format="integer"/>
         <attr name="numberOfHorizontalMarkers" format="integer"/>
-        <attr name="leftSideLabels" format="boolean"/>
-        <attr name="numberOfRightSideLabels" format="integer"/>
-        <attr name="numberOfHorizontalLabels" format="integer"/>
+
         <attr name="axisMarginTop" format="float" />
         <attr name="axisMarginBottom" format="float" />
         <attr name="axisMarginLeft" format="float" />
         <attr name="axisMarginRight" format="float" />
+
         <attr name="graphPaddingFactor" format="float" />
         <attr name="shouldDrawBox" format="boolean" />
+
         <attr name="labelStyle" format="integer">
             <enum name="Standard" value="0"/>
             <enum name="Unfolded" value="1"/>
             <enum name="Custom" value="2"/>
         </attr>
+        <attr name="leftSideLabels" format="boolean"/>
         <attr name="leftLabelRoundingFactor" format="integer"/>
         <attr name="leftLabelStepFactor" format="integer" />
+
+        <attr name="xAxisLabels" format="boolean"/>
+        <attr name="xLabelRoundingFactor" format="integer"/>
+        <attr name="xLabelStepFactor" format="integer" />
     </declare-styleable>
 </resources>

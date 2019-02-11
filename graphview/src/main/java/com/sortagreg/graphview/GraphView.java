@@ -646,16 +646,15 @@ public class GraphView extends View {
             }
 
         // X-Axis labels
-//        if (numberOfHorizontalLabels > 0) {
-//            pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (float) numberOfHorizontalLabels;
-//            valuePerStep = dataSetList.get(0).getDataSet().length / numberOfHorizontalLabels;
-//            for (int i = 1; i <= numberOfHorizontalLabels; i++) {
-//                int labelValue = (int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep - 1].x;
-//                canvas.rotate(270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
-//                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
-//                canvas.rotate(-270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
-//            }
-//        }
+        // TODO actually make the number of labels in an unfolded graph configurable again
+            pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / 10f; //(float) numberOfHorizontalLabels;
+            valuePerStep = dataSetList.get(0).getDataSet().length / 10f; //numberOfHorizontalLabels;
+            for (int i = 1; i <= 10; i++) {
+                int labelValue = (int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep - 1].x;
+                canvas.rotate(270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
+                canvas.rotate(-270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
+            }
     }
 
     private void drawRightSideLabels(Canvas canvas, float adjustedDataSetMinY, float rangeOfYValues) {

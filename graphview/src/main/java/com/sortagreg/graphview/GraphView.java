@@ -8,7 +8,7 @@ import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -50,23 +50,27 @@ public class GraphView extends View {
     private float rightAxisMargin;
     private float graphPaddingFactor;
 
-    public static final int DEFAULT_NUMBER_VERT_MARKERS = 15;
-    public static final int DEFAULT_NUMBER_HORI_MARKERS = 15;
+    public static final int DEFAULT_NUMBER_VERT_MARKERS = 8;
+    public static final int DEFAULT_NUMBER_HORI_MARKERS = 8;
     private int numberOfVerticalMarkers;
     private int numberOfHorizontalMarkers;
 
-    public static final int DEFAULT_NUMBER_LEFT_SIDE_LABELS = 15;
-    public static final int DEFAULT_NUMBER_HORI_LABELS = 15;
-    public static final int DEFAULT_NUMBER_BOTTOM_LABELS = 15;
-    public static final int DEFAULT_NUMBER_RIGHT_SIDE_LABELS = 0;
+    public static final int DEFAULT_ROUNDING_FACTOR = 1;
+    public static final int DEFAULT_STEP_FACTOR = 1;
     public static final int STANDARD_LABELS = 0;
     public static final int UNFOLDED_LABELS = 1;
     public static final int CUSTOM_LABELS = 2;
-    private int numberOfLeftSideLabels;
-    private int numberOfHorizontalLabels;
-    private int numberOfRightSideLabels;
-    private int numberOfBottomLabels;
     private int labelStyle;
+    private boolean leftSideLabels;
+    private int leftLabelRoundingFactor;
+    private int leftLabelStepFactor;
+    private boolean xAxisLabels;
+    private int xLabelRoundingFactor;
+    private int xLabelStepFactor;
+    private boolean rightSideLabels;
+    private int rightLabelRoundingFactor;
+    private int rightLabelStepFactor;
+
 
     private boolean shouldDrawBox;
 
@@ -120,20 +124,30 @@ public class GraphView extends View {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.GraphView);
         numberOfHorizontalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalMarkers, DEFAULT_NUMBER_HORI_MARKERS);
         numberOfVerticalMarkers = typedArray.getInteger(R.styleable.GraphView_numberOfVerticalMarkers, DEFAULT_NUMBER_VERT_MARKERS);
-        numberOfHorizontalLabels = typedArray.getInteger(R.styleable.GraphView_numberOfHorizontalLabels, DEFAULT_NUMBER_HORI_LABELS);
-        numberOfLeftSideLabels = typedArray.getInteger(R.styleable.GraphView_numberOfLeftSideLabels, DEFAULT_NUMBER_LEFT_SIDE_LABELS);
-        numberOfRightSideLabels = typedArray.getInteger(R.styleable.GraphView_numberOfRightSideLabels, DEFAULT_NUMBER_RIGHT_SIDE_LABELS);
+
         topAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginTop, DEFAULT_TOP_MARGIN);
         bottomAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginBottom, DEFAULT_BOTTOM_MARGIN);
         rightAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginRight, DEFAULT_RIGHT_MARGIN);
         leftAxisMargin = typedArray.getFloat(R.styleable.GraphView_axisMarginLeft, DEFAULT_LEFT_MARGIN);
         graphPaddingFactor = typedArray.getFloat(R.styleable.GraphView_graphPaddingFactor, DEFAULT_GRAPH_PADDING_FACTOR);
-        shouldDrawBox = typedArray.getBoolean(R.styleable.GraphView_shouldDrawBox, false);
-        labelStyle = typedArray.getInteger(R.styleable.GraphView_labelStyle, STANDARD_LABELS);
+        shouldDrawBox = typedArray.getBoolean(R.styleable.GraphView_shouldDrawBox, true);
+
         title = typedArray.getString(R.styleable.GraphView_title) != null ? typedArray.getString(R.styleable.GraphView_title) : "";
         bottomText = typedArray.getString(R.styleable.GraphView_bottomText) != null ? typedArray.getString(R.styleable.GraphView_bottomText) : "";
         rightSideText = typedArray.getString(R.styleable.GraphView_rightSideText) != null ? typedArray.getString(R.styleable.GraphView_rightSideText) : "";
         leftSideText = typedArray.getString(R.styleable.GraphView_leftSideText) != null ? typedArray.getString(R.styleable.GraphView_leftSideText) : "";
+
+        labelStyle = typedArray.getInteger(R.styleable.GraphView_labelStyle, STANDARD_LABELS);
+        leftLabelRoundingFactor = typedArray.getInteger(R.styleable.GraphView_leftLabelRoundingFactor, DEFAULT_ROUNDING_FACTOR);
+        leftLabelStepFactor = typedArray.getInteger(R.styleable.GraphView_leftLabelStepFactor, DEFAULT_STEP_FACTOR);
+        leftSideLabels = typedArray.getBoolean(R.styleable.GraphView_leftSideLabels, true);
+        xLabelRoundingFactor = typedArray.getInteger(R.styleable.GraphView_xLabelRoundingFactor, DEFAULT_ROUNDING_FACTOR);
+        xLabelStepFactor = typedArray.getInteger(R.styleable.GraphView_xLabelStepFactor, DEFAULT_STEP_FACTOR);
+        xAxisLabels = typedArray.getBoolean(R.styleable.GraphView_xAxisLabels, true);
+        rightLabelRoundingFactor = typedArray.getInteger(R.styleable.GraphView_rightLabelRoundingFactor, DEFAULT_ROUNDING_FACTOR);
+        rightLabelStepFactor = typedArray.getInteger(R.styleable.GraphView_rightLabelStepFactor, DEFAULT_STEP_FACTOR);
+        rightSideLabels = typedArray.getBoolean(R.styleable.GraphView_rightAxisLabels, true);
+
         typedArray.recycle();
 
         // Init other values here
@@ -183,27 +197,13 @@ public class GraphView extends View {
     /**
      * Update the number of labels to draw along the y axis
      *
-     * @param numberOfLeftSideLabels
+     * @param leftSideLabels
      */
-    public void setNumberOfLeftSideLabels(int numberOfLeftSideLabels) {
-        this.numberOfLeftSideLabels = numberOfLeftSideLabels;
+    public void setLeftSideLabels(boolean leftSideLabels) {
+        this.leftSideLabels = leftSideLabels;
         invalidate();
     }
 
-    public void setNumberOfRightSideLabels(int numberOfRightSideLabels) {
-        this.numberOfRightSideLabels = numberOfRightSideLabels;
-        invalidate();
-    }
-
-    /**
-     * Update the number of labels to draw along the x axis
-     *
-     * @param numberOfHorizontalLabels
-     */
-    public void setNumberOfHorizontalLabels(int numberOfHorizontalLabels) {
-        this.numberOfHorizontalLabels = numberOfHorizontalLabels;
-        invalidate();
-    }
 
     /**
      * Switch the graph between the different label styles
@@ -301,8 +301,43 @@ public class GraphView extends View {
         invalidate();
     }
 
-    public void setNumberOfBottomLabels(int numberOfBottomLabels) {
-        this.numberOfBottomLabels = numberOfBottomLabels;
+    public void setLeftLabelRoundingFactor(int leftLabelRoundingFactor) {
+        this.leftLabelRoundingFactor = leftLabelRoundingFactor;
+        invalidate();
+    }
+
+    public void setLeftLabelStepFactor(int leftLabelStepFactor) {
+        this.leftLabelStepFactor = leftLabelStepFactor;
+        invalidate();
+    }
+
+    public void setxAxisLabels(boolean xAxisLabels) {
+        this.xAxisLabels = xAxisLabels;
+        invalidate();
+    }
+
+    public void setxLabelRoundingFactor(int xLabelRoundingFactor) {
+        this.xLabelRoundingFactor = xLabelRoundingFactor;
+        invalidate();
+    }
+
+    public void setxLabelStepFactor(int xLabelStepFactor) {
+        this.xLabelStepFactor = xLabelStepFactor;
+        invalidate();
+    }
+
+    public void setRightSideLabels(boolean rightSideLabels) {
+        this.rightSideLabels = rightSideLabels;
+        invalidate();
+    }
+
+    public void setRightLabelRoundingFactor(int rightLabelRoundingFactor) {
+        this.rightLabelRoundingFactor = rightLabelRoundingFactor;
+        invalidate();
+    }
+
+    public void setRightLabelStepFactor(int rightLabelStepFactor) {
+        this.rightLabelStepFactor = rightLabelStepFactor;
         invalidate();
     }
 
@@ -581,24 +616,32 @@ public class GraphView extends View {
         textPaint.setTextSize(30f); // TODO text size should be configurable
         textPaint.setTextAlign(Paint.Align.RIGHT);
         textPaint.setFakeBoldText(true);
+
         // Y-Axis labels
-        if (numberOfLeftSideLabels > 0) {
-            float pixelsPerLabel = (canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (float) numberOfLeftSideLabels;
-            float valuePerStep = rangeOfYValues / numberOfLeftSideLabels;
-            for (int i = 1; i <= numberOfLeftSideLabels; i++) {
-                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
-                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - bottomAxisMargin) - ((float) i * pixelsPerLabel) + 20f, textPaint);
+        if (leftSideLabels) {
+            int initialLabelValue = ((int) (adjustedDataSetMinY + leftLabelRoundingFactor) / leftLabelRoundingFactor) * leftLabelRoundingFactor;
+            int numberOfLabels = (int) rangeOfYValues / leftLabelRoundingFactor / leftLabelStepFactor;
+            float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (float) numberOfLabels;
+            float pixelsPerValue = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
+            float initialLabelOffset = Math.abs((float) initialLabelValue - adjustedDataSetMinY) * pixelsPerValue;
+            for (int i = 0; i < numberOfLabels; i++) {
+                int labelValue = initialLabelValue + i * leftLabelRoundingFactor * leftLabelStepFactor;
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, ((float) canvas.getHeight() - bottomAxisMargin - initialLabelOffset) - ((float) i * pixelsPerLabel), textPaint);
             }
         }
+
         // X-Axis labels
-        if (numberOfHorizontalLabels > 0) {
-            float pixelsPerLabel = (canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (float) numberOfHorizontalLabels;
-            float valuePerStep = rangeOfXValues / numberOfHorizontalLabels;
-            for (int i = 1; i <= numberOfHorizontalLabels; i++) {
-                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinX);
-                canvas.rotate(270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
-                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
-                canvas.rotate(-270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
+        if (xAxisLabels) {
+            int initialLabelValue = ((int) (adjustedDataSetMinX + xLabelRoundingFactor) / xLabelRoundingFactor) * xLabelRoundingFactor;
+            int numberOfLabels = (int) rangeOfXValues / xLabelRoundingFactor / xLabelStepFactor;
+            float pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (float) numberOfLabels;
+            float pixelsPerValue = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / rangeOfXValues;
+            float initialLabelOffset = Math.abs((float) initialLabelValue - adjustedDataSetMinX) * pixelsPerValue;
+            for (int i = 1; i < numberOfLabels; i++) {
+                int labelValue = initialLabelValue + i * xLabelRoundingFactor * xLabelStepFactor;
+                canvas.rotate(270, leftAxisMargin + ((float) i * pixelsPerLabel) + initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f);
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin + ((float) i * pixelsPerLabel) + initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
+                canvas.rotate(-270, leftAxisMargin + ((float) i * pixelsPerLabel) + initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f);
             }
         }
     }
@@ -620,40 +663,42 @@ public class GraphView extends View {
         textPaint.setTextAlign(Paint.Align.RIGHT);
         textPaint.setFakeBoldText(true);
         // Y-Axis labels
-        if (numberOfLeftSideLabels > 0) {
-            float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin -  bottomAxisMargin) / (float) numberOfLeftSideLabels;
-            float valuePerStep = rangeOfYValues / numberOfLeftSideLabels;
-            for (int i = 1; i <= numberOfLeftSideLabels; i++) {
+
+            float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin -  bottomAxisMargin) / (float) 10;
+            float valuePerStep = rangeOfYValues / 10;
+            for (int i = 1; i <= 10; i++) {
                 int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
                 canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - bottomAxisMargin) - ((float) i * pixelsPerLabel) + 20f, textPaint);
             }
-        }
+
         // X-Axis labels
-        if (numberOfHorizontalLabels > 0) {
-            float pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (float) numberOfHorizontalLabels;
-            float valuePerStep = dataSetList.get(0).getDataSet().length / numberOfHorizontalLabels;
-            for (int i = 1; i <= numberOfHorizontalLabels; i++) {
-                int labelValue = (int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep - 1].x;
+        // TODO actually make the number of labels in an unfolded graph configurable again
+            pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / 10f; //(float) numberOfHorizontalLabels;
+            valuePerStep = dataSetList.get(0).getDataSet().length / 10f; //numberOfHorizontalLabels;
+            for (int i = 1; i <= 10; i++) {
+                int labelValue = ((int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep - 1].x / xLabelRoundingFactor) * xLabelRoundingFactor;
                 canvas.rotate(270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
                 canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
                 canvas.rotate(-270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
             }
-        }
     }
 
     private void drawRightSideLabels(Canvas canvas, float adjustedDataSetMinY, float rangeOfYValues) {
-        if (numberOfRightSideLabels <= 0) return;
+        if (!rightSideLabels) return;
         Paint textPaint = new Paint();
         textPaint.setColor(0xFF000000); // TODO paint color should be configurable
         textPaint.setTextSize(30f); // TODO text size should be configurable
         textPaint.setTextAlign(Paint.Align.LEFT);
         textPaint.setFakeBoldText(true);
 
-        float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin -  bottomAxisMargin) / (float) numberOfRightSideLabels;
-        float valuePerStep = rangeOfYValues / numberOfRightSideLabels;
-        for (int i = 1; i <= numberOfRightSideLabels; i++) {
-            int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
-            canvas.drawText(String.valueOf(labelValue), canvas.getWidth() - rightAxisMargin + 10f, (canvas.getHeight() - bottomAxisMargin) - ((float) i * pixelsPerLabel) + 20f, textPaint);
+        int initialLabelValue = ((int) (adjustedDataSetMinY + rightLabelRoundingFactor) / rightLabelRoundingFactor) * rightLabelRoundingFactor;
+        int numberOfLabels = (int) rangeOfYValues / rightLabelRoundingFactor / rightLabelStepFactor;
+        float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (float) numberOfLabels;
+        float pixelsPerValue = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
+        float initialLabelOffset = Math.abs((float) initialLabelValue - adjustedDataSetMinY) * pixelsPerValue;
+        for (int i = 0; i < numberOfLabels; i++) {
+            int labelValue = initialLabelValue + i * rightLabelRoundingFactor * rightLabelStepFactor;
+            canvas.drawText(String.valueOf(labelValue), canvas.getWidth() - rightAxisMargin + 10f, ((float) canvas.getHeight() - bottomAxisMargin - initialLabelOffset) - ((float) i * pixelsPerLabel), textPaint);
         }
     }
 
@@ -708,13 +753,18 @@ public class GraphView extends View {
         savedState.shouldDrawBox = shouldDrawBox;
         savedState.labelStyle = labelStyle;
         savedState.title = title;
-        savedState.numberOfLeftSideLabels = numberOfLeftSideLabels;
-        savedState.numberOfRightSideLabels = numberOfRightSideLabels;
-        savedState.numberOfHorizontalLabels = numberOfHorizontalLabels;
-        savedState.numberOfBottomLabels = numberOfBottomLabels;
         savedState.bottomText = bottomText;
         savedState.leftSideText = leftSideText;
         savedState.rightSideText = rightSideText;
+        savedState.leftSideLabels = leftSideLabels;
+        savedState.leftLabelRoundingFactor = leftLabelRoundingFactor;
+        savedState.leftLabelStepFactor = leftLabelStepFactor;
+        savedState.xSideLabels = xAxisLabels;
+        savedState.xLabelRoundingFactor = xLabelRoundingFactor;
+        savedState.xLabelStepFactor = xLabelStepFactor;
+        savedState.rightSideLabels = rightSideLabels;
+        savedState.rightLabelRoundingFactor = rightLabelRoundingFactor;
+        savedState.rightLabelStepFactor = rightLabelStepFactor;
         return savedState;
     }
 
@@ -743,10 +793,15 @@ public class GraphView extends View {
         setBottomText(savedState.bottomText);
         setRightSideText(savedState.rightSideText);
         setLeftSideText(savedState.leftSideText);
-        setNumberOfHorizontalLabels(savedState.numberOfHorizontalLabels);
-        setNumberOfLeftSideLabels(savedState.numberOfLeftSideLabels);
-        setNumberOfRightSideLabels(savedState.numberOfRightSideLabels);
-        setNumberOfBottomLabels(savedState.numberOfBottomLabels);
+        setLeftSideLabels(savedState.leftSideLabels);
+        setLeftLabelRoundingFactor(savedState.leftLabelRoundingFactor);
+        setLeftLabelStepFactor(savedState.leftLabelStepFactor);
+        setRightSideLabels(savedState.rightSideLabels);
+        setRightLabelRoundingFactor(savedState.rightLabelRoundingFactor);
+        setRightLabelStepFactor(savedState.rightLabelStepFactor);
+        setxAxisLabels(savedState.xSideLabels);
+        setxLabelRoundingFactor(savedState.xLabelRoundingFactor);
+        setxLabelStepFactor(savedState.xLabelStepFactor);
     }
 
     /**
@@ -755,10 +810,6 @@ public class GraphView extends View {
     static class GraphViewSavedState extends BaseSavedState {
         private static final String NUMBER_OF_VERTICAL_MARKERS = "# of vertical markers";
         private static final String NUMBER_OF_HORIZONTAL_MARKERS = "# of horizontal markers";
-        private static final String NUMBER_OF_HORIZONTAL_LABELS = "# of horizontal labels";
-        private static final String NUMBER_OF_LEFT_SIDE_LABELS = "# of left side labels";
-        private static final String NUMBER_OF_RIGHT_SIDE_LABELS = "# of right side labels";
-        private static final String NUMBER_OF_BOTTOM_LABELS = "# of bottom side labels";
         private static final String TOP_AXIS_MARGIN = "top axis margin";
         private static final String BOTTOM_AXIS_MARGIN = "bottom axis margin";
         private static final String LEFT_AXIS_MARGIN = "left axis margin";
@@ -770,13 +821,18 @@ public class GraphView extends View {
         private static final String RIGHT_SIDE_TEXT = "right side text";
         private static final String LEFT_SIDE_TEXT = "left side text";
         private static final String BOTTOM_TEXT = "bottom text";
+        private static final String LEFT_SIDE_LABELS = "left side labels";
+        private static final String LEFT_LABEL_ROUNDING_FACTOR = "left label rounding factor";
+        private static final String LEFT_LABEL_STEP_FACTOR = "left label step factor";
+        private static final String X_AXIS_LABELS = "x side labels";
+        private static final String X_LABEL_ROUNDING_FACTOR = "x label rounding factor";
+        private static final String X_LABEL_STEP_FACTOR = "x label step factor";
+        private static final String RIGHT_AXIS_LABELS = "right side labels";
+        private static final String RIGHT_LABEL_ROUNDING_FACTOR = "right label rounding factor";
+        private static final String RIGHT_LABEL_STEP_FACTOR = "right label step factor";
         Bundle bundle;
         int numberOfVerticalMarkers;
         int numberOfHorizontalMarkers;
-        int numberOfLeftSideLabels;
-        int numberOfHorizontalLabels;
-        int numberOfRightSideLabels;
-        int numberOfBottomLabels;
         float topAxisMargin;
         float bottomAxisMargin;
         float leftAxisMargin;
@@ -788,6 +844,15 @@ public class GraphView extends View {
         String rightSideText;
         String leftSideText;
         String bottomText;
+        boolean leftSideLabels;
+        int leftLabelRoundingFactor;
+        int leftLabelStepFactor;
+        boolean xSideLabels;
+        int xLabelRoundingFactor;
+        int xLabelStepFactor;
+        boolean rightSideLabels;
+        int rightLabelRoundingFactor;
+        int rightLabelStepFactor;
 
         public GraphViewSavedState(Parcelable superState) {
             super(superState);
@@ -804,10 +869,6 @@ public class GraphView extends View {
             assert bundle != null;
             numberOfVerticalMarkers = bundle.getInt(NUMBER_OF_VERTICAL_MARKERS, DEFAULT_NUMBER_VERT_MARKERS);
             numberOfHorizontalMarkers = bundle.getInt(NUMBER_OF_HORIZONTAL_MARKERS, DEFAULT_NUMBER_HORI_MARKERS);
-            numberOfLeftSideLabels = bundle.getInt(NUMBER_OF_LEFT_SIDE_LABELS, DEFAULT_NUMBER_LEFT_SIDE_LABELS);
-            numberOfRightSideLabels = bundle.getInt(NUMBER_OF_RIGHT_SIDE_LABELS, DEFAULT_NUMBER_RIGHT_SIDE_LABELS);
-            numberOfHorizontalLabels = bundle.getInt(NUMBER_OF_HORIZONTAL_LABELS, DEFAULT_NUMBER_HORI_LABELS);
-            numberOfBottomLabels = bundle.getInt(NUMBER_OF_BOTTOM_LABELS, DEFAULT_NUMBER_BOTTOM_LABELS);
             topAxisMargin = bundle.getFloat(TOP_AXIS_MARGIN, DEFAULT_TOP_MARGIN);
             bottomAxisMargin = bundle.getFloat(BOTTOM_AXIS_MARGIN, DEFAULT_BOTTOM_MARGIN);
             leftAxisMargin = bundle.getFloat(LEFT_AXIS_MARGIN, DEFAULT_LEFT_MARGIN);
@@ -819,6 +880,15 @@ public class GraphView extends View {
             rightSideText = bundle.getString(RIGHT_SIDE_TEXT);
             leftSideText = bundle.getString(LEFT_SIDE_TEXT);
             bottomText = bundle.getString(BOTTOM_TEXT);
+            leftLabelRoundingFactor = bundle.getInt(LEFT_LABEL_ROUNDING_FACTOR);
+            leftLabelStepFactor = bundle.getInt(LEFT_LABEL_STEP_FACTOR);
+            leftSideLabels = bundle.getBoolean(LEFT_SIDE_LABELS);
+            xLabelRoundingFactor = bundle.getInt(X_LABEL_ROUNDING_FACTOR);
+            xLabelStepFactor = bundle.getInt(X_LABEL_STEP_FACTOR);
+            xSideLabels = bundle.getBoolean(X_AXIS_LABELS);
+            rightLabelRoundingFactor = bundle.getInt(RIGHT_LABEL_ROUNDING_FACTOR);
+            rightLabelStepFactor = bundle.getInt(RIGHT_LABEL_STEP_FACTOR);
+            rightSideLabels = bundle.getBoolean(RIGHT_AXIS_LABELS);
         }
 
         /**
@@ -833,10 +903,6 @@ public class GraphView extends View {
             Bundle outBundle = new Bundle();
             outBundle.putInt(NUMBER_OF_HORIZONTAL_MARKERS, numberOfHorizontalMarkers);
             outBundle.putInt(NUMBER_OF_VERTICAL_MARKERS, numberOfVerticalMarkers);
-            outBundle.putInt(NUMBER_OF_LEFT_SIDE_LABELS, numberOfLeftSideLabels);
-            outBundle.putInt(NUMBER_OF_HORIZONTAL_LABELS, numberOfHorizontalLabels);
-            outBundle.putInt(NUMBER_OF_RIGHT_SIDE_LABELS, numberOfRightSideLabels);
-            outBundle.putInt(NUMBER_OF_BOTTOM_LABELS, numberOfBottomLabels);
             outBundle.putFloat(TOP_AXIS_MARGIN, topAxisMargin);
             outBundle.putFloat(BOTTOM_AXIS_MARGIN, bottomAxisMargin);
             outBundle.putFloat(RIGHT_AXIS_MARGIN, rightAxisMargin);
@@ -845,6 +911,15 @@ public class GraphView extends View {
             outBundle.putBoolean(SHOULD_DRAW_BOX, shouldDrawBox);
             outBundle.putInt(LABEL_STYLE, labelStyle);
             outBundle.putString(TITLE, title);
+            outBundle.putInt(LEFT_LABEL_ROUNDING_FACTOR, leftLabelRoundingFactor);
+            outBundle.putInt(LEFT_LABEL_STEP_FACTOR, leftLabelStepFactor);
+            outBundle.putBoolean(LEFT_SIDE_LABELS, leftSideLabels);
+            outBundle.putInt(X_LABEL_ROUNDING_FACTOR, xLabelRoundingFactor);
+            outBundle.putInt(X_LABEL_STEP_FACTOR, xLabelStepFactor);
+            outBundle.putBoolean(X_AXIS_LABELS, xSideLabels);
+            outBundle.putInt(RIGHT_LABEL_ROUNDING_FACTOR, rightLabelRoundingFactor);
+            outBundle.putInt(RIGHT_LABEL_STEP_FACTOR, rightLabelStepFactor);
+            outBundle.putBoolean(RIGHT_AXIS_LABELS, rightSideLabels);
             out.writeBundle(outBundle);
         }
 

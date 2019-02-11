@@ -2,7 +2,7 @@ package com.sortagreg.graphview;
 
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -45,7 +45,7 @@ public class GraphViewDataModel {
      * @param paint Paint object to specify the properties of how the data should be drawn
      * @param graphType Type of graph to draw this data set as
      */
-    public GraphViewDataModel(long[] xSet, long[] ySet, Paint paint, Integer graphType) {
+    public GraphViewDataModel(float[] xSet, float[] ySet, Paint paint, Integer graphType) {
         this.dataSet = new PointF[ySet.length];
         for (int i = 0; i < this.dataSet.length; i++) {
             dataSet[i] = new PointF(xSet[i], ySet[i]);

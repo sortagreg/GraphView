@@ -28,5 +28,9 @@
         <attr name="xAxisLabels" format="boolean"/>
         <attr name="xLabelRoundingFactor" format="integer"/>
         <attr name="xLabelStepFactor" format="integer" />
+
+        <attr name="rightAxisLabels" format="boolean"/>
+        <attr name="rightLabelRoundingFactor" format="integer"/>
+        <attr name="rightLabelStepFactor" format="integer" />
     </declare-styleable>
 </resources>

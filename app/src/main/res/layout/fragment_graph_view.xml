@@ -28,6 +28,8 @@
         app:graphPaddingFactor="0.1"
         app:leftLabelRoundingFactor="1000"
         app:leftLabelStepFactor="2"
+        app:rightLabelRoundingFactor="100"
+        app:rightLabelStepFactor="200"
         app:xLabelRoundingFactor="100"
         app:xLabelStepFactor="200"/>
 
@@ -48,7 +50,8 @@
         app:leftSideText="left"
         app:rightSideText="right"
         app:bottomText="bottom"
-        app:axisMarginRight="50"/>
+        app:axisMarginRight="50"
+        app:xLabelRoundingFactor="1000"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

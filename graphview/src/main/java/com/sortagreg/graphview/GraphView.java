@@ -662,25 +662,31 @@ public class GraphView extends View {
         textPaint.setTextSize(30f); // TODO text size should be configurable
         textPaint.setTextAlign(Paint.Align.RIGHT);
         textPaint.setFakeBoldText(true);
-        // Y-Axis labels
 
-            float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin -  bottomAxisMargin) / (float) 10;
-            float valuePerStep = rangeOfYValues / 10;
-            for (int i = 1; i <= 10; i++) {
-                int labelValue = (int) Math.floor((valuePerStep * i) + adjustedDataSetMinY);
-                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, (canvas.getHeight() - bottomAxisMargin) - ((float) i * pixelsPerLabel) + 20f, textPaint);
+        if (leftSideLabels) {
+            int initialLabelValue = ((int) (adjustedDataSetMinY + leftLabelRoundingFactor) / leftLabelRoundingFactor) * leftLabelRoundingFactor;
+            int numberOfLabels = (int) rangeOfYValues / leftLabelRoundingFactor / leftLabelStepFactor;
+            float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (float) numberOfLabels;
+            float pixelsPerValue = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
+            float initialLabelOffset = Math.abs((float) initialLabelValue - adjustedDataSetMinY) * pixelsPerValue;
+            for (int i = 0; i < numberOfLabels; i++) {
+                int labelValue = initialLabelValue + i * leftLabelRoundingFactor * leftLabelStepFactor;
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, ((float) canvas.getHeight() - bottomAxisMargin - initialLabelOffset) - ((float) i * pixelsPerLabel), textPaint);
             }
+        }
 
         // X-Axis labels
-        // TODO actually make the number of labels in an unfolded graph configurable again
-            pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / 10f; //(float) numberOfHorizontalLabels;
-            valuePerStep = dataSetList.get(0).getDataSet().length / 10f; //numberOfHorizontalLabels;
+        if (xAxisLabels) {
+            // TODO actually make the number of labels in an unfolded graph configurable again
+            float pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / 10f; //(float) numberOfHorizontalLabels;
+            float valuePerStep = dataSetList.get(0).getDataSet().length / 10f; //numberOfHorizontalLabels;
             for (int i = 1; i <= 10; i++) {
                 int labelValue = ((int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep - 1].x / xLabelRoundingFactor) * xLabelRoundingFactor;
                 canvas.rotate(270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
                 canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
                 canvas.rotate(-270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
             }
+        }
     }
 
     private void drawRightSideLabels(Canvas canvas, float adjustedDataSetMinY, float rangeOfYValues) {

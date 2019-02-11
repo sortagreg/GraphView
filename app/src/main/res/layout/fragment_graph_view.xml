@@ -51,7 +51,9 @@
         app:rightSideText="right"
         app:bottomText="bottom"
         app:axisMarginRight="50"
-        app:xLabelRoundingFactor="1000"/>
+        app:xLabelRoundingFactor="1000"
+        app:leftLabelRoundingFactor="1000"
+        app:leftLabelStepFactor="1"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

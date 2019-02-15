@@ -75,7 +75,7 @@ public class GraphViewFragment extends Fragment {
         GraphViewDataModel testGraph = new GraphViewDataModel(asp1000, asl1001, paint, GraphViewDataModel.STANDARD_LINE);
         GraphViewDataModel testGraph2 = new GraphViewDataModel(asl1001, asp1000, paint, GraphViewDataModel.STANDARD_LINE);
 
-        com.sortagreg.graphview.GraphViewDataModel libraryCyclicDataModelUnfolded = new com.sortagreg.graphview.GraphViewDataModel(asp1000, asl1001, paint, GraphViewDataModel.UNFOLDED_LINE);
+        GraphViewDataModel libraryCyclicDataModelUnfolded = new com.sortagreg.graphview.GraphViewDataModel(asp1000, asl1001, paint, GraphViewDataModel.UNFOLDED_LINE);
         graphViewBottom.addToDataSetList(libraryCyclicDataModelUnfolded);
         graphViewBottom.setTitle("Incremental Graph & Labels");
         graphViewTop.addToDataSetList(testGraph);

@@ -50,8 +50,8 @@ public class GraphView extends View {
     private float rightAxisMargin;
     private float graphPaddingFactor;
 
-    public static final int DEFAULT_NUMBER_VERT_MARKERS = 8;
-    public static final int DEFAULT_NUMBER_HORI_MARKERS = 8;
+    public static final int DEFAULT_NUMBER_VERT_MARKERS = 10;
+    public static final int DEFAULT_NUMBER_HORI_MARKERS = 15;
     private int numberOfVerticalMarkers;
     private int numberOfHorizontalMarkers;
 
@@ -138,11 +138,11 @@ public class GraphView extends View {
         leftSideText = typedArray.getString(R.styleable.GraphView_leftSideText) != null ? typedArray.getString(R.styleable.GraphView_leftSideText) : "";
 
         labelStyle = typedArray.getInteger(R.styleable.GraphView_labelStyle, STANDARD_LABELS);
-        leftLabelRoundingFactor = typedArray.getInteger(R.styleable.GraphView_leftLabelRoundingFactor, DEFAULT_ROUNDING_FACTOR);
-        leftLabelStepFactor = typedArray.getInteger(R.styleable.GraphView_leftLabelStepFactor, DEFAULT_STEP_FACTOR);
+//        leftLabelRoundingFactor = typedArray.getInteger(R.styleable.GraphView_leftLabelRoundingFactor, DEFAULT_ROUNDING_FACTOR);
+//        leftLabelStepFactor = typedArray.getInteger(R.styleable.GraphView_leftLabelStepFactor, DEFAULT_STEP_FACTOR);
         leftSideLabels = typedArray.getBoolean(R.styleable.GraphView_leftSideLabels, true);
-        xLabelRoundingFactor = typedArray.getInteger(R.styleable.GraphView_xLabelRoundingFactor, DEFAULT_ROUNDING_FACTOR);
-        xLabelStepFactor = typedArray.getInteger(R.styleable.GraphView_xLabelStepFactor, DEFAULT_STEP_FACTOR);
+//        xLabelRoundingFactor = typedArray.getInteger(R.styleable.GraphView_xLabelRoundingFactor, DEFAULT_ROUNDING_FACTOR);
+//        xLabelStepFactor = typedArray.getInteger(R.styleable.GraphView_xLabelStepFactor, DEFAULT_STEP_FACTOR);
         xAxisLabels = typedArray.getBoolean(R.styleable.GraphView_xAxisLabels, true);
         rightLabelRoundingFactor = typedArray.getInteger(R.styleable.GraphView_rightLabelRoundingFactor, DEFAULT_ROUNDING_FACTOR);
         rightLabelStepFactor = typedArray.getInteger(R.styleable.GraphView_rightLabelStepFactor, DEFAULT_STEP_FACTOR);
@@ -493,7 +493,7 @@ public class GraphView extends View {
                     drawStandardTextLabels(canvas, adjustedDataSetMinX, adjustedDataSetMinY, rangeOfXValues, rangeOfYValues);
                     break;
                 case UNFOLDED_LABELS:
-                    drawUnfoldedTextLabels(canvas, adjustedDataSetMinY, rangeOfYValues);
+                    drawUnfoldedTextLabels(canvas, adjustedDataSetMinX, adjustedDataSetMinY, rangeOfXValues, rangeOfYValues);
                     break;
                 case CUSTOM_LABELS:
                     Log.w(TAG, "onDraw: Custom label is not implemented yet. Using standard by default");
@@ -619,6 +619,8 @@ public class GraphView extends View {
 
         // Y-Axis labels
         if (leftSideLabels) {
+            leftLabelRoundingFactor = calculateRoundingFactor(adjustedDataSetMinY, rangeOfYValues);
+            leftLabelStepFactor = calculateStepFactor(leftLabelRoundingFactor, (int) rangeOfYValues);
             int initialLabelValue = ((int) (adjustedDataSetMinY + leftLabelRoundingFactor) / leftLabelRoundingFactor) * leftLabelRoundingFactor;
             int numberOfLabels = (int) rangeOfYValues / leftLabelRoundingFactor / leftLabelStepFactor;
             float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (float) numberOfLabels;
@@ -632,6 +634,8 @@ public class GraphView extends View {
 
         // X-Axis labels
         if (xAxisLabels) {
+            xLabelRoundingFactor = calculateRoundingFactor(adjustedDataSetMinX, rangeOfXValues);
+            xLabelStepFactor = calculateStepFactor(xLabelRoundingFactor, (int) rangeOfXValues);
             int initialLabelValue = ((int) (adjustedDataSetMinX + xLabelRoundingFactor) / xLabelRoundingFactor) * xLabelRoundingFactor;
             int numberOfLabels = (int) rangeOfXValues / xLabelRoundingFactor / xLabelStepFactor;
             float pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (float) numberOfLabels;
@@ -646,6 +650,16 @@ public class GraphView extends View {
         }
     }
 
+    private int calculateStepFactor(int roundingFactor, int range) {
+        return 20;
+    }
+
+    private int calculateRoundingFactor(float minValue, float rangeOfValues) {
+        float maxValue = minValue + rangeOfValues;
+        int lengthOfValues = String.valueOf((int) minValue).length() < String.valueOf((int) maxValue).length() ? String.valueOf((int) minValue).length() : String.valueOf((int) maxValue).length();
+        return (int) Math.pow(10, (lengthOfValues + 1) / 2);
+    }
+
     /**
      * Draws X labels based on the exact values in the first data set in the dataSetList.
      * The Y labels are drawn by min and max values.
@@ -654,7 +668,7 @@ public class GraphView extends View {
      * @param adjustedDataSetMinY
      * @param rangeOfYValues
      */
-    private void drawUnfoldedTextLabels(Canvas canvas, float adjustedDataSetMinY, float rangeOfYValues) {
+    private void drawUnfoldedTextLabels(Canvas canvas, float adjustedDataSetMinX, float adjustedDataSetMinY, float rangeOfXValues, float rangeOfYValues) {
         // TODO split method to drawX, drawY, drawTitle
 
         Paint textPaint = new Paint();
@@ -664,6 +678,8 @@ public class GraphView extends View {
         textPaint.setFakeBoldText(true);
 
         if (leftSideLabels) {
+            leftLabelRoundingFactor = calculateRoundingFactor(adjustedDataSetMinY, rangeOfYValues);
+            leftLabelStepFactor = calculateStepFactor(leftLabelRoundingFactor, (int) rangeOfYValues);
             int initialLabelValue = ((int) (adjustedDataSetMinY + leftLabelRoundingFactor) / leftLabelRoundingFactor) * leftLabelRoundingFactor;
             int numberOfLabels = (int) rangeOfYValues / leftLabelRoundingFactor / leftLabelStepFactor;
             float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (float) numberOfLabels;
@@ -681,6 +697,8 @@ public class GraphView extends View {
             float pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / 10f; //(float) numberOfHorizontalLabels;
             float valuePerStep = dataSetList.get(0).getDataSet().length / 10f; //numberOfHorizontalLabels;
             for (int i = 1; i <= 10; i++) {
+                 int xLabelRoundingFactorPower = String.valueOf((int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep - 1].x).length() / 2;
+                 xLabelRoundingFactor = (int) Math.pow(10, xLabelRoundingFactorPower);
                 int labelValue = ((int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep - 1].x / xLabelRoundingFactor) * xLabelRoundingFactor;
                 canvas.rotate(270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
                 canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
@@ -697,6 +715,9 @@ public class GraphView extends View {
         textPaint.setTextAlign(Paint.Align.LEFT);
         textPaint.setFakeBoldText(true);
 
+
+        rightLabelRoundingFactor = calculateRoundingFactor(adjustedDataSetMinY, rangeOfYValues);
+        rightLabelStepFactor = calculateStepFactor(rightLabelRoundingFactor, (int) rangeOfYValues);
         int initialLabelValue = ((int) (adjustedDataSetMinY + rightLabelRoundingFactor) / rightLabelRoundingFactor) * rightLabelRoundingFactor;
         int numberOfLabels = (int) rangeOfYValues / rightLabelRoundingFactor / rightLabelStepFactor;
         float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (float) numberOfLabels;

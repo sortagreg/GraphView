@@ -617,6 +617,7 @@ public class GraphView extends View {
             float initialLabelOffset = Math.abs((float) initialLabelValue - adjustedDataSetMinX) * pixelsPerValue;
             for (int i = 1; i < DEFAULT_NUMBER_X_LABELS; i++) {
                 int labelValue = ((int) ((initialLabelValue + i * valuePerLabel) / xLabelRoundingFactor) * xLabelRoundingFactor);
+
                 canvas.rotate(270, leftAxisMargin + ((float) i * pixelsPerLabel) + initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f);
                 canvas.drawText(String.valueOf(labelValue), leftAxisMargin + ((float) i * pixelsPerLabel) + initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
                 canvas.rotate(-270, leftAxisMargin + ((float) i * pixelsPerLabel) + initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f);
@@ -625,6 +626,7 @@ public class GraphView extends View {
     }
 
     private int calculateRoundingFactor(float minValue, float rangeOfValues) {
+        if (rangeOfValues <= 100) return 1;
         float maxValue = minValue + rangeOfValues;
         int lengthOfValues = String.valueOf((int) minValue).length() < String.valueOf((int) maxValue).length() ? String.valueOf((int) minValue).length() : String.valueOf((int) maxValue).length();
         return (int) Math.pow(10, (lengthOfValues + 1) / 2);

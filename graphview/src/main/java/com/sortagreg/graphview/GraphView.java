@@ -628,6 +628,8 @@ public class GraphView extends View {
             float initialLabelOffset = adjustedDataSetMinY * pixelsPerValue;
             for (int labelValue : labelValues) {
                 canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, ((float) canvas.getHeight() - bottomAxisMargin + initialLabelOffset) - ((float) labelValue * pixelsPerValue), textPaint);
+                canvas.drawLine((int) leftAxisMargin, ((float) canvas.getHeight() - bottomAxisMargin + initialLabelOffset) - ((float) labelValue * pixelsPerValue),
+                        canvas.getWidth() - rightAxisMargin, ((float) canvas.getHeight() - bottomAxisMargin + initialLabelOffset) - ((float) labelValue * pixelsPerValue), markerPaint);
             }
         }
 
@@ -637,7 +639,7 @@ public class GraphView extends View {
             float pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (float) DEFAULT_NUMBER_X_LABELS; //(float) numberOfHorizontalLabels;
             float valuePerStep = dataSetList.get(0).getDataSet().length / (float) DEFAULT_NUMBER_X_LABELS; //numberOfHorizontalLabels;
             for (int i = 1; i <= DEFAULT_NUMBER_X_LABELS; i++) {
-                 int xLabelRoundingFactorPower = String.valueOf((int) dataSetList.get(0).getDataSet()[i * (int) valuePerStep - 1].x).length() / 2;
+                 int xLabelRoundingFactorPower = String.valueOf((int) valuePerStep).length() / 2;
                 int xLabelRoundingFactor = (int) Math.pow(10, xLabelRoundingFactorPower);
                 int labelValue = (((int) (dataSetList.get(0).getDataSet()[i * (int) valuePerStep - 1].x / xLabelRoundingFactor)) * xLabelRoundingFactor);
                 canvas.rotate(270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);

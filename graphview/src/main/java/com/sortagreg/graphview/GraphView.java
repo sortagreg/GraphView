@@ -167,12 +167,9 @@ public class GraphView extends View {
      */
     @Override
     protected void onDraw(Canvas canvas) {
-//        drawVerticalMarkers(canvas);
-        drawHorizontalMarkers(canvas);
         drawDataSet(canvas, dataSetList, true);
         drawDataSet(canvas, secondaryDataSetList, false);
         drawAxes(canvas);
-//        drawRightSideLabels(canvas, adjustedDataSetMinY, rangeOfYValues);
         drawKeyLabels(canvas);
     }
 
@@ -348,47 +345,6 @@ public class GraphView extends View {
     }
 
     /**
-     * Draws the vertical markers to the Canvas.
-     *
-     * Number of markers is configurable in Java and XML. DEFAULT: 5
-     *
-     * @param canvas Canvas Object to be drawn to
-     */
-    private void drawVerticalMarkers(Canvas canvas) {
-        // width of the data portion of the graph
-        int graphWidth = canvas.getWidth() - (int) leftAxisMargin - (int) rightAxisMargin;
-        // calculate distance between markers
-        int markerSpacing = graphWidth / (numberOfVerticalMarkers + 1);
-        // print vertical markers
-        for (int i = 1; i <= numberOfVerticalMarkers; i++) {
-            int startX = (int) leftAxisMargin + (i * markerSpacing);
-            int startY = (int) topAxisMargin;// + 50; // add 50 to give some distance between axis and markers
-            int endX = startX;
-            int endY = canvas.getHeight() - (int) bottomAxisMargin;// - 50; // sub 50 for same reason add 100 earlier
-            canvas.drawLine(startX, startY, endX, endY, markerPaint);
-        }
-    }
-
-    /**
-     * Draws the horizontal markers to the Canvas.
-     *
-     * Number of markers is configurable in Java and XML. DEFAULT: 10
-     *
-     * @param canvas Canvas Object to be drawn to
-     */
-    private void drawHorizontalMarkers(Canvas canvas) {
-        int graphHeight = canvas.getHeight() - (int) topAxisMargin - (int) bottomAxisMargin;
-        int markerSpacing = graphHeight / (numberOfHorizontalMarkers + 1);
-        for (int i = numberOfHorizontalMarkers; i > 0; i--) {
-            int startY = (int) topAxisMargin + (i * markerSpacing);
-            int startX = (int) leftAxisMargin;// + 50;
-            int endY = startY;
-            int endX = canvas.getWidth() - (int) rightAxisMargin;
-            canvas.drawLine(startX, startY, endX, endY, markerPaint);
-        }
-    }
-
-    /**
      * Draws the border of the GraphView.
      *
      * @param canvas Canvas Object to be drawn to
@@ -494,8 +450,19 @@ public class GraphView extends View {
         for (int i = 0; i < dataModel.getDataSet().length - 1; i ++) {
             float pixelsPerX = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (dataModel.getDataSet().length - 1);
 
-            PointF startPoint = new PointF(leftAxisMargin + ((float) i * pixelsPerX), dataModel.getDataSet()[i].y == 0 ? ((((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .15f) + topAxisMargin) : ((((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .85f) + topAxisMargin));
-            PointF endPoint = new PointF(leftAxisMargin + ((float) (i + 1) * pixelsPerX), dataModel.getDataSet()[i + 1].y == 0 ? ((((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .15f) + topAxisMargin) : ((((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .85f) + topAxisMargin));
+            PointF startPoint;
+            if (dataModel.getDataSet()[i].y == 0) {
+                startPoint = new PointF(leftAxisMargin + (float) i * pixelsPerX, (((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .15f) + topAxisMargin);
+            } else {
+                startPoint = new PointF(leftAxisMargin + (float) i * pixelsPerX, (((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .85f) + topAxisMargin);
+            }
+
+            PointF endPoint;
+            if (dataModel.getDataSet()[i + 1].y == 0) {
+                endPoint = new PointF(leftAxisMargin + (float) (i + 1) * pixelsPerX, (((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .15f) + topAxisMargin);
+            } else {
+                endPoint = new PointF(leftAxisMargin + (float) (i + 1) * pixelsPerX, (((float) canvas.getHeight() - bottomAxisMargin - topAxisMargin) * .85f) + topAxisMargin);
+            }
 
             canvas.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, dataModel.getPaint());
         }
@@ -597,6 +564,8 @@ public class GraphView extends View {
             float initialLabelOffset = adjustedDataSetMinY * pixelsPerValue;
             for (int labelValue : labelValues) {
                 canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, ((float) canvas.getHeight() - bottomAxisMargin + initialLabelOffset) - ((float) labelValue * pixelsPerValue), textPaint);
+                canvas.drawLine((int) leftAxisMargin, ((float) canvas.getHeight() - bottomAxisMargin + initialLabelOffset) - ((float) labelValue * pixelsPerValue),
+                         canvas.getWidth() - rightAxisMargin, ((float) canvas.getHeight() - bottomAxisMargin + initialLabelOffset) - ((float) labelValue * pixelsPerValue), markerPaint);
             }
         }
 
@@ -610,6 +579,9 @@ public class GraphView extends View {
                 canvas.rotate(270, leftAxisMargin + ((float) labelValue * pixelsPerValue) - initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f);
                 canvas.drawText(String.valueOf(labelValue), leftAxisMargin + ((float) labelValue * pixelsPerValue) - initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
                 canvas.rotate(-270, leftAxisMargin + ((float) labelValue * pixelsPerValue) - initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f);
+                canvas.drawLine(leftAxisMargin + ((float) labelValue * pixelsPerValue) - initialLabelOffset, canvas.getHeight() - (int) bottomAxisMargin,
+                        leftAxisMargin + ((float) labelValue * pixelsPerValue) - initialLabelOffset, (int) topAxisMargin,
+                        markerPaint);
             }
         }
     }
@@ -630,20 +602,6 @@ public class GraphView extends View {
         } while (labelValue < minValue + rangeOfValues);
 
         return labels;
-    }
-
-    private int calculateRoundingFactor(float minValue, float rangeOfValues) {
-        float maxValue = minValue + rangeOfValues;
-        int shortestLengthOfValues;
-
-        if (String.valueOf((int) minValue).length() < String.valueOf((int) maxValue).length()) {
-            shortestLengthOfValues = String.valueOf((int) minValue).length();
-        } else {
-            shortestLengthOfValues = String.valueOf((int) maxValue).length();
-        }
-
-        if (rangeOfValues <= 10000) return 1;
-        return (int) Math.pow(10, (shortestLengthOfValues) / 2);
     }
 
     /**

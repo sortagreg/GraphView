@@ -167,7 +167,7 @@ public class GraphView extends View {
      */
     @Override
     protected void onDraw(Canvas canvas) {
-        drawVerticalMarkers(canvas);
+//        drawVerticalMarkers(canvas);
         drawHorizontalMarkers(canvas);
         drawDataSet(canvas, dataSetList, true);
         drawDataSet(canvas, secondaryDataSetList, false);
@@ -592,16 +592,11 @@ public class GraphView extends View {
 
         // Y-Axis labels
         if (leftSideLabels) {
-            int leftLabelRoundingFactor = calculateRoundingFactor(adjustedDataSetMinY, rangeOfYValues);
-            int initialLabelValue = ((int) (adjustedDataSetMinY + leftLabelRoundingFactor) / leftLabelRoundingFactor) * leftLabelRoundingFactor;
-
-            float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (float) DEFAULT_NUMBER_Y_LABELS;
-            float valuePerLabel = rangeOfYValues / (float) DEFAULT_NUMBER_Y_LABELS;
+            ArrayList<Integer> labelValues = generateLabelValues((int) adjustedDataSetMinY, (int) rangeOfYValues, DEFAULT_NUMBER_Y_LABELS);
             float pixelsPerValue = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
-            float initialLabelOffset = Math.abs((float) initialLabelValue - adjustedDataSetMinY) * pixelsPerValue;
-            for (int i = 0; i < DEFAULT_NUMBER_Y_LABELS; i++) {
-                int labelValue = ((int) ((initialLabelValue + i * valuePerLabel) / leftLabelRoundingFactor) * leftLabelRoundingFactor);
-                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, ((float) canvas.getHeight() - bottomAxisMargin - initialLabelOffset) - ((float) i * pixelsPerLabel), textPaint);
+            float initialLabelOffset = adjustedDataSetMinY * pixelsPerValue;
+            for (int labelValue : labelValues) {
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f, ((float) canvas.getHeight() - bottomAxisMargin + initialLabelOffset) - ((float) labelValue * pixelsPerValue), textPaint);
             }
         }
 
@@ -706,22 +701,12 @@ public class GraphView extends View {
         textPaint.setTextAlign(Paint.Align.LEFT);
         textPaint.setFakeBoldText(true);
 
-
-
-        int leftLabelRoundingFactor = calculateRoundingFactor(adjustedDataSetMinY, rangeOfYValues);
-        int initialLabelValue = (((int) (adjustedDataSetMinY + leftLabelRoundingFactor) / leftLabelRoundingFactor) * leftLabelRoundingFactor);
-
-        float pixelsPerLabel = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / (float) DEFAULT_NUMBER_Y_LABELS;
-        float valuePerLabel = rangeOfYValues / (float) DEFAULT_NUMBER_Y_LABELS;
+        ArrayList<Integer> labelValues = generateLabelValues((int) adjustedDataSetMinY, (int) rangeOfYValues, DEFAULT_NUMBER_Y_LABELS);
         float pixelsPerValue = ((float) canvas.getHeight() - topAxisMargin - bottomAxisMargin) / rangeOfYValues;
-        float initialLabelOffset = Math.abs((float) initialLabelValue - adjustedDataSetMinY) * pixelsPerValue;
-        for (int i = 0; i < DEFAULT_NUMBER_Y_LABELS; i++) {
-            int labelValue = ((int) ((initialLabelValue + i * valuePerLabel) / leftLabelRoundingFactor) * leftLabelRoundingFactor);
-                    canvas.drawText(String.valueOf(labelValue), canvas.getWidth() - rightAxisMargin + 10f, ((float) canvas.getHeight() - bottomAxisMargin - initialLabelOffset) - ((float) i * pixelsPerLabel), textPaint);
-
+        float initialLabelOffset = adjustedDataSetMinY * pixelsPerValue;
+        for (int labelValue : labelValues) {
+            canvas.drawText(String.valueOf(labelValue), canvas.getWidth() - rightAxisMargin + 10f, ((float) canvas.getHeight() - bottomAxisMargin + initialLabelOffset) - ((float) labelValue * pixelsPerValue), textPaint);
         }
-
-
     }
 
     private void drawKeyLabels(Canvas canvas) {

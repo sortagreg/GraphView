@@ -607,29 +607,48 @@ public class GraphView extends View {
 
         // X-Axis labels
         if (xAxisLabels) {
-            int xLabelRoundingFactor = calculateRoundingFactor(adjustedDataSetMinX, rangeOfXValues);
-
-            int initialLabelValue = ((int) (adjustedDataSetMinX + xLabelRoundingFactor) / xLabelRoundingFactor) * xLabelRoundingFactor;
-
-            float pixelsPerLabel = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / (float) DEFAULT_NUMBER_X_LABELS;
-            float valuePerLabel = rangeOfXValues / (float) DEFAULT_NUMBER_X_LABELS;
+            ArrayList<Integer> labelValues = generateLabelValues((int) adjustedDataSetMinX, (int) rangeOfXValues, DEFAULT_NUMBER_X_LABELS);
             float pixelsPerValue = ((float) canvas.getWidth() - leftAxisMargin - rightAxisMargin) / rangeOfXValues;
-            float initialLabelOffset = Math.abs((float) initialLabelValue - adjustedDataSetMinX) * pixelsPerValue;
-            for (int i = 1; i < DEFAULT_NUMBER_X_LABELS; i++) {
-                int labelValue = ((int) ((initialLabelValue + i * valuePerLabel) / xLabelRoundingFactor) * xLabelRoundingFactor);
+            float initialLabelOffset = adjustedDataSetMinX * pixelsPerValue;
 
-                canvas.rotate(270, leftAxisMargin + ((float) i * pixelsPerLabel) + initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f);
-                canvas.drawText(String.valueOf(labelValue), leftAxisMargin + ((float) i * pixelsPerLabel) + initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
-                canvas.rotate(-270, leftAxisMargin + ((float) i * pixelsPerLabel) + initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f);
+            for (int labelValue : labelValues) {
+                canvas.rotate(270, leftAxisMargin + ((float) labelValue * pixelsPerValue) - initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f);
+                canvas.drawText(String.valueOf(labelValue), leftAxisMargin + ((float) labelValue * pixelsPerValue) - initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
+                canvas.rotate(-270, leftAxisMargin + ((float) labelValue * pixelsPerValue) - initialLabelOffset, (float) canvas.getHeight() - bottomAxisMargin + 10f);
             }
         }
     }
 
+    private ArrayList<Integer> generateLabelValues (int minValue, int rangeOfValues, int numberOfLabels) {
+        ArrayList<Integer> labels = new ArrayList<>();
+        int valuePerLabel = rangeOfValues / (numberOfLabels + 1);
+        int roundingFactor = (int) Math.pow(10, String.valueOf(valuePerLabel).length() / 2);
+        valuePerLabel = (valuePerLabel / roundingFactor) * roundingFactor;
+        int initialLabelValue = ((minValue / roundingFactor) * roundingFactor) + (roundingFactor);
+        if (initialLabelValue > minValue - (valuePerLabel / 2) && initialLabelValue < minValue + (valuePerLabel / 2) ) {
+            initialLabelValue = ((initialLabelValue + valuePerLabel) / roundingFactor) * roundingFactor;
+        }
+        int labelValue = initialLabelValue;
+        do {
+            labels.add(labelValue);
+            labelValue = labelValue + valuePerLabel;
+        } while (labelValue < minValue + rangeOfValues);
+
+        return labels;
+    }
+
     private int calculateRoundingFactor(float minValue, float rangeOfValues) {
-        if (rangeOfValues <= 100) return 1;
         float maxValue = minValue + rangeOfValues;
-        int lengthOfValues = String.valueOf((int) minValue).length() < String.valueOf((int) maxValue).length() ? String.valueOf((int) minValue).length() : String.valueOf((int) maxValue).length();
-        return (int) Math.pow(10, (lengthOfValues + 1) / 2);
+        int shortestLengthOfValues;
+
+        if (String.valueOf((int) minValue).length() < String.valueOf((int) maxValue).length()) {
+            shortestLengthOfValues = String.valueOf((int) minValue).length();
+        } else {
+            shortestLengthOfValues = String.valueOf((int) maxValue).length();
+        }
+
+        if (rangeOfValues <= 10000) return 1;
+        return (int) Math.pow(10, (shortestLengthOfValues) / 2);
     }
 
     /**

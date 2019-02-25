@@ -25,7 +25,6 @@ import java.util.List;
 public class GraphViewFragment extends Fragment {
 
     List<GraphViewDataModel> dataSetList = new ArrayList<>();
-    List<com.sortagreg.graphview.GraphViewDataModel> libraryDataSetList = new ArrayList<>();
     int DATA_SET_LENGTH = 75;
 
     com.sortagreg.graphview.GraphView graphViewTop;
@@ -56,6 +55,7 @@ public class GraphViewFragment extends Fragment {
 
         int i = 0;
         for (float number : asp1000) {
+            // adjust divisor to demonstrate different rounding factors
             asp1000[i] = number / 1;
             i++;
         }
@@ -63,8 +63,11 @@ public class GraphViewFragment extends Fragment {
         Paint paint = new Paint();
         paint.setStrokeWidth(5f);
         paint.setColor(0xFF0000FF);
+        Paint paint2 = new Paint();
+        paint2.setStrokeWidth(5f);
+        paint2.setColor(0xFFFF00FF);
         GraphViewDataModel testGraph = new GraphViewDataModel(asp1000, asl1001, paint, GraphViewDataModel.STANDARD_LINE);
-        GraphViewDataModel testGraph2 = new GraphViewDataModel(asl1001, asp1000, paint, GraphViewDataModel.STANDARD_LINE);
+        GraphViewDataModel testGraph2 = new GraphViewDataModel(asl1001, asp1000, paint2, GraphViewDataModel.STANDARD_LINE);
 
         GraphViewDataModel libraryCyclicDataModelUnfolded = new com.sortagreg.graphview.GraphViewDataModel(asp1000, asl1001, paint, GraphViewDataModel.UNFOLDED_LINE);
         graphViewBottom.addToDataSetList(libraryCyclicDataModelUnfolded);
@@ -72,35 +75,6 @@ public class GraphViewFragment extends Fragment {
         graphViewTop.addToDataSetList(testGraph);
         graphViewTop.addToSecondaryDataSetList(testGraph2);
         graphViewTop.setTitle("Standard Graph & Labels");
-    }
-
-    private void drawExponentialCurves() {
-        PointF[] exponentialCurve = new PointF[DATA_SET_LENGTH];
-        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
-            float x = i;// - 25;
-            PointF point = new PointF(x, x * x * x);
-            exponentialCurve[i] = point;
-        }
-        Paint paint = new Paint();
-        paint.setStrokeWidth(5f);
-        paint.setColor(0xFFFF0000);
-        GraphViewDataModel expCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
-        dataSetList.add(expCurve);
-        libraryDataSetList.add(expCurve);
-
-        graphViewTop.addToDataSetList(expCurve);
-
-//        exponentialCurve = new PointF[DATA_SET_LENGTH];
-//        for (int i = 0; i <= DATA_SET_LENGTH - 1; i++) {
-//            float x = i;
-//            PointF point = new PointF(x, x * x);
-//            exponentialCurve[i] = point;
-//        }
-//        paint = new Paint();
-//        paint.setStrokeWidth(5f);
-//        paint.setColor(0xFF0000FF);
-//        GraphViewDataModel squareCurve = new GraphViewDataModel(exponentialCurve, paint, GraphViewDataModel.STANDARD_LINE);
-//        dataSetList.add(squareCurve);
     }
 
     private void drawBinaryStateLine() {
@@ -116,34 +90,4 @@ public class GraphViewFragment extends Fragment {
         GraphViewDataModel graphViewDataModel = new GraphViewDataModel(stateLine, paint, GraphViewDataModel.STATE_LINE);
         dataSetList.add(graphViewDataModel);
     }
-
-    private void drawConstants() {
-        PointF constantLine = new PointF(0f, 80f);
-        PointF[] dataSet = new PointF[]{constantLine};
-        Paint paint = new Paint();
-        paint.setColor(0xFF00FF00);
-        paint.setStrokeWidth(5f);
-        GraphViewDataModel graphViewDataModel = new GraphViewDataModel(dataSet, paint, GraphViewDataModel.CONSTANT_LINE);
-        dataSetList.add(graphViewDataModel);
-    }
-
-    private void drawCrossHairs() {
-        Paint paint = new Paint();
-        paint.setStrokeWidth(5f);
-        paint.setColor(0xFFFF0000);
-        PointF[] negativeValueArray = new PointF[]{new PointF(-1, -1), new PointF(-10, -10)};
-        GraphViewDataModel negativeDataSet = new GraphViewDataModel(negativeValueArray, paint, GraphViewDataModel.STANDARD_LINE);
-        dataSetList.add(negativeDataSet);
-        PointF[] inverseNegativeValueArray = new PointF[]{new PointF(-1, 1), new PointF(-10, 10)};
-        GraphViewDataModel inverseNegativeDataSet = new GraphViewDataModel(inverseNegativeValueArray, paint, GraphViewDataModel.STANDARD_LINE);
-        dataSetList.add(inverseNegativeDataSet);
-
-        PointF[] positiveValueArray = new PointF[]{new PointF(1, 1), new PointF(10, 10)};
-        GraphViewDataModel positiveDataSet = new GraphViewDataModel(positiveValueArray, paint, GraphViewDataModel.STANDARD_LINE);
-        dataSetList.add(positiveDataSet);
-        PointF[] inversePositiveValueArray = new PointF[]{new PointF(1, -1), new PointF(10, -10)};
-        GraphViewDataModel inversePositiveDataSet = new GraphViewDataModel(inversePositiveValueArray, paint, GraphViewDataModel.STANDARD_LINE);
-        dataSetList.add(inversePositiveDataSet);
-    }
-
 }

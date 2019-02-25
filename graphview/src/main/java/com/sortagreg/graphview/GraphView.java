@@ -602,6 +602,9 @@ public class GraphView extends View {
                 canvas.rotate(270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
                 canvas.drawText(String.valueOf(labelValue), leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f, textPaint);
                 canvas.rotate(-270, leftAxisMargin - 10f + (i * pixelsPerLabel), (float) canvas.getHeight() - bottomAxisMargin + 10f);
+                canvas.drawLine(leftAxisMargin - 10f + (i * pixelsPerLabel), canvas.getHeight() - (int) bottomAxisMargin,
+                        leftAxisMargin - 10f + (i * pixelsPerLabel), (int) topAxisMargin,
+                        markerPaint);
             }
         }
     }

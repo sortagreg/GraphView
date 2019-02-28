@@ -25,13 +25,7 @@
         app:leftSideText="left"
         app:rightSideText="right"
         app:bottomText="bottom"
-        app:graphPaddingFactor="0.1"
-        app:leftLabelRoundingFactor="1000"
-        app:leftLabelStepFactor="2"
-        app:rightLabelRoundingFactor="100"
-        app:rightLabelStepFactor="200"
-        app:xLabelRoundingFactor="100"
-        app:xLabelStepFactor="200"/>
+        app:graphPaddingFactor="0.1"/>
 
     <com.sortagreg.graphview.GraphView
         android:id="@+id/graphViewBottom"
@@ -50,10 +44,7 @@
         app:leftSideText="left"
         app:rightSideText="right"
         app:bottomText="bottom"
-        app:axisMarginRight="50"
-        app:xLabelRoundingFactor="1000"
-        app:leftLabelRoundingFactor="1000"
-        app:leftLabelStepFactor="1"/>
+        app:axisMarginRight="50"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

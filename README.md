@@ -85,10 +85,6 @@ graphView.addToDataSetList(dataModel);
 Many of the portions of GraphView can be customized to fit your needs.  Options can be set in the XML or in Java.
 
 #### Current Customization Options
-* numberOfVerticalMarkers : Integer
-* numberOfHorizontalMarkers : Integer
-* numberOfVerticalLabels : Integer
-* numberOfHorizontalLabels : Integer
 * axisMarginTop : float
 * axisMarginBottom : float
 * axisMarginLeft : float
